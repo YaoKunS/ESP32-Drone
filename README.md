@@ -83,8 +83,6 @@ Preferences（ESP32 内置，无需额外安装）
 bash
 git clone [https://github.com/YaoKunS/ESP32_Drone.git](https://github.com/YaoKunS/ESP32-Drone.git)
 
-cd YaoKun_Drone
-
 用 Arduino IDE 打开 YaoKun_Drone.ino，在 config.h 中根据您的板型修改对应的宏（默认 PCB_YaoKun_LCKFB_ESP32S3 适用于立创 ESP32‑S3 开发板）。选择正确的端口和开发板，点击“上传”。
 
 ## ✈️ 4. 首次飞行（详细步骤）
