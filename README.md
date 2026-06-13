@@ -170,7 +170,7 @@ git clone [https://github.com/YaoKunS/ESP32_Drone.git](https://github.com/YaoKun
 
 | 功能 | 耀坤飞控 | Flix | ESP-FC | ESP-Drone |
 |------|---------|------|--------|-----------|
-| WiFi 无线控制 | ✅ Web 网页（免APP） | ✅ MAVLink+QGC | ✅ ESP-NOW | ✅ APP/游戏手柄 |
+| WiFi 无线控制 | ✅ Web 网页（免APP） | ✅ MAVLink+QGC | ✅ ESP-NOW、SBUS等多种 | ✅ APP/游戏手柄 |
 | 手机 APP 控制 | 通过网页（无需安装） | QGC 地面站 | ❌ | ✅ 专用 APP |
 | 地面站支持 | 网页定制 | QGroundControl | Betaflight Configurator | cfclient |
 | 黑盒记录 | ❌（可扩展 SD） | ✅ 日志分析 | ✅ | ✅ |
