@@ -81,7 +81,7 @@ Preferences（ESP32 内置，无需额外安装）
 
 3. 编译与烧录
 bash
-git clone https://github.com/yourname/YaoKun_Drone.git
+git clone [https://github.com/YaoKunS/ESP32_Drone.git](https://github.com/YaoKunS/ESP32-Drone.git)
 
 cd YaoKun_Drone
 
