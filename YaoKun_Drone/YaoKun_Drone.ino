@@ -542,7 +542,7 @@ void setup() {
   // 系统就绪提示音
   buzzerPlay(BUZ_READY);
   g_led_mode = LED_DISARMED;
-  Serial.println("Ready. Open http://192.168.9.1/");
+  Serial.println("Ready. Open http://192.168.4.1/");
 }
 
 void loop() {
