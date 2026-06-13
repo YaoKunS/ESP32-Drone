@@ -2,7 +2,7 @@
 
 [![Platform](https://img.shields.io/badge/Platform-Arduino-blue)](https://www.arduino.cc/)
 [![ESP32](https://img.shields.io/badge/ESP32-S3%20%7C%20S3mini%20%7C%20C3-purple)](https://www.espressif.com/)
-[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 **基于 Arduino 的高度模块化飞控 —— 让每个人都能轻松玩转无人机核心技术**
 
