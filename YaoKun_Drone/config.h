@@ -2,7 +2,8 @@
 // 本文件合并了原 drone_pins.h 的所有条件编译引脚定义，
 // 以及主文件中所有的 static const 参数（PWM、控制、滤波器等）。
 // 后续任何模块只需包含本文件，即可获得全部常量。
-// * @brief 淘宝店: 耀坤智联（提供本项目所需电子元器件套件，基础元件仅需9.9元） ； 
+// * @brief 淘宝店: 耀坤智联 https://shop35432590.taobao.com/
+// * @brief 提供本项目所需电子元器件套件，基础元件仅需9.9元 ； 
 // * @brief 哔哩哔哩B站：耀坤智联 ； 
 // * @brief 嘉立创开源硬件平台：耀坤无人机（星火计划2026开源项目）
 
@@ -23,7 +24,7 @@
     !defined(PCB_YaoKun_S3mini) && \
     !defined(PCB_YaoKun_S3mini_A) && \
     !defined(PCB_YaoKun_S3mini_B)
-    #define PCB_YaoKun_LCKFB_ESP32S3   // 默认板型，切换板型只需修改这一行！
+    #define PCB_YaoKun_S3mini   // 默认板型，切换板型只需修改这一行！
 #endif
 // ============================================================================
 // 编译前可修改#define PCB_YaoKun_LCKFB_ESP32S3，用于切换板型，可选值：
@@ -50,10 +51,45 @@
     #define kMpuAddr 0x68   // MPU6050/MPU6500 设备地址
 
     // IMU 轴映射（根据传感器在机身上的安装方向调整）
-    #define kImuSwapXY true   // 交换 X 和 Y 轴
-    #define kImuFlipX  true   // 横滚方向取反
-    #define kImuFlipY  true   // 俯仰方向取反
-    #define kImuFlipZ  false  // Z 轴方向正常
+    #define kImuSwapXY true   // 交换 X 和 Y 轴，默认true
+    #define kImuFlipX  true   // 横滚方向取反，原厂MPU6050和MPU6500为true，国产MPU6050为false
+    #define kImuFlipY  true   // 俯仰方向取反，原厂和国产MPU6050均为true，MPU6500为false
+    #define kImuFlipZ  false  // Z 轴方向正常，默认false
+
+// 关于IMU轴映射，目前已测试3种，定义如下：
+// 如果你使用其他IMU或者模块的贴装方向与“耀坤无人机”开源PCB不同，
+// 你可以把姿态球的情况，描述清楚，问AI，再重新修改!
+// 请在 config.h 中依次尝试 “IMU 轴映射” 各参数组合，最多尝试8次！
+// 每次修改后重新编译、上传，并观察 Web 姿态球的横滚（Roll）和俯仰（Pitch）方向。
+// ============================================================
+// 验证方法：修改后重新编译上传，在Web浏览器里输入http://192.168.4.1
+// 测试 Roll：将飞机向左倾斜约 30°，观察网页 Roll 读数，同时姿态球应向左转。
+// 测试 Pitch：将飞机抬头（机头向上），观察网页 Pitch 读数是否为 正值（通常抬头为正），姿态球上方应显示天空。
+// 即在“设置”页面观察姿态球的反应，正确的情况应该是：
+// 飞机抬头（机头上仰）→ 姿态球应显示天空（俯仰角正）。
+// 飞机低头（机头下俯）→ 姿态球应显示地面（俯仰角负）。
+// 飞机左倾 → 姿态球应左倾；飞机右倾 → 姿态球应右倾；
+// ============================================================
+/**
+    // IMU 轴映射（原厂MPU6050模块，芯片较大，手工测量约4*4mm）
+    #define kImuSwapXY true   // 交换 X 和 Y 轴，默认true
+    #define kImuFlipX  true   // 横滚方向取反，默认true
+    #define kImuFlipY  true   // 俯仰方向取反，原厂MPU6050为true，MPU6500为false
+    #define kImuFlipZ  false  // Z 轴方向正常，默认false
+
+    // IMU 轴映射（MPU6500模块）
+    #define kImuSwapXY true   // 交换 X 和 Y 轴，默认true
+    #define kImuFlipX  true   // 横滚方向取反，默认true
+    #define kImuFlipY  false   // 俯仰方向取反，原厂MPU6050为true，MPU6500为false
+    #define kImuFlipZ  false  // Z 轴方向正常，默认false
+
+    // IMU 轴映射（国产MPU6050，芯片较小，手工测量约3*3mm）
+    #define kImuSwapXY true   // 交换 X 和 Y 轴，默认true
+    #define kImuFlipX  false   // 横滚方向取反，国产MPU6050为false，原厂MPU6050和MPU6500为true
+    #define kImuFlipY  true   // 俯仰方向取反，原厂和国产MPU6050均为true，MPU6500为false
+    #define kImuFlipZ  false  // Z 轴方向正常，默认false
+ */
+ // ============================================================
 
     // 电机引脚 (X 型配置：机头方向位于 M4 和 M1 之间)
     #define kMotor0Pin 16    // 左前 (M4 / FL)
@@ -102,10 +138,10 @@
     #define kMpuAddr 0x68   // MPU6050 设备地址
 
     // IMU 轴映射（根据传感器在机身上的安装方向调整）
-    #define kImuSwapXY true   // 交换 X 和 Y 轴
-    #define kImuFlipX  true   // 横滚方向取反
-    #define kImuFlipY  true   // 俯仰方向取反
-    #define kImuFlipZ  false  // Z 轴方向正常
+    #define kImuSwapXY true   // 交换 X 和 Y 轴，默认true
+    #define kImuFlipX  true   // 横滚方向取反，国产MPU6050为false，原厂MPU6050和MPU6500为true
+    #define kImuFlipY  false   // 俯仰方向取反，原厂和国产MPU6050均为true，MPU6500为false
+    #define kImuFlipZ  false  // Z 轴方向正常，默认false
 
     // 电机引脚 (X 型配置：机头方向位于 M4 和 M1 之间)
     #define kMotor0Pin 8   // 左前 (M4 / FL)
