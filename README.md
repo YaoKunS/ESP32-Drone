@@ -6,8 +6,6 @@
 
 **基于 Arduino 的高度模块化飞控 —— 让每个人都能轻松玩转无人机核心技术**
 
-![YaoKun Drone Demo](docs/demo.gif)   <!-- 可选：放入一张动图或照片 -->
-
 ## 📌 简介
 
 耀坤飞控是一款面向 **嵌入式学习、算法验证、科创竞赛** 的开源四轴飞行器固件。它基于 Arduino 框架开发，运行在廉价的 ESP32 系列开发板上，通过 WebSocket 技术实现手机/电脑网页直连遥控，无需安装任何 APP。
@@ -16,6 +14,8 @@
 `传感器驱动 → 姿态解算 → PID 控制 → 电机混控 → 遥控通信 → 参数存储 → 故障保护 → 遥测发送`。
 
 与其他开源飞控（Flix、ESP‑FC、ESP‑Drone）相比，耀坤飞控 **在保持 Arduino 低门槛的同时，实现了商业级飞控的核心架构**，既是“可以飞的无人机”，更是嵌入式系统模块化设计的绝佳教学范例。
+![https://github.com/YaoKunS/ESP32-Drone](docs/K1_IMG_20260614_1.jpg)   <!-- 可选：放入一张动图或照片 -->
+![https://github.com/YaoKunS/ESP32-Drone](docs/K1_IMG_20260614_3.jpg)   <!-- 可选：放入一张动图或照片 -->
 
 ## 🔥 核心特性
 
@@ -81,7 +81,7 @@ Preferences（ESP32 内置，无需额外安装）
 
 3. 编译与烧录
 bash
-git clone [https://github.com/YaoKunS/ESP32_Drone.git](https://github.com/YaoKunS/ESP32-Drone.git)
+git clone [https://github.com/YaoKunS/ESP32-Drone.git](https://github.com/YaoKunS/ESP32-Drone.git)
 
 用 Arduino IDE 打开 YaoKun_Drone.ino，在 config.h 中根据您的板型修改对应的宏（默认 PCB_YaoKun_LCKFB_ESP32S3 适用于立创 ESP32‑S3 开发板）。选择正确的端口和开发板，点击“上传”。
 
