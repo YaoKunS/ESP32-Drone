@@ -3,7 +3,7 @@
 // ============================================================
 // Web遥控界面
  * @brief 淘宝店: 耀坤智联 https://shop35432590.taobao.com/
- * @brief 提供本项目所需电子元器件套件，基础元件仅需9.9元；
+ * @brief 提供本项目所需电子元器件套件，基础元件仅需9.9元 ；  
  * @brief 哔哩哔哩B站：耀坤智联 ； 
  * @brief 嘉立创开源硬件平台：耀坤无人机（星火计划2026开源项目）
  *
@@ -13,6 +13,12 @@
 // 20260611 增加所有“应用”按钮的蜂鸣提示音（Web Audio）
 // 20260612 将“状态消息”移至遥控界面，并优化样式使其更醒目；优化浅色主题下虚拟摇杆中心点的可见性（使用主题变量）
 // 20260612 增强设置页面“actionStatus”短暂消息的样式（更大更醒目）
+// 20260617 陆地颜色改为绿色（蓝天绿地），姿态仪表改为传统民航姿态仪(ADI)风格：地平线反向倾斜（左倾→左低右高），
+//          模拟真实飞行员 头部保持水平 的视角，飞机左倾 → 地平线 反向倾斜（左低右高）。
+//          代表：Mission Planner、真机仪表            
+// 20260617 你也可以修改为穿越机/FPV 地面站 (Betaflight 风格)：修改代码为ctx.rotate(-rollRad)；
+//          模拟飞行员 头部跟随飞机倾斜 的视角，飞机左倾 → 地平线 同向倾斜（左高右低）。
+//          代表：Betaflight、INAV、FPV 眼镜
 // ============================================================
 */
 
@@ -1117,11 +1123,17 @@ static const char kIndexHtml[] PROGMEM = R"HTML(
     ctx.beginPath();
     ctx.arc(0, 0, radius, 0, Math.PI * 2);
     ctx.clip();
-    ctx.rotate(-rollRad);
-    ctx.fillStyle = '#cfe8ff';
+    // ===== 20260617修改点1：横滚旋转方向取反（ADI风格） =====
+    // 原代码为 ctx.rotate(-rollRad); 现改为 ctx.rotate(rollRad);
+    // 即飞机左倾（roll为负）→ 旋转负角度（逆时针）→ 地平线左低右高（ADI）
+    ctx.rotate(rollRad);  //旋转地平线 
+    ctx.fillStyle = '#cfe8ff';  //天空蓝色
     ctx.fillRect(-radius * 2, -radius * 2 + offset, radius * 4, radius * 2);
-    ctx.fillStyle = '#d2a679';
+     // 20260617修改点2：陆地颜色—— 改为绿色
+    //ctx.fillStyle = '#d2a679'; //陆地棕色 
+    ctx.fillStyle = '#7b9e6b';   //20260617修改蓝天绿地：#6b8e23草绿色，也可用 #2e7d32 深绿
     ctx.fillRect(-radius * 2, offset, radius * 4, radius * 2);
+      // 地平线分界线
     ctx.strokeStyle = '#333';
     ctx.lineWidth = 2 * dpr;
     ctx.beginPath();
