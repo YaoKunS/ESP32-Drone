@@ -22,9 +22,9 @@
 // ============================================================================
 #if !defined(PCB_YaoKun_LCKFB_ESP32S3) && \
     !defined(PCB_YaoKun_S3mini) && \
-    !defined(PCB_YaoKun_S3mini_B) && \
-    !defined(PCB_YaoKun_S3mini_A)
-    #define PCB_YaoKun_S3mini   // 默认板型，切换板型只需修改这一行！
+    !defined(PCB_YaoKun_S3mini_A) && \
+    !defined(PCB_YaoKun_S3mini_B)
+    #define PCB_YaoKun_LCKFB_ESP32S3   // 默认板型，切换板型只需修改这一行！
 #endif
 // ============================================================================
 // 编译前可修改#define PCB_YaoKun_LCKFB_ESP32S3，用于切换板型，可选值：
@@ -52,41 +52,41 @@
 
     // IMU 轴映射（根据传感器在机身上的安装方向调整）
     #define kImuSwapXY true   // 交换 X 和 Y 轴，默认true
-    #define kImuFlipX  false  // 横滚方向取反，原厂国产MPU6050都是false，MPU6500模块为true
-    #define kImuFlipY  false  // 俯仰方向取反，原厂国产MPU6050都是false，MPU6500模块为true
+    #define kImuFlipX  true   // 横滚方向取反，原厂MPU6050和MPU6500为true，国产MPU6050为false
+    #define kImuFlipY  true   // 俯仰方向取反，原厂和国产MPU6050均为true，MPU6500为false
     #define kImuFlipZ  false  // Z 轴方向正常，默认false
 
-// 关于IMU轴映射，目前已测试3种（原厂MPU6050模块、国产MPU6050、MPU6500模块），请看下面描述：
+// 关于IMU轴映射，目前已测试3种，定义如下：
 // 如果你使用其他IMU或者模块的贴装方向与“耀坤无人机”开源PCB不同，
-// 请在 config.h 中依次尝试 “IMU 轴映射” 各参数true/false组合，多尝试几次！
-// 每次修改后重新编译、上传，并观察 Web 姿态球地平线的地平线情况，以及横滚（Roll）和俯仰（Pitch）读数。
-// 你可以把姿态球的情况，描述清楚，问AI分析，再重新修改!一般测试2-3次后，AI就可以分析给出正确的组合！
+// 你可以把姿态球的情况，描述清楚，问AI，再重新修改!
+// 请在 config.h 中依次尝试 “IMU 轴映射” 各参数组合，最多尝试8次！
+// 每次修改后重新编译、上传，并观察 Web 姿态球的横滚（Roll）和俯仰（Pitch）方向。
 // ============================================================
 // 验证方法：修改后重新编译上传，在Web浏览器里输入http://192.168.4.1
-// 测试 Roll：将飞机向左倾斜约 30°，观察网页 Roll 读数应该是负值，同时姿态球应向左转（地平线左低右高）。
+// 测试 Roll：将飞机向左倾斜约 30°，观察网页 Roll 读数，同时姿态球应向左转。
 // 测试 Pitch：将飞机抬头（机头向上），观察网页 Pitch 读数是否为 正值（通常抬头为正），姿态球上方应显示天空。
 // 即在“设置”页面观察姿态球的反应，正确的情况应该是：
 // 飞机抬头（机头上仰）→ 姿态球应显示天空（俯仰角正）。
 // 飞机低头（机头下俯）→ 姿态球应显示地面（俯仰角负）。
-// 飞机左倾 → 横滚读数为负，姿态球地平线左低右高；飞机右倾 → 横滚读数为正，姿态球地平线左高右低；
+// 飞机左倾 → 姿态球应左倾；飞机右倾 → 姿态球应右倾；
 // ============================================================
 /**
     // IMU 轴映射（原厂MPU6050模块，芯片较大，手工测量约4*4mm）
     #define kImuSwapXY true   // 交换 X 和 Y 轴，默认true
-    #define kImuFlipX  false   // 横滚方向取反，原厂MPU6050设置为false
-    #define kImuFlipY  false   // 俯仰方向取反，原厂MPU6050设置为false
+    #define kImuFlipX  true   // 横滚方向取反，默认true
+    #define kImuFlipY  true   // 俯仰方向取反，原厂MPU6050为true，MPU6500为false
     #define kImuFlipZ  false  // Z 轴方向正常，默认false
 
     // IMU 轴映射（MPU6500模块）
     #define kImuSwapXY true   // 交换 X 和 Y 轴，默认true
-    #define kImuFlipX  true   // 横滚方向取反，MPU6500模块为true
-    #define kImuFlipY  true   // 俯仰方向取反，MPU6500模块为true
+    #define kImuFlipX  true   // 横滚方向取反，默认true
+    #define kImuFlipY  false   // 俯仰方向取反，原厂MPU6050为true，MPU6500为false
     #define kImuFlipZ  false  // Z 轴方向正常，默认false
 
     // IMU 轴映射（国产MPU6050，芯片较小，手工测量约3*3mm）
     #define kImuSwapXY true   // 交换 X 和 Y 轴，默认true
-    #define kImuFlipX  false   // 横滚方向取反，国产MPU6050也是false
-    #define kImuFlipY  false   // 俯仰方向取反，国产MPU6050也是false
+    #define kImuFlipX  false   // 横滚方向取反，国产MPU6050为false，原厂MPU6050和MPU6500为true
+    #define kImuFlipY  true   // 俯仰方向取反，原厂和国产MPU6050均为true，MPU6500为false
     #define kImuFlipZ  false  // Z 轴方向正常，默认false
  */
  // ============================================================
@@ -139,8 +139,8 @@
 
     // IMU 轴映射（根据传感器在机身上的安装方向调整）
     #define kImuSwapXY true   // 交换 X 和 Y 轴，默认true
-    #define kImuFlipX  false  // 横滚方向取反，原厂国产MPU6050都是false，MPU6500模块为true
-    #define kImuFlipY  false  // 俯仰方向取反，原厂国产MPU6050都是false，MPU6500模块为true
+    #define kImuFlipX  true   // 横滚方向取反，国产MPU6050为false，原厂MPU6050和MPU6500为true
+    #define kImuFlipY  false   // 俯仰方向取反，原厂和国产MPU6050均为true，MPU6500为false
     #define kImuFlipZ  false  // Z 轴方向正常，默认false
 
     // 电机引脚 (X 型配置：机头方向位于 M4 和 M1 之间)
@@ -149,10 +149,10 @@
     #define kMotor2Pin 3   // 右后 (M2 / RR)
     #define kMotor3Pin 9   // 左后 (M3 / RL)
 
-    // LED 指示灯（高电平有效），注意S3mini版通常只焊接了蓝色 LED，红绿可能未焊接
-    #define led1 33   // 红色 LED ,可用引脚紧张,实际PCB没有红色LED
-    #define led2 34   // 绿色 LED ,可用引脚紧张,实际PCB没有绿色LED
-    #define led3 1    // 蓝色 LED ,板载有一颗很小的RGB灯，可用GPIO48控制
+    // LED 指示灯（高电平有效），注意 S3mini 板通常只焊接了蓝色 LED，红绿可能未焊接
+    #define led1 33   // 红色 LED ,引脚紧张,实际PCB没有红色LED
+    #define led2 34   // 绿色 LED ,引脚紧张,实际PCB没有绿色LED
+    #define led3 1    // 蓝色 LED ,实板载有一颗很小的RGB灯，可用GPIO48控制
 
     // 电池电压检测（ADC 输入）
     #define kVbattAdcPin 2                 // ADC1_CH2，GPIO2
@@ -190,10 +190,10 @@
     #define kMpuAddr 0x68   // MPU6050 设备地址
 
     // IMU 轴映射
-    #define kImuSwapXY true   // 交换 X 和 Y 轴，默认true
-    #define kImuFlipX  true  // 横滚方向取反，MPU6500模块为true，原厂国产MPU6050都是false
-    #define kImuFlipY  true  // 俯仰方向取反，MPU6500模块为true，原厂国产MPU6050都是false
-    #define kImuFlipZ  false  // Z 轴方向正常，默认false
+    #define kImuSwapXY true
+    #define kImuFlipX  true
+    #define kImuFlipY  true
+    #define kImuFlipZ  false
 
     // 电机引脚 (X 型配置)
     #define kMotor0Pin 10   // 左前 (M4 / FL)
@@ -202,8 +202,8 @@
     #define kMotor3Pin 11   // 左后 (M3 / RL)
 
     // LED 指示灯
-    #define led1 33   // 红色 LED,可用引脚紧张,实际PCB没有红色LED
-    #define led2 34   // 绿色 LED,可用引脚紧张,实际PCB没有绿色LED
+    #define led1 33   // 红色 LED,引脚紧张,实际PCB没有红色LED
+    #define led2 34   // 绿色 LED,引脚紧张,实际PCB没有绿色LED
     #define led3 2    // 蓝色 LED,实板载有一颗很小的RGB灯，可用GPIO48控制
 
 
@@ -239,10 +239,10 @@
     #define kMpuAddr 0x68
 
     // IMU 轴映射
-    #define kImuSwapXY true   // 交换 X 和 Y 轴，默认true
-    #define kImuFlipX  true  // 横滚方向取反，MPU6500模块为true，原厂国产MPU6050都是false
-    #define kImuFlipY  true  // 俯仰方向取反，MPU6500模块为true，原厂国产MPU6050都是false
-    #define kImuFlipZ  false  // Z 轴方向正常，默认false
+    #define kImuSwapXY true
+    #define kImuFlipX  true
+    #define kImuFlipY  true
+    #define kImuFlipZ  false
 
     // 电机引脚
     #define kMotor0Pin 8   // 左前 (M4 / FL)
