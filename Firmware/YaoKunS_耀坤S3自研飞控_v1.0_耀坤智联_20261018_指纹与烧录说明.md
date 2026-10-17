@@ -134,4 +134,4 @@ esptool --chip esp32s3 --port COMx read_flash 0x10000 0x200 app_hdr.bin
 
 ---
 
-打包脚本：`D:\Workbuddy\YaoKunUAV\build_ykdrone\pack_release.py` ／ 复现命令：见 `build_cmd.txt`
+本说明由固件打包脚本自动生成；哈希、分段布局与编译时间均现场从固件镜像中提取，与 bin 严格一致。

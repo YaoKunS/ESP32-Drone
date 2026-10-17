@@ -138,6 +138,6 @@
   淘宝店           : 耀坤智联     https://shop35432590.taobao.com/
 
 ==================================================================
- 打包脚本：D:\Workbuddy\YaoKunUAV\build_ykdrone\pack_release.py
- 复现命令：见 D:\Workbuddy\YaoKunUAV\build_ykdrone\build_cmd.txt
+ 本说明由固件打包脚本自动生成；
+ 哈希、分段布局与编译时间均现场从固件镜像中提取，与 bin 严格一致。
 ==================================================================
