@@ -7,8 +7,8 @@
 ![Platform](https://img.shields.io/badge/Platform-Arduino-blue)
 ![MCU](https://img.shields.io/badge/MCU-ESP32--S3-purple)
 ![License](https://img.shields.io/badge/License-GPLv3-blue.svg)
-![Bilibili](https://img.shields.io/badge/B站-耀坤智联-ff69b4)
-![立创开源](https://img.shields.io/badge/立创开源-oshwhub.com/lindahe-orange)
+![Bilibili](https://img.shields.io/badge/B%E7%AB%99-%E8%80%80%E5%9D%A4%E6%99%BA%E8%81%94-ff69b4)
+![立创开源](https://img.shields.io/badge/%E7%AB%8B%E5%88%9B%E5%BC%80%E6%BA%90-oshwhub.com%2Flindahe-orange)
 
 **[GitHub 仓库](https://github.com/YaoKunS/ESP32-Drone)** · **[立创开源硬件平台](https://oshwhub.com/lindahe)** · **[B站视频教程](https://space.bilibili.com/3707011699050767)** · **[淘宝元器件套件](https://shop35432590.taobao.com/)**
 
@@ -25,7 +25,7 @@
 
 与其他开源飞控（Flix、ESP-FC、ESP-Drone）相比，耀坤飞控 **在保持 Arduino 低门槛的同时，实现了商业级飞控的核心架构**，既是"可以飞的无人机"，更是嵌入式系统模块化设计的绝佳教学范例。
 
-> 📖 **深度文档**：[docs/YaoKunDrone_README.html](docs/YaoKunDrone_README.html)（另有同名 PDF / Word 版）——18 章完整说明，含 **15 张系统架构图 / 流程图**（分层架构、控制主流程、串级 PID、姿态解算、解锁状态机、故障保护、通信时序、引脚定义、启动时序等）、PID 调参指南与 13 条故障排查对照表。
+> 📖 **深度文档**：[HTML](docs/YaoKunDrone_README.html) · [PDF](docs/YaoKunDrone_README.pdf) · [Word](docs/YaoKunDrone_README.docx) ——18 章完整说明，含 **15 张系统架构图 / 流程图**（分层架构、控制主流程、串级 PID、姿态解算、解锁状态机、故障保护、通信时序、引脚定义、启动时序等）、PID 调参指南与 13 条故障排查对照表。
 
 ## 📷 实物图
 
