@@ -16,7 +16,7 @@
 
 ---
 
-> 📖 **这是一份完整技术文档**（18 章），不是普通 README 摘要。与 `docs/YaoKunDrone_README.html`
+> 📖 **这是一份完整技术文档**（18 章），不是普通 README 摘要。与 `Docs/YaoKunDrone_README.html`
 > / `.pdf` / `.docx` 内容完全一致：网页版带排版与目录高亮适合阅读，本 Markdown 版适合在仓库内检索与引用。
 
 ---
@@ -54,19 +54,19 @@
 
 整机由一块**免费打样的 PCB 机架** + ESP32-S3 开发板 + MPU6050/6500 模块 + 四个 8520 空心杯电机组成，飞控热点是 `YaoKun_Drone`。以下实物图来自开源仓库 [github.com/YaoKunS/ESP32-Drone](https://github.com/YaoKunS/ESP32-Drone)：
 
-![两代整机并排](docs/img/K1_01.jpg)
+![两代整机并排](Docs/img/K1_01.jpg)
 
 *图 1-1　两代整机并排：两机均为立创 ESP32-S3 全功能版*
 
-![俯视 PCB 即机架](docs/img/K1_03.jpg)
+![俯视 PCB 即机架](Docs/img/K1_03.jpg)
 
 *图 1-2　俯视图：PCB 即机架——X 型四臂、8520 空心杯电机、65 mm 桨与可拆卸保护圈*
 
-![K1.0 单机特写](docs/img/K1_02.jpg)
+![K1.0 单机特写](Docs/img/K1_02.jpg)
 
 *图 1-3　K1.0 单机特写：立创 ESP32-S3 R8N8 核心板直插 PCB 插座，尼龙扎带固定 1S 电池*
 
-![两机近景对比](docs/img/K1_04.jpg)
+![两机近景对比](Docs/img/K1_04.jpg)
 
 *图 1-4　两机近景对比：均为立创 ESP32-S3 全功能版，共用同一套 PCB 机架（桨叶配色不同便于区分）*
 
@@ -144,7 +144,7 @@
 
 整套固件按职责切成五层，层与层之间只通过 `drone_types.h` 中声明的接口通信，不存在跨层直接操作。这让「换一块 PCB」「改一个算法」「重写整个界面」都可以各自独立进行，互不牵连。
 
-![系统五层架构图](docs/fig/fig01_arch.svg)
+![系统五层架构图](Docs/fig/fig01_arch.svg)
 
 *图 3-1　五层分层架构：表现层 / 决策层 / 感知层 / 硬件驱动层 / 配置与存储*
 
@@ -152,7 +152,7 @@
 
 ### 3.1 模块依赖关系
 
-![模块依赖关系图](docs/fig/fig08_modules.svg)
+![模块依赖关系图](Docs/fig/fig08_modules.svg)
 
 *图 3-2　模块依赖：头文件契约层 + 六个 .ino 实现文件，以及 FreeRTOS 双上下文下的并发模型*
 
@@ -176,7 +176,7 @@
 
 ### 3.2 代码规模分布
 
-![代码规模分布图](docs/fig/fig12_stats.svg)
+![代码规模分布图](Docs/fig/fig12_stats.svg)
 
 *图 3-3　5173 行代码的分布：前端占三分之一，硬件驱动占近四分之一*
 
@@ -197,7 +197,7 @@ if ((int32_t)(now_us - next_us) >= 0) {
 }
 ```
 
-![控制主流程图](docs/fig/fig02_flow.svg)
+![控制主流程图](Docs/fig/fig02_flow.svg)
 
 *图 4-1　`controlStep()` 控制流水线：KILL → 电机测试 → dt 校验 → IMU 读取 → 姿态解算 → 倾斜保护 → 遥控超时 → 解锁状态机 → PID 混控*
 
@@ -219,7 +219,7 @@ if ((int32_t)(now_us - next_us) >= 0) {
 
 ### 4.2 上电启动时序
 
-![上电启动时序图](docs/fig/fig11_boot.svg)
+![上电启动时序图](Docs/fig/fig11_boot.svg)
 
 *图 4-2　`setup()` 启动时序：串口 → 电机 LEDC → IMU 自动探测 → 陀螺标定 → 参数加载 → 上锁 → 自建热点*
 
@@ -229,7 +229,7 @@ if ((int32_t)(now_us - next_us) >= 0) {
 
 ## 五、控制算法详解
 
-![串级PID控制链路图](docs/fig/fig03_pid.svg)
+![串级PID控制链路图](Docs/fig/fig03_pid.svg)
 
 *图 5-1　串级双环控制链路：外环出期望角速度，内环出归一化扭矩，扭矩缩放后进 X 型混控*
 
@@ -288,7 +288,7 @@ roll_torque  = g_roll_rate_pid.update(...)  * torque_scale;
 
 ## 六、姿态解算
 
-![姿态解算流程图](docs/fig/fig04_ahrs.svg)
+![姿态解算流程图](Docs/fig/fig04_ahrs.svg)
 
 *图 6-1　姿态解算链路：IMU 采样 → 轴重映射 → 信任度计算 → 三选一解算器 → 欧拉角 → 扣除水平偏置*
 
@@ -334,7 +334,7 @@ trust 随后被送进两个地方：Madgwick 的 β 线性插值（`β = 0.02 + 
 
 ## 七、安全机制
 
-![故障保护体系图](docs/fig/fig06_failsafe.svg)
+![故障保护体系图](Docs/fig/fig06_failsafe.svg)
 
 *图 7-1　八种故障触发源全部汇聚到 `disarmNow()` 单一出口，加上三道不进入枚举的额外保护*
 
@@ -354,7 +354,7 @@ trust 随后被送进两个地方：Madgwick 的 β 线性插值（`β = 0.02 + 
 
 ### 7.2 解锁状态机
 
-![解锁状态机图](docs/fig/fig05_arm.svg)
+![解锁状态机图](Docs/fig/fig05_arm.svg)
 
 *图 7-2　三态解锁状态机：DISARMED → ARMING → ARMED，含四条件互锁与故障抑制*
 
@@ -383,7 +383,7 @@ trust 随后被送进两个地方：Madgwick 的 β 线性插值（`β = 0.02 + 
 
 ## 八、通信与 Web 遥控
 
-![通信时序图](docs/fig/fig07_comm.svg)
+![通信时序图](Docs/fig/fig07_comm.svg)
 
 *图 8-1　HTTP 取页 → WebSocket 握手 → 配置下发 → 20 Hz 双向循环 → 命令通道全景*
 
@@ -442,7 +442,7 @@ C,throttle,roll,pitch,yaw,arm_request
 
 ### 8.4 Web 界面
 
-![Web界面结构图](docs/fig/fig10_webui.svg)
+![Web界面结构图](Docs/fig/fig10_webui.svg)
 
 *图 8-2　四大视图：遥控（双摇杆 + 遥测面板）、设置（姿态球 + 调参）、测试（单电机）、主题（12 套配色）*
 
@@ -467,7 +467,7 @@ C,throttle,roll,pitch,yaw,arm_request
 
 先看一遍从上电到降落的完整生命周期——每个阶段声音和灯光都在配合讲故事：
 
-![声光联动全流程](docs/fig/fig15_flow_av.svg)
+![声光联动全流程](Docs/fig/fig15_flow_av.svg)
 
 *图 9-1　声光联动全流程：8 个阶段的声音 + 红绿灯 + 蓝灯组合，以及随时可能插入的故障分支*
 
@@ -477,7 +477,7 @@ C,throttle,roll,pitch,yaw,arm_request
 
 14 种音效按用途分五类：状态播报（单次）、校准确认（连击）、起飞（重复）、等待催促（循环）、报警（循环）。每一段的节奏都对应 `hardware.ino` 里状态机的真实参数：
 
-![蜂鸣器音效节奏谱](docs/fig/fig13_buzzer.svg)
+![蜂鸣器音效节奏谱](Docs/fig/fig13_buzzer.svg)
 
 *图 9-2　14 种音效的节奏谱：实心块 = 蜂鸣器响，横轴为毫秒；右侧为触发场景*
 
@@ -502,7 +502,7 @@ C,throttle,roll,pitch,yaw,arm_request
 
 ### 9.3 三色灯语
 
-![三色灯语](docs/fig/fig14_led.svg)
+![三色灯语](Docs/fig/fig14_led.svg)
 
 *图 9-3　三色灯语：红/绿 5 种模式、蓝灯 3 种状态、电压 3 级覆盖的亮度-时间曲线*
 
@@ -541,7 +541,7 @@ C,throttle,roll,pitch,yaw,arm_request
 
 ## 十、硬件与引脚定义
 
-![引脚定义与硬件接线图](docs/fig/fig09_pins.svg)
+![引脚定义与硬件接线图](Docs/fig/fig09_pins.svg)
 
 *图 10-1　板型切换方式、默认板型完整引脚表、预留扩展口与电压告警阈值*
 

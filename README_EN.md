@@ -17,7 +17,7 @@
 ---
 
 > 📖 **This is the complete technical document** (18 chapters), not a README summary. It matches
-> `docs/YaoKunDrone_README.html` / `.pdf` / `.docx` one-to-one. The web version adds typography and a
+> `Docs/YaoKunDrone_README.html` / `.pdf` / `.docx` one-to-one. The web version adds typography and a
 > highlighted table of contents; this Markdown version is meant for searching and citing inside the repo.
 
 ---
@@ -55,19 +55,19 @@ The goal was never "a toy that flies", but **an open-source flight controller th
 
 The aircraft is a **free-to-fabricate PCB frame** plus an ESP32-S3 dev board, an MPU6050/6500 module and four 8520 coreless motors. The flight controller's hotspot is `YaoKun_Drone`. Photos below come from the open-source repository [github.com/YaoKunS/ESP32-Drone](https://github.com/YaoKunS/ESP32-Drone):
 
-![Two complete aircraft side by side](docs/img/K1_01.jpg)
+![Two complete aircraft side by side](Docs/img/K1_01.jpg)
 
 *Fig. 1-1　Two complete aircraft side by side — both are LCKFB ESP32-S3 full-function boards*
 
-![Top view: the PCB is the frame](docs/img/K1_03.jpg)
+![Top view: the PCB is the frame](Docs/img/K1_03.jpg)
 
 *Fig. 1-2　Top view — the PCB **is** the frame: X-shaped arms, 8520 coreless motors, 65 mm props and removable prop guards*
 
-![K1.0 close-up](docs/img/K1_02.jpg)
+![K1.0 close-up](Docs/img/K1_02.jpg)
 
 *Fig. 1-3　K1.0 close-up — LCKFB ESP32-S3 R8N8 core board plugged straight into the PCB socket, 1S battery held by nylon ties*
 
-![Close comparison of the two airframes](docs/img/K1_04.jpg)
+![Close comparison of the two airframes](Docs/img/K1_04.jpg)
 
 *Fig. 1-4　Close comparison — both are LCKFB ESP32-S3 full-function boards sharing one PCB frame design (different prop colors for identification)*
 
@@ -145,7 +145,7 @@ The aircraft is a **free-to-fabricate PCB frame** plus an ESP32-S3 dev board, an
 
 The firmware is divided into five layers by responsibility. Layers only talk through the interfaces declared in `drone_types.h`; there is no cross-layer reaching. This lets "swap a PCB", "change an algorithm" and "rewrite the whole UI" happen independently.
 
-![Five-layer architecture](docs/fig/fig01_arch.svg)
+![Five-layer architecture](Docs/fig/fig01_arch.svg)
 
 *Fig. 3-1　Five-layer architecture: presentation / decision / perception / hardware driver / configuration & storage*
 
@@ -153,7 +153,7 @@ The firmware is divided into five layers by responsibility. Layers only talk thr
 
 ### 3.1 Module Dependencies
 
-![Module dependencies](docs/fig/fig08_modules.svg)
+![Module dependencies](Docs/fig/fig08_modules.svg)
 
 *Fig. 3-2　Module dependencies: the header contract layer, six `.ino` implementation files, and the concurrency model across two FreeRTOS contexts*
 
@@ -177,7 +177,7 @@ The firmware is divided into five layers by responsibility. Layers only talk thr
 
 ### 3.2 Code Size Distribution
 
-![Code size distribution](docs/fig/fig12_stats.svg)
+![Code size distribution](Docs/fig/fig12_stats.svg)
 
 *Fig. 3-3　How the 5,173 lines split: one third is the web front end, nearly a quarter is hardware drivers*
 
@@ -198,7 +198,7 @@ if ((int32_t)(now_us - next_us) >= 0) {
 }
 ```
 
-![Control pipeline](docs/fig/fig02_flow.svg)
+![Control pipeline](Docs/fig/fig02_flow.svg)
 
 *Fig. 4-1　The `controlStep()` pipeline: KILL → motor test → dt validation → IMU read → attitude solve → tilt protection → RC timeout → arming state machine → PID mixing*
 
@@ -220,7 +220,7 @@ The order is not arbitrary. Each step exists to guarantee that "if something alr
 
 ### 4.2 Power-On Boot Sequence
 
-![Boot sequence](docs/fig/fig11_boot.svg)
+![Boot sequence](Docs/fig/fig11_boot.svg)
 
 *Fig. 4-2　`setup()` sequence: serial → motor LEDC → IMU auto-detect → gyro calibration → parameter load → disarm → hotspot start-up*
 
@@ -230,7 +230,7 @@ Motor LEDC binding failure is different: it only sets `FS_MOTOR_FAIL` and inhibi
 
 ## 5. Control Algorithms
 
-![Cascaded PID chain](docs/fig/fig03_pid.svg)
+![Cascaded PID chain](Docs/fig/fig03_pid.svg)
 
 *Fig. 5-1　Cascaded dual-loop chain: the outer loop emits a desired rate, the inner loop emits normalized torque, which is scaled and fed into X-frame mixing*
 
@@ -289,7 +289,7 @@ Note the outer loop's Ki = 0.001 is **very small**, deliberately. Attitude stead
 
 ## 6. Attitude Estimation
 
-![Attitude estimation flow](docs/fig/fig04_ahrs.svg)
+![Attitude estimation flow](Docs/fig/fig04_ahrs.svg)
 
 *Fig. 6-1　Estimation chain: IMU sample → axis remap → trust computation → selected estimator → Euler angles → level offset subtraction*
 
@@ -335,7 +335,7 @@ The reported attitude is always "estimate − offset", so the offset is stored o
 
 ## 7. Safety Mechanisms
 
-![Failsafe architecture](docs/fig/fig06_failsafe.svg)
+![Failsafe architecture](Docs/fig/fig06_failsafe.svg)
 
 *Fig. 7-1　All eight fault sources converge on the single `disarmNow()` exit, plus three extra protections that never become enum values*
 
@@ -355,7 +355,7 @@ Whatever path detects a fault, it ends in the same function, `disarmNow(reason)`
 
 ### 7.2 The Arming State Machine
 
-![Arming state machine](docs/fig/fig05_arm.svg)
+![Arming state machine](Docs/fig/fig05_arm.svg)
 
 *Fig. 7-2　Three-state arming machine: DISARMED → ARMING → ARMED, with the four-condition interlock and fault inhibit*
 
@@ -384,7 +384,7 @@ All four must hold **continuously for 800 ms** (`kArmHoldMs`) before arming actu
 
 ## 8. Communication & Web Remote
 
-![Communication timeline](docs/fig/fig07_comm.svg)
+![Communication timeline](Docs/fig/fig07_comm.svg)
 
 *Fig. 8-1　HTTP page fetch → WebSocket handshake → config push → 20 Hz bidirectional loop → command channels*
 
@@ -443,7 +443,7 @@ Every control command answers with `{"type":"ack","op":"…","tag":"…","ok":0|
 
 ### 8.4 The Web UI
 
-![Web UI structure](docs/fig/fig10_webui.svg)
+![Web UI structure](Docs/fig/fig10_webui.svg)
 
 *Fig. 8-2　Four views: Remote (dual sticks + telemetry), Settings (attitude ball + tuning), Test (single motor), Themes (12 color schemes)*
 
@@ -468,7 +468,7 @@ This flight controller has no screen, so **the buzzer and the tri-color LED are 
 
 Start with the complete lifecycle from power-up to landing — every phase tells its story through sound and light together:
 
-![Sound and light timeline](docs/fig/fig15_flow_av.svg)
+![Sound and light timeline](Docs/fig/fig15_flow_av.svg)
 
 *Fig. 9-1　The full sound-and-light timeline: 8 phases combining tones, red/green LEDs and the blue LED, plus fault branches that can interrupt at any point*
 
@@ -478,7 +478,7 @@ Start with the complete lifecycle from power-up to landing — every phase tells
 
 The 14 patterns fall into five groups by purpose: status announcements (single), calibration confirmation (multi-beep), takeoff (repeated), waiting prompts (looping), alarms (looping). Every rhythm below matches the real state-machine parameters in `hardware.ino`:
 
-![Buzzer rhythm charts](docs/fig/fig13_buzzer.svg)
+![Buzzer rhythm charts](Docs/fig/fig13_buzzer.svg)
 
 *Fig. 9-2　Rhythm charts for the 14 patterns: solid blocks are "buzzer on", the x-axis is milliseconds; the right column is the trigger scenario*
 
@@ -503,7 +503,7 @@ The 14 patterns fall into five groups by purpose: status announcements (single),
 
 ### 9.3 The Tri-Color LED Language
 
-![Tri-color LED language](docs/fig/fig14_led.svg)
+![Tri-color LED language](Docs/fig/fig14_led.svg)
 
 *Fig. 9-3　The LED language: 5 red/green modes, 3 blue states and 3 voltage-alarm overrides, as brightness-vs-time curves*
 
@@ -542,7 +542,7 @@ The red/green LEDs are driven by `g_led_mode` (LEDC channels 4/5, fully isolated
 
 ## 10. Hardware & Pinout
 
-![Pinout and wiring](docs/fig/fig09_pins.svg)
+![Pinout and wiring](Docs/fig/fig09_pins.svg)
 
 *Fig. 10-1　Board selection, the complete pin table for the default board, reserved expansion headers and voltage thresholds*
 
