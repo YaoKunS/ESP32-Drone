@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 620" width="1040" height="620" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+  <defs>
+    <marker id="b" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#334155"/>
+    </marker>
+    <marker id="bc" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#2563eb"/>
+    </marker>
+    <marker id="bg" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#16a34a"/>
+    </marker>
+  </defs>
+  <rect width="1040" height="620" fill="#ffffff"/>
+
+  <text x="20" y="28" font-size="15" font-weight="bold" fill="#0f172a">串级双环控制链路（以横滚 Roll 为例，俯仰同构；偏航仅单环）</text>
+
+  <!-- 遥控输入 -->
+  <rect x="20" y="60" width="130" height="70" rx="8" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="85" y="84" font-size="12" font-weight="bold" fill="#1e40af" text-anchor="middle">遥控摇杆</text>
+  <text x="85" y="103" font-size="11" fill="#334155" text-anchor="middle">roll ∈ [−1, 1]</text>
+  <text x="85" y="121" font-size="10" fill="#64748b" text-anchor="middle">Web 20 Hz 上行</text>
+
+  <path d="M150,95 L196,95" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#bc)"/>
+
+  <!-- 设定值换算 -->
+  <rect x="198" y="60" width="150" height="70" rx="8" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="273" y="82" font-size="12" font-weight="bold" fill="#1e40af" text-anchor="middle">角度设定值换算</text>
+  <text x="273" y="101" font-size="11" fill="#334155" text-anchor="middle">sp = roll × max_angle</text>
+  <text x="273" y="120" font-size="10" fill="#64748b" text-anchor="middle">默认 max_angle = 30°</text>
+
+  <path d="M348,95 L392,95" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#bc)"/>
+
+  <!-- 外环 PID -->
+  <rect x="394" y="46" width="180" height="98" rx="9" fill="#fefce8" stroke="#ca8a04" stroke-width="1.8"/>
+  <text x="484" y="70" font-size="13" font-weight="bold" fill="#a16207" text-anchor="middle">外环　角度 PID</text>
+  <text x="484" y="90" font-size="11" fill="#334155" text-anchor="middle">g_roll_angle_pid</text>
+  <text x="484" y="108" font-size="11" fill="#334155" text-anchor="middle">Kp 2.0　Ki 0.001　Kd 0</text>
+  <text x="484" y="126" font-size="10.5" fill="#64748b" text-anchor="middle">输出限幅 ±250 °/s</text>
+  <text x="484" y="141" font-size="10" fill="#7c3aed">误差 = 设定角 − 实测角</text>
+
+  <path d="M574,95 L618,95" stroke="#334155" stroke-width="2" fill="none" marker-end="url(#b)"/>
+  <text x="596" y="86" font-size="10.5" fill="#475569" text-anchor="middle">期望角速度</text>
+
+  <!-- 内环 PID -->
+  <rect x="620" y="46" width="180" height="98" rx="9" fill="#fefce8" stroke="#ca8a04" stroke-width="1.8"/>
+  <text x="710" y="70" font-size="13" font-weight="bold" fill="#a16207" text-anchor="middle">内环　角速率 PID</text>
+  <text x="710" y="90" font-size="11" fill="#334155" text-anchor="middle">g_roll_rate_pid</text>
+  <text x="710" y="108" font-size="11" fill="#334155" text-anchor="middle">Kp 0.025　Ki 0　Kd 0.0002</text>
+  <text x="710" y="126" font-size="10.5" fill="#64748b" text-anchor="middle">输出限幅 ±0.5（归一化扭矩）</text>
+  <text x="710" y="141" font-size="10" fill="#7c3aed">误差 = 期望角速 − 实测角速</text>
+
+  <!-- 扭矩缩放 -->
+  <path d="M710,144 L710,180" stroke="#16a34a" stroke-width="2" fill="none" marker-end="url(#bg)"/>
+
+  <rect x="560" y="182" width="300" height="76" rx="9" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.8"/>
+  <text x="710" y="204" font-size="12.5" font-weight="bold" fill="#15803d" text-anchor="middle">扭矩缩放（低油门操控性补偿）</text>
+  <text x="710" y="224" font-size="11.5" fill="#334155" text-anchor="middle">scale = clamp(0.20 + 2.0 × throttle, 0, 1)</text>
+  <text x="710" y="243" font-size="10.5" fill="#64748b" text-anchor="middle">低油门时避免控制量被电调线性区吃掉，保证悬停微调手感</text>
+
+  <path d="M560,220 L452,220" stroke="#16a34a" stroke-width="2" fill="none" marker-end="url(#bg)"/>
+  <text x="470" y="212" font-size="10.5" fill="#15803d" text-anchor="middle">扭矩指令</text>
+
+  <!-- 混控矩阵 -->
+  <rect x="20" y="300" width="840" height="180" rx="10" fill="#f8fafc" stroke="#334155" stroke-width="1.6"/>
+  <text x="36" y="324" font-size="13" font-weight="bold" fill="#0f172a">X 型混控矩阵（机头方向位于 M4 与 M1 之间）</text>
+
+  <text x="36" y="356" font-size="11.5" font-family="monospace" fill="#b91c1c">M0 左前 FL  = 油门 + 横滚 + 俯仰 − 偏航</text>
+  <text x="36" y="378" font-size="11.5" font-family="monospace" fill="#b91c1c">M1 右前 FR  = 油门 − 横滚 + 俯仰 + 偏航</text>
+  <text x="36" y="400" font-size="11.5" font-family="monospace" fill="#b91c1c">M2 右后 RR  = 油门 − 横滚 − 俯仰 − 偏航</text>
+  <text x="36" y="422" font-size="11.5" font-family="monospace" fill="#b91c1c">M3 左后 RL  = 油门 + 横滚 − 俯仰 + 偏航</text>
+
+  <text x="520" y="356" font-size="11" fill="#475569">X 型布局：四个电机分处机臂对角，</text>
+  <text x="520" y="376" font-size="11" fill="#475569">任意单电机故障仍保留剩余推力与部分控制力。</text>
+  <text x="520" y="402" font-size="11" fill="#475569">输出前统一 clamp 到 [0, 1]，避免负值反转电调。</text>
+  <text x="520" y="428" font-size="11" fill="#475569">遥控 yaw 是角速度指令（max_yaw_rate 默认 180°/s）。</text>
+
+  <path d="M700,460 L700,492" stroke="#334155" stroke-width="2" fill="none" marker-end="url(#b)"/>
+
+  <!-- 电机驱动 -->
+  <rect x="420" y="494" width="440" height="70" rx="9" fill="#fef2f2" stroke="#dc2626" stroke-width="1.8"/>
+  <text x="640" y="518" font-size="13" font-weight="bold" fill="#b91c1c" text-anchor="middle">LEDC 硬件 PWM 输出</text>
+  <text x="640" y="538" font-size="11.5" fill="#334155" text-anchor="middle">20 kHz　10-bit（0~1023）　通道 0~3　引脚按板型映射</text>
+  <text x="640" y="557" font-size="10.5" fill="#64748b" text-anchor="middle">20 kHz 超出人耳听觉范围，飞行中无可闻啸叫</text>
+
+  <!-- 反馈线 -->
+  <path d="M640,564 L640,586 L107,586 L107,120" stroke="#2563eb" stroke-width="1.8" fill="none" stroke-dasharray="6 4" marker-end="url(#bc)"/>
+  <text x="330" y="578" font-size="10.5" fill="#2563eb">反馈：IMU 实测 roll / gx 进入两个 PID 的误差计算</text>
+
+  <!-- 偏航通道 -->
+  <rect x="880" y="46" width="140" height="212" rx="9" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.6"/>
+  <text x="950" y="70" font-size="12" font-weight="bold" fill="#6d28d9" text-anchor="middle">偏航通道</text>
+  <text x="950" y="92" font-size="10.5" fill="#475569" text-anchor="middle">（单环设计）</text>
+  <text x="950" y="120" font-size="11" fill="#334155" text-anchor="middle">yaw ∈ [−1, 1]</text>
+  <text x="950" y="146" font-size="11" fill="#334155" text-anchor="middle">× max_yaw_rate</text>
+  <text x="950" y="172" font-size="11" fill="#334155" text-anchor="middle">→ yaw_rate_pid</text>
+  <text x="950" y="198" font-size="10.5" fill="#64748b" text-anchor="middle">Kp 0.03　Ki 0</text>
+  <text x="950" y="216" font-size="10.5" fill="#64748b" text-anchor="middle">Kd 0</text>
+  <text x="950" y="240" font-size="10.5" fill="#64748b" text-anchor="middle">输出限幅 ±0.3</text>
+  <path d="M950,258 L950,300" stroke="#7c3aed" stroke-width="1.8" fill="none" marker-end="url(#bc)"/>
+  <text x="950" y="330" font-size="10.5" fill="#6d28d9" text-anchor="middle">直接进混控矩阵</text>
+  <text x="950" y="350" font-size="10" fill="#94a3b8" text-anchor="middle">（无角度外环）</text>
+
+  <!-- 油门通道 -->
+  <rect x="20" y="170" width="130" height="80" rx="8" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="85" y="194" font-size="12" font-weight="bold" fill="#1e40af" text-anchor="middle">油门通道</text>
+  <text x="85" y="214" font-size="11" fill="#334155" text-anchor="middle">throttle ∈ [0,1]</text>
+  <text x="85" y="234" font-size="10.5" fill="#64748b" text-anchor="middle">不经过 PID</text>
+  <path d="M150,210 L520,210" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#bc)"/>
+  <text x="290" y="203" font-size="10.5" fill="#2563eb">直接叠加进混控基值</text>
+</svg>

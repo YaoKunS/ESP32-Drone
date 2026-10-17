@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 500" width="1000" height="500" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+  <defs>
+    <marker id="fa" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <path d="M0,0 L9,3.5 L0,7 z" fill="#64748b"/>
+    </marker>
+    <marker id="fr" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <path d="M0,0 L9,3.5 L0,7 z" fill="#dc2626"/>
+    </marker>
+  </defs>
+  <rect width="1000" height="500" fill="#ffffff"/>
+
+  <text x="24" y="30" font-size="15" font-weight="bold" fill="#0f172a">声光联动全流程：从上电到降落的每一步，飞机都在「说话」</text>
+  <text x="24" y="50" font-size="10.5" fill="#64748b">🔊 = 蜂鸣器　●红●绿 = 红绿灯　●蓝 = 蓝灯；音效均为非阻塞播放，不打断 500 Hz 控制循环</text>
+
+  <!-- ══ 第一行 ══ -->
+  <!-- 1 上电 -->
+  <rect x="24" y="66" width="227" height="150" rx="9" fill="#eff6ff" stroke="#2563eb" stroke-width="1.4"/>
+  <text x="38" y="90" font-size="12.5" font-weight="bold" fill="#1e40af">① 上电</text>
+  <text x="38" y="114" font-size="10.5" fill="#1e3a8a">🔊 上电提示 200 ms</text>
+  <circle cx="45" cy="133" r="5" fill="#ef4444"/><circle cx="58" cy="133" r="5" fill="#22c55e" fill-opacity="0.35"/>
+  <text x="70" y="137" font-size="10.5" fill="#1e3a8a">红绿交替 220 ms</text>
+  <circle cx="45" cy="155" r="5" fill="#3b82f6" fill-opacity="0.25"/>
+  <text x="70" y="159" font-size="10.5" fill="#1e3a8a">蓝灯灭（自检中）</text>
+  <text x="38" y="182" font-size="9" fill="#64748b">IMU 探测 → 电机自检 → 起热点</text>
+  <path d="M251,141 L275,141" stroke="#64748b" stroke-width="1.6" marker-end="url(#fa)"/>
+
+  <!-- 2 就绪 -->
+  <rect x="265" y="66" width="227" height="150" rx="9" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.4"/>
+  <text x="279" y="90" font-size="12.5" font-weight="bold" fill="#166534">② 系统就绪</text>
+  <text x="279" y="114" font-size="10.5" fill="#14532d">🔊 就绪音 100 ms</text>
+  <circle cx="286" cy="133" r="5" fill="#ef4444"/><circle cx="299" cy="133" r="5" fill="#22c55e"/>
+  <text x="311" y="137" font-size="10.5" fill="#14532d">红绿呼吸 1.4 s</text>
+  <circle cx="286" cy="155" r="5" fill="#3b82f6"/>
+  <text x="311" y="159" font-size="10.5" fill="#14532d">蓝灯慢闪 1 s</text>
+  <text x="279" y="182" font-size="9" fill="#64748b">呼吸灯 = 可以安全靠近、插拔电池</text>
+  <path d="M492,141 L516,141" stroke="#64748b" stroke-width="1.6" marker-end="url(#fa)"/>
+
+  <!-- 3 解锁等待 -->
+  <rect x="506" y="66" width="227" height="150" rx="9" fill="#fffbeb" stroke="#d97706" stroke-width="1.4"/>
+  <text x="520" y="90" font-size="12.5" font-weight="bold" fill="#92400e">③ 解锁等待（握 ARM 0.8 s）</text>
+  <text x="520" y="114" font-size="10.5" fill="#78350f">🔊 滴答声 200 ms 循环</text>
+  <circle cx="527" cy="133" r="5" fill="#ef4444"/><circle cx="540" cy="133" r="5" fill="#22c55e"/>
+  <text x="552" y="137" font-size="10.5" fill="#78350f">红绿慢闪 300 ms</text>
+  <circle cx="527" cy="155" r="5" fill="#3b82f6"/>
+  <text x="552" y="159" font-size="10.5" fill="#78350f">蓝灯慢闪</text>
+  <text x="520" y="182" font-size="9" fill="#64748b">声音催促 + 灯光同步 = 确认在等你</text>
+  <path d="M733,141 L757,141" stroke="#64748b" stroke-width="1.6" marker-end="url(#fa)"/>
+
+  <!-- 4 解锁成功 -->
+  <rect x="747" y="66" width="227" height="150" rx="9" fill="#fef2f2" stroke="#dc2626" stroke-width="1.6"/>
+  <text x="761" y="90" font-size="12.5" font-weight="bold" fill="#991b1b">④ 解锁成功（电机已带电！）</text>
+  <text x="761" y="114" font-size="10.5" fill="#7f1d1d">🔊 长鸣 400 ms</text>
+  <circle cx="768" cy="133" r="5" fill="#ef4444"/><circle cx="781" cy="133" r="5" fill="#22c55e"/>
+  <text x="793" y="137" font-size="10.5" fill="#7f1d1d">红绿常亮</text>
+  <circle cx="768" cy="155" r="5" fill="#3b82f6"/>
+  <text x="793" y="159" font-size="10.5" fill="#7f1d1d">蓝灯常亮（网页已连）</text>
+  <text x="761" y="182" font-size="9" fill="#64748b">此刻桨下无人 = 唯一安全窗口</text>
+  <path d="M860,216 L860,248" stroke="#64748b" stroke-width="1.6" marker-end="url(#fa)"/>
+
+  <!-- ══ 第二行（从右往左回流） ══ -->
+  <!-- 5 起飞 -->
+  <rect x="747" y="252" width="227" height="150" rx="9" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.4"/>
+  <text x="761" y="276" font-size="12.5" font-weight="bold" fill="#5b21b6">⑤ 首次推油门（离地）</text>
+  <text x="761" y="300" font-size="10.5" fill="#4c1d95">🔊 起飞音效 × 3 轮（1~10 可设）</text>
+  <circle cx="768" cy="319" r="5" fill="#ef4444"/><circle cx="781" cy="319" r="5" fill="#22c55e"/>
+  <text x="793" y="323" font-size="10.5" fill="#4c1d95">红绿常亮</text>
+  <circle cx="768" cy="341" r="5" fill="#3b82f6"/>
+  <text x="793" y="345" font-size="10.5" fill="#4c1d95">蓝灯快闪 200 ms</text>
+  <text x="761" y="368" font-size="9" fill="#64748b">快闪蓝灯 = 「我真的在飞」信号</text>
+  <path d="M747,327 L723,327" stroke="#64748b" stroke-width="1.6" marker-end="url(#fa)"/>
+
+  <!-- 6 飞行中电压告警 -->
+  <rect x="506" y="252" width="227" height="150" rx="9" fill="#fff1f2" stroke="#e11d48" stroke-width="1.4"/>
+  <text x="520" y="276" font-size="12.5" font-weight="bold" fill="#9f1239">⑥ 飞行中电压跌落</text>
+  <text x="520" y="300" font-size="10.5" fill="#881337">🔊 Ⅰ→Ⅱ→Ⅲ 节奏不断加快</text>
+  <circle cx="527" cy="319" r="5" fill="#ef4444"/><circle cx="540" cy="319" r="5" fill="#22c55e" fill-opacity="0.35"/><circle cx="553" cy="319" r="5" fill="#3b82f6" fill-opacity="0.35"/>
+  <text x="565" y="323" font-size="10.5" fill="#881337">蓝 → 绿 → 三色快闪</text>
+  <circle cx="527" cy="341" r="5" fill="#3b82f6"/>
+  <text x="552" y="345" font-size="10.5" fill="#881337">覆盖普通灯效</text>
+  <text x="520" y="368" font-size="9" fill="#64748b">3.70 / 3.50 / 3.30 V 三档递进</text>
+  <path d="M506,327 L482,327" stroke="#64748b" stroke-width="1.6" marker-end="url(#fa)"/>
+
+  <!-- 7 降落上锁 -->
+  <rect x="265" y="252" width="227" height="150" rx="9" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.4"/>
+  <text x="279" y="276" font-size="12.5" font-weight="bold" fill="#166534">⑦ 降落 · 关 ARM 上锁</text>
+  <text x="279" y="300" font-size="10.5" fill="#14532d">🔊 短鸣 100 ms 确认</text>
+  <circle cx="286" cy="319" r="5" fill="#ef4444"/><circle cx="299" cy="319" r="5" fill="#22c55e"/>
+  <text x="311" y="323" font-size="10.5" fill="#14532d">回到呼吸 1.4 s</text>
+  <circle cx="286" cy="341" r="5" fill="#3b82f6"/>
+  <text x="311" y="345" font-size="10.5" fill="#14532d">蓝灯慢闪（待机）</text>
+  <text x="279" y="368" font-size="9" fill="#64748b">听见短鸣 + 呼吸灯 = 可以伸手碰桨</text>
+  <path d="M265,327 L241,327" stroke="#64748b" stroke-width="1.6" marker-end="url(#fa)"/>
+
+  <!-- 8 静音与自定义 -->
+  <rect x="24" y="252" width="227" height="150" rx="9" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.4" stroke-dasharray="6 4"/>
+  <text x="38" y="276" font-size="12.5" font-weight="bold" fill="#334155">⑧ 你可以随时调它</text>
+  <text x="38" y="300" font-size="10.5" fill="#475569">🔊 全局静音（Web 复选框）</text>
+  <text x="38" y="322" font-size="10.5" fill="#475569">起飞音效轮数 1~10（滑条）</text>
+  <text x="38" y="344" font-size="10.5" fill="#475569">两项均存 NVS，断电不丢</text>
+  <text x="38" y="372" font-size="9" fill="#64748b">静音只拦发声，不打断状态机</text>
+
+  <!-- 故障分支 -->
+  <rect x="24" y="424" width="950" height="52" rx="9" fill="#fef2f2" stroke="#dc2626" stroke-width="1.6"/>
+  <text x="40" y="446" font-size="11.5" font-weight="bold" fill="#991b1b">⚠ 任意时刻发生故障（IMU 失效 / 遥控超时 / 姿态异常 / 倾斜过大 / PID 异常 / 收到 kill）：</text>
+  <text x="40" y="465" font-size="10.5" fill="#7f1d1d">🔊 切换为 160 ms 急促报警　●红●绿 同步 120 ms 快闪　·　紧急停止另有专用 KILL 音（100 + 50 + 100 ms）　·　报警停后自动恢复原灯效</text>
+</svg>

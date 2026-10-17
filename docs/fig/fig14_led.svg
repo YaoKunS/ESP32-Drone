@@ -1,0 +1,253 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 780" width="1000" height="780" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+<rect width="1000" height="780" fill="#ffffff"/>
+<text x="24" y="30" font-size="15" font-weight="bold" fill="#0f172a">三色灯语：红/绿 5 种模式 × 蓝灯 3 种状态 × 电压 3 级覆盖</text>
+<text x="24" y="50" font-size="10.5" fill="#64748b">纵轴为亮度（0~100%），横轴为时间；红绿走 LEDC PWM（通道 4/5），蓝灯走普通 GPIO，电机占通道 0~3 互不干扰</text>
+<rect x="16" y="68" width="968" height="34" rx="5" fill="#eef2ff"/>
+<text x="24" y="84" font-size="11.5" font-weight="bold" fill="#3730a3">A　红绿 LED（LedMode）</text>
+<text x="24" y="98" font-size="9.5" fill="#4f46e5">红色 LEDC 通道 4 / 绿色通道 5，8-bit PWM，高电平有效；波形为亮度示意</text>
+<text x="24" y="143" font-size="11" font-weight="bold" fill="#0f172a">LED_BOOT 启动中</text>
+<text x="24" y="158" font-size="9" fill="#64748b">红绿交替，周期 220 ms</text>
+<line x1="300" y1="150" x2="800" y2="150" stroke="#e2e8f0"/>
+<rect x="300.0" y="135.0" width="11.0" height="15.0" fill="#ef4444" fill-opacity="0.85"/>
+<rect x="322.0" y="135.0" width="11.0" height="15.0" fill="#ef4444" fill-opacity="0.85"/>
+<rect x="344.0" y="135.0" width="11.0" height="15.0" fill="#ef4444" fill-opacity="0.85"/>
+<rect x="366.0" y="135.0" width="11.0" height="15.0" fill="#ef4444" fill-opacity="0.85"/>
+<rect x="388.0" y="135.0" width="11.0" height="15.0" fill="#ef4444" fill-opacity="0.85"/>
+<rect x="410.0" y="135.0" width="11.0" height="15.0" fill="#ef4444" fill-opacity="0.85"/>
+<rect x="432.0" y="135.0" width="11.0" height="15.0" fill="#ef4444" fill-opacity="0.85"/>
+<rect x="454.0" y="135.0" width="11.0" height="15.0" fill="#ef4444" fill-opacity="0.85"/>
+<rect x="476.0" y="135.0" width="11.0" height="15.0" fill="#ef4444" fill-opacity="0.85"/>
+<rect x="498.0" y="135.0" width="11.0" height="15.0" fill="#ef4444" fill-opacity="0.85"/>
+<rect x="520.0" y="135.0" width="11.0" height="15.0" fill="#ef4444" fill-opacity="0.85"/>
+<rect x="542.0" y="135.0" width="11.0" height="15.0" fill="#ef4444" fill-opacity="0.85"/>
+<rect x="564.0" y="135.0" width="11.0" height="15.0" fill="#ef4444" fill-opacity="0.85"/>
+<rect x="586.0" y="135.0" width="11.0" height="15.0" fill="#ef4444" fill-opacity="0.85"/>
+<rect x="608.0" y="135.0" width="11.0" height="15.0" fill="#ef4444" fill-opacity="0.85"/>
+<rect x="630.0" y="135.0" width="11.0" height="15.0" fill="#ef4444" fill-opacity="0.85"/>
+<rect x="652.0" y="135.0" width="11.0" height="15.0" fill="#ef4444" fill-opacity="0.85"/>
+<rect x="674.0" y="135.0" width="11.0" height="15.0" fill="#ef4444" fill-opacity="0.85"/>
+<rect x="696.0" y="135.0" width="11.0" height="15.0" fill="#ef4444" fill-opacity="0.85"/>
+<rect x="718.0" y="135.0" width="11.0" height="15.0" fill="#ef4444" fill-opacity="0.85"/>
+<rect x="740.0" y="135.0" width="11.0" height="15.0" fill="#ef4444" fill-opacity="0.85"/>
+<rect x="762.0" y="135.0" width="11.0" height="15.0" fill="#ef4444" fill-opacity="0.85"/>
+<rect x="784.0" y="135.0" width="11.0" height="15.0" fill="#ef4444" fill-opacity="0.85"/>
+<rect x="322.0" y="150.0" width="22.0" height="5.0" fill="#22c55e" fill-opacity="0.85"/>
+<rect x="366.0" y="150.0" width="22.0" height="5.0" fill="#22c55e" fill-opacity="0.85"/>
+<rect x="410.0" y="150.0" width="22.0" height="5.0" fill="#22c55e" fill-opacity="0.85"/>
+<rect x="454.0" y="150.0" width="22.0" height="5.0" fill="#22c55e" fill-opacity="0.85"/>
+<rect x="498.0" y="150.0" width="22.0" height="5.0" fill="#22c55e" fill-opacity="0.85"/>
+<rect x="542.0" y="150.0" width="22.0" height="5.0" fill="#22c55e" fill-opacity="0.85"/>
+<rect x="586.0" y="150.0" width="22.0" height="5.0" fill="#22c55e" fill-opacity="0.85"/>
+<rect x="630.0" y="150.0" width="22.0" height="5.0" fill="#22c55e" fill-opacity="0.85"/>
+<rect x="674.0" y="150.0" width="22.0" height="5.0" fill="#22c55e" fill-opacity="0.85"/>
+<rect x="718.0" y="150.0" width="22.0" height="5.0" fill="#22c55e" fill-opacity="0.85"/>
+<rect x="762.0" y="150.0" width="22.0" height="5.0" fill="#22c55e" fill-opacity="0.85"/>
+<text x="812" y="148" font-size="9" fill="#64748b">系统初始化，尚未进入待机</text>
+<text x="24" y="191" font-size="11" font-weight="bold" fill="#0f172a">LED_DISARMED 待机</text>
+<text x="24" y="206" font-size="9" fill="#64748b">同步呼吸，周期 1.4 s（正弦）</text>
+<line x1="300" y1="198" x2="800" y2="198" stroke="#e2e8f0"/>
+<path d="M300.0,198.0 L306.2,196.9 L312.5,193.8 L318.8,189.7 L325.0,185.8 L331.2,183.4 L337.5,183.2 L343.8,185.2 L350.0,188.8 L356.2,193.0 L362.5,196.4 L368.8,198.0 L375.0,197.3 L381.2,194.5 L387.5,190.5 L393.8,186.5 L400.0,183.7 L406.2,183.0 L412.5,184.6 L418.8,188.0 L425.0,192.2 L431.2,195.8 L437.5,197.8 L443.8,197.6 L450.0,195.2 L456.2,191.3 L462.5,187.2 L468.8,184.1 L475.0,183.0 L481.2,184.1 L487.5,187.2 L493.8,191.3 L500.0,195.2 L506.2,197.6 L512.5,197.8 L518.8,195.8 L525.0,192.2 L531.2,188.0 L537.5,184.6 L543.8,183.0 L550.0,183.7 L556.2,186.5 L562.5,190.5 L568.8,194.5 L575.0,197.3 L581.2,198.0 L587.5,196.4 L593.8,193.0 L600.0,188.8 L606.2,185.2 L612.5,183.2 L618.8,183.4 L625.0,185.8 L631.2,189.7 L637.5,193.8 L643.8,196.9 L650.0,198.0 L656.2,196.9 L662.5,193.8 L668.8,189.7 L675.0,185.8 L681.2,183.4 L687.5,183.2 L693.8,185.2 L700.0,188.8 L706.2,193.0 L712.5,196.4 L718.8,198.0 L725.0,197.3 L731.2,194.5 L737.5,190.5 L743.8,186.5 L750.0,183.7 L756.2,183.0 L762.5,184.6 L768.8,188.0 L775.0,192.2 L781.2,195.8 L787.5,197.8 L793.8,197.6 L800.0,195.2" stroke="#ef4444" stroke-width="2.4" fill="none"/>
+<path d="M300.0,203.0 L306.2,202.6 L312.5,201.6 L318.8,200.2 L325.0,198.9 L331.2,198.1 L337.5,198.1 L343.8,198.7 L350.0,199.9 L356.2,201.3 L362.5,202.5 L368.8,203.0 L375.0,202.8 L381.2,201.8 L387.5,200.5 L393.8,199.2 L400.0,198.2 L406.2,198.0 L412.5,198.5 L418.8,199.7 L425.0,201.1 L431.2,202.3 L437.5,202.9 L443.8,202.9 L450.0,202.1 L456.2,200.8 L462.5,199.4 L468.8,198.4 L475.0,198.0 L481.2,198.4 L487.5,199.4 L493.8,200.8 L500.0,202.1 L506.2,202.9 L512.5,202.9 L518.8,202.3 L525.0,201.1 L531.2,199.7 L537.5,198.5 L543.8,198.0 L550.0,198.2 L556.2,199.2 L562.5,200.5 L568.8,201.8 L575.0,202.8 L581.2,203.0 L587.5,202.5 L593.8,201.3 L600.0,199.9 L606.2,198.7 L612.5,198.1 L618.8,198.1 L625.0,198.9 L631.2,200.2 L637.5,201.6 L643.8,202.6 L650.0,203.0 L656.2,202.6 L662.5,201.6 L668.8,200.2 L675.0,198.9 L681.2,198.1 L687.5,198.1 L693.8,198.7 L700.0,199.9 L706.2,201.3 L712.5,202.5 L718.8,203.0 L725.0,202.8 L731.2,201.8 L737.5,200.5 L743.8,199.2 L750.0,198.2 L756.2,198.0 L762.5,198.5 L768.8,199.7 L775.0,201.1 L781.2,202.3 L787.5,202.9 L793.8,202.9 L800.0,202.1" stroke="#22c55e" stroke-width="2.4" fill="none"/>
+<text x="812" y="196" font-size="9" fill="#64748b">已上锁，等待解锁（默认态）</text>
+<text x="24" y="239" font-size="11" font-weight="bold" fill="#0f172a">LED_ARMING 解锁等待</text>
+<text x="24" y="254" font-size="9" fill="#64748b">同步慢闪，周期 300 ms</text>
+<line x1="300" y1="246" x2="800" y2="246" stroke="#e2e8f0"/>
+<rect x="300.0" y="231.0" width="75.0" height="15.0" fill="#ef4444" fill-opacity="0.85"/>
+<rect x="450.0" y="231.0" width="75.0" height="15.0" fill="#ef4444" fill-opacity="0.85"/>
+<rect x="600.0" y="231.0" width="75.0" height="15.0" fill="#ef4444" fill-opacity="0.85"/>
+<rect x="750.0" y="231.0" width="50.0" height="15.0" fill="#ef4444" fill-opacity="0.85"/>
+<rect x="300.0" y="246.0" width="75.0" height="5.0" fill="#22c55e" fill-opacity="0.85"/>
+<rect x="450.0" y="246.0" width="75.0" height="5.0" fill="#22c55e" fill-opacity="0.85"/>
+<rect x="600.0" y="246.0" width="75.0" height="5.0" fill="#22c55e" fill-opacity="0.85"/>
+<rect x="750.0" y="246.0" width="50.0" height="5.0" fill="#22c55e" fill-opacity="0.85"/>
+<text x="812" y="244" font-size="9" fill="#64748b">握住 ARM 开关，配合滴答声</text>
+<text x="24" y="287" font-size="11" font-weight="bold" fill="#0f172a">LED_ARMED 已解锁</text>
+<text x="24" y="302" font-size="9" fill="#64748b">红绿常亮 100%</text>
+<line x1="300" y1="294" x2="800" y2="294" stroke="#e2e8f0"/>
+<rect x="300" y="279" width="500" height="15" fill="#ef4444" fill-opacity="0.85"/>
+<rect x="300" y="294" width="500" height="5" fill="#22c55e" fill-opacity="0.85"/>
+<text x="812" y="292" font-size="9" fill="#64748b">可以起飞</text>
+<text x="24" y="335" font-size="11" font-weight="bold" fill="#0f172a">LED_FAILSAFE 故障</text>
+<text x="24" y="350" font-size="9" fill="#64748b">同步快闪，周期 120 ms</text>
+<line x1="300" y1="342" x2="800" y2="342" stroke="#e2e8f0"/>
+<rect x="300.0" y="327.0" width="30.0" height="15.0" fill="#ef4444" fill-opacity="0.85"/>
+<rect x="360.0" y="327.0" width="30.0" height="15.0" fill="#ef4444" fill-opacity="0.85"/>
+<rect x="420.0" y="327.0" width="30.0" height="15.0" fill="#ef4444" fill-opacity="0.85"/>
+<rect x="480.0" y="327.0" width="30.0" height="15.0" fill="#ef4444" fill-opacity="0.85"/>
+<rect x="540.0" y="327.0" width="30.0" height="15.0" fill="#ef4444" fill-opacity="0.85"/>
+<rect x="600.0" y="327.0" width="30.0" height="15.0" fill="#ef4444" fill-opacity="0.85"/>
+<rect x="660.0" y="327.0" width="30.0" height="15.0" fill="#ef4444" fill-opacity="0.85"/>
+<rect x="720.0" y="327.0" width="30.0" height="15.0" fill="#ef4444" fill-opacity="0.85"/>
+<rect x="780.0" y="327.0" width="20.0" height="15.0" fill="#ef4444" fill-opacity="0.85"/>
+<rect x="300.0" y="342.0" width="30.0" height="5.0" fill="#22c55e" fill-opacity="0.85"/>
+<rect x="360.0" y="342.0" width="30.0" height="5.0" fill="#22c55e" fill-opacity="0.85"/>
+<rect x="420.0" y="342.0" width="30.0" height="5.0" fill="#22c55e" fill-opacity="0.85"/>
+<rect x="480.0" y="342.0" width="30.0" height="5.0" fill="#22c55e" fill-opacity="0.85"/>
+<rect x="540.0" y="342.0" width="30.0" height="5.0" fill="#22c55e" fill-opacity="0.85"/>
+<rect x="600.0" y="342.0" width="30.0" height="5.0" fill="#22c55e" fill-opacity="0.85"/>
+<rect x="660.0" y="342.0" width="30.0" height="5.0" fill="#22c55e" fill-opacity="0.85"/>
+<rect x="720.0" y="342.0" width="30.0" height="5.0" fill="#22c55e" fill-opacity="0.85"/>
+<rect x="780.0" y="342.0" width="20.0" height="5.0" fill="#22c55e" fill-opacity="0.85"/>
+<text x="812" y="340" font-size="9" fill="#64748b">任一故障源触发，配合急促报警</text>
+<rect x="16" y="358" width="968" height="34" rx="5" fill="#eef2ff"/>
+<text x="24" y="374" font-size="11.5" font-weight="bold" fill="#3730a3">B　蓝色 LED（独立 GPIO）</text>
+<text x="24" y="388" font-size="9.5" fill="#4f46e5">与红绿灯完全不同源：它表示「遥控链路 + 是否真的在飞」，50 ms 刷新一次</text>
+<text x="24" y="433" font-size="11" font-weight="bold" fill="#0f172a">慢闪 · 待机</text>
+<text x="24" y="448" font-size="9" fill="#64748b">周期 1 s（亮 500 / 灭 500）</text>
+<line x1="300" y1="440" x2="800" y2="440" stroke="#e2e8f0"/>
+<rect x="300.0" y="425.0" width="25.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="350.0" y="425.0" width="25.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="400.0" y="425.0" width="25.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="450.0" y="425.0" width="25.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="500.0" y="425.0" width="25.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="550.0" y="425.0" width="25.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="600.0" y="425.0" width="25.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="650.0" y="425.0" width="25.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="700.0" y="425.0" width="25.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="750.0" y="425.0" width="25.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<text x="812" y="438" font-size="9" fill="#64748b">无网页连接，也没解锁</text>
+<text x="24" y="479" font-size="11" font-weight="bold" fill="#0f172a">常亮 · 已连接</text>
+<text x="24" y="494" font-size="9" fill="#64748b">持续 100%</text>
+<line x1="300" y1="486" x2="800" y2="486" stroke="#e2e8f0"/>
+<rect x="300" y="471" width="500" height="15" fill="#3b82f6" fill-opacity="0.85"/>
+<text x="812" y="484" font-size="9" fill="#64748b">WebSocket 已连上（网页已打开）</text>
+<text x="24" y="525" font-size="11" font-weight="bold" fill="#0f172a">快闪 · 飞行中</text>
+<text x="24" y="540" font-size="9" fill="#64748b">周期 200 ms（亮 100 / 灭 100）</text>
+<line x1="300" y1="532" x2="800" y2="532" stroke="#e2e8f0"/>
+<rect x="300.0" y="517.0" width="5.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="310.0" y="517.0" width="5.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="320.0" y="517.0" width="5.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="330.0" y="517.0" width="5.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="340.0" y="517.0" width="5.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="350.0" y="517.0" width="5.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="360.0" y="517.0" width="5.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="370.0" y="517.0" width="5.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="380.0" y="517.0" width="5.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="390.0" y="517.0" width="5.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="400.0" y="517.0" width="5.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="410.0" y="517.0" width="5.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="420.0" y="517.0" width="5.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="430.0" y="517.0" width="5.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="440.0" y="517.0" width="5.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="450.0" y="517.0" width="5.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="460.0" y="517.0" width="5.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="470.0" y="517.0" width="5.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="480.0" y="517.0" width="5.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="490.0" y="517.0" width="5.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="500.0" y="517.0" width="5.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="510.0" y="517.0" width="5.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="520.0" y="517.0" width="5.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="530.0" y="517.0" width="5.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="540.0" y="517.0" width="5.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="550.0" y="517.0" width="5.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="560.0" y="517.0" width="5.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="570.0" y="517.0" width="5.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="580.0" y="517.0" width="5.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="590.0" y="517.0" width="5.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="600.0" y="517.0" width="5.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="610.0" y="517.0" width="5.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="620.0" y="517.0" width="5.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="630.0" y="517.0" width="5.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="640.0" y="517.0" width="5.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="650.0" y="517.0" width="5.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="660.0" y="517.0" width="5.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="670.0" y="517.0" width="5.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="680.0" y="517.0" width="5.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="690.0" y="517.0" width="5.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="700.0" y="517.0" width="5.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="710.0" y="517.0" width="5.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="720.0" y="517.0" width="5.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="730.0" y="517.0" width="5.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="740.0" y="517.0" width="5.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="750.0" y="517.0" width="5.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="760.0" y="517.0" width="5.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="770.0" y="517.0" width="5.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="780.0" y="517.0" width="5.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="790.0" y="517.0" width="5.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<text x="812" y="530" font-size="9" fill="#64748b">已解锁且油门 &gt; 5%</text>
+<rect x="16" y="546" width="968" height="34" rx="5" fill="#eef2ff"/>
+<text x="24" y="562" font-size="11.5" font-weight="bold" fill="#3730a3">C　电压告警（覆盖优先级最高）</text>
+<text x="24" y="576" font-size="9.5" fill="#4f46e5">applyVoltageLed() 在状态灯之后执行，直接改写三色灯，任何时候都压过 A / B</text>
+<text x="24" y="621" font-size="11" font-weight="bold" fill="#0f172a">Ⅰ 级　&lt; 3.70 V</text>
+<text x="24" y="636" font-size="9" fill="#64748b">蓝色慢闪 1 s</text>
+<line x1="300" y1="628" x2="800" y2="628" stroke="#e2e8f0"/>
+<rect x="300.0" y="613.0" width="30.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="360.0" y="613.0" width="30.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="420.0" y="613.0" width="30.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="480.0" y="613.0" width="30.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="540.0" y="613.0" width="30.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="600.0" y="613.0" width="30.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="660.0" y="613.0" width="30.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="720.0" y="613.0" width="30.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="780.0" y="613.0" width="20.0" height="15.0" fill="#3b82f6" fill-opacity="0.85"/>
+<text x="812" y="626" font-size="9" fill="#64748b">电池开始偏低，提醒准备降落</text>
+<text x="24" y="667" font-size="11" font-weight="bold" fill="#0f172a">Ⅱ 级　&lt; 3.50 V</text>
+<text x="24" y="682" font-size="9" fill="#64748b">绿色慢闪 1 s</text>
+<line x1="300" y1="674" x2="800" y2="674" stroke="#e2e8f0"/>
+<rect x="300.0" y="659.0" width="30.0" height="15.0" fill="#22c55e" fill-opacity="0.85"/>
+<rect x="360.0" y="659.0" width="30.0" height="15.0" fill="#22c55e" fill-opacity="0.85"/>
+<rect x="420.0" y="659.0" width="30.0" height="15.0" fill="#22c55e" fill-opacity="0.85"/>
+<rect x="480.0" y="659.0" width="30.0" height="15.0" fill="#22c55e" fill-opacity="0.85"/>
+<rect x="540.0" y="659.0" width="30.0" height="15.0" fill="#22c55e" fill-opacity="0.85"/>
+<rect x="600.0" y="659.0" width="30.0" height="15.0" fill="#22c55e" fill-opacity="0.85"/>
+<rect x="660.0" y="659.0" width="30.0" height="15.0" fill="#22c55e" fill-opacity="0.85"/>
+<rect x="720.0" y="659.0" width="30.0" height="15.0" fill="#22c55e" fill-opacity="0.85"/>
+<rect x="780.0" y="659.0" width="20.0" height="15.0" fill="#22c55e" fill-opacity="0.85"/>
+<text x="812" y="672" font-size="9" fill="#64748b">明显衰减，尽快落地</text>
+<text x="24" y="713" font-size="11" font-weight="bold" fill="#0f172a">Ⅲ 级　&lt; 3.30 V</text>
+<text x="24" y="728" font-size="9" fill="#64748b">红 + 绿 + 蓝 三色快闪 500 ms</text>
+<line x1="300" y1="720" x2="800" y2="720" stroke="#e2e8f0"/>
+<rect x="300.0" y="705.0" width="15.0" height="15.0" fill="#ef4444" fill-opacity="0.85"/>
+<rect x="330.0" y="705.0" width="15.0" height="15.0" fill="#ef4444" fill-opacity="0.85"/>
+<rect x="360.0" y="705.0" width="15.0" height="15.0" fill="#ef4444" fill-opacity="0.85"/>
+<rect x="390.0" y="705.0" width="15.0" height="15.0" fill="#ef4444" fill-opacity="0.85"/>
+<rect x="420.0" y="705.0" width="15.0" height="15.0" fill="#ef4444" fill-opacity="0.85"/>
+<rect x="450.0" y="705.0" width="15.0" height="15.0" fill="#ef4444" fill-opacity="0.85"/>
+<rect x="480.0" y="705.0" width="15.0" height="15.0" fill="#ef4444" fill-opacity="0.85"/>
+<rect x="510.0" y="705.0" width="15.0" height="15.0" fill="#ef4444" fill-opacity="0.85"/>
+<rect x="540.0" y="705.0" width="15.0" height="15.0" fill="#ef4444" fill-opacity="0.85"/>
+<rect x="570.0" y="705.0" width="15.0" height="15.0" fill="#ef4444" fill-opacity="0.85"/>
+<rect x="600.0" y="705.0" width="15.0" height="15.0" fill="#ef4444" fill-opacity="0.85"/>
+<rect x="630.0" y="705.0" width="15.0" height="15.0" fill="#ef4444" fill-opacity="0.85"/>
+<rect x="660.0" y="705.0" width="15.0" height="15.0" fill="#ef4444" fill-opacity="0.85"/>
+<rect x="690.0" y="705.0" width="15.0" height="15.0" fill="#ef4444" fill-opacity="0.85"/>
+<rect x="720.0" y="705.0" width="15.0" height="15.0" fill="#ef4444" fill-opacity="0.85"/>
+<rect x="750.0" y="705.0" width="15.0" height="15.0" fill="#ef4444" fill-opacity="0.85"/>
+<rect x="780.0" y="705.0" width="15.0" height="15.0" fill="#ef4444" fill-opacity="0.85"/>
+<rect x="300.0" y="719.0" width="15.0" height="5.0" fill="#22c55e" fill-opacity="0.85"/>
+<rect x="330.0" y="719.0" width="15.0" height="5.0" fill="#22c55e" fill-opacity="0.85"/>
+<rect x="360.0" y="719.0" width="15.0" height="5.0" fill="#22c55e" fill-opacity="0.85"/>
+<rect x="390.0" y="719.0" width="15.0" height="5.0" fill="#22c55e" fill-opacity="0.85"/>
+<rect x="420.0" y="719.0" width="15.0" height="5.0" fill="#22c55e" fill-opacity="0.85"/>
+<rect x="450.0" y="719.0" width="15.0" height="5.0" fill="#22c55e" fill-opacity="0.85"/>
+<rect x="480.0" y="719.0" width="15.0" height="5.0" fill="#22c55e" fill-opacity="0.85"/>
+<rect x="510.0" y="719.0" width="15.0" height="5.0" fill="#22c55e" fill-opacity="0.85"/>
+<rect x="540.0" y="719.0" width="15.0" height="5.0" fill="#22c55e" fill-opacity="0.85"/>
+<rect x="570.0" y="719.0" width="15.0" height="5.0" fill="#22c55e" fill-opacity="0.85"/>
+<rect x="600.0" y="719.0" width="15.0" height="5.0" fill="#22c55e" fill-opacity="0.85"/>
+<rect x="630.0" y="719.0" width="15.0" height="5.0" fill="#22c55e" fill-opacity="0.85"/>
+<rect x="660.0" y="719.0" width="15.0" height="5.0" fill="#22c55e" fill-opacity="0.85"/>
+<rect x="690.0" y="719.0" width="15.0" height="5.0" fill="#22c55e" fill-opacity="0.85"/>
+<rect x="720.0" y="719.0" width="15.0" height="5.0" fill="#22c55e" fill-opacity="0.85"/>
+<rect x="750.0" y="719.0" width="15.0" height="5.0" fill="#22c55e" fill-opacity="0.85"/>
+<rect x="780.0" y="719.0" width="15.0" height="5.0" fill="#22c55e" fill-opacity="0.85"/>
+<rect x="300.0" y="725.0" width="15.0" height="4.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="330.0" y="725.0" width="15.0" height="4.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="360.0" y="725.0" width="15.0" height="4.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="390.0" y="725.0" width="15.0" height="4.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="420.0" y="725.0" width="15.0" height="4.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="450.0" y="725.0" width="15.0" height="4.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="480.0" y="725.0" width="15.0" height="4.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="510.0" y="725.0" width="15.0" height="4.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="540.0" y="725.0" width="15.0" height="4.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="570.0" y="725.0" width="15.0" height="4.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="600.0" y="725.0" width="15.0" height="4.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="630.0" y="725.0" width="15.0" height="4.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="660.0" y="725.0" width="15.0" height="4.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="690.0" y="725.0" width="15.0" height="4.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="720.0" y="725.0" width="15.0" height="4.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="750.0" y="725.0" width="15.0" height="4.0" fill="#3b82f6" fill-opacity="0.85"/>
+<rect x="780.0" y="725.0" width="15.0" height="4.0" fill="#3b82f6" fill-opacity="0.85"/>
+<text x="812" y="718" font-size="9" fill="#64748b">濒临过放，立即降落</text>
+<text x="24" y="754" font-size="9" fill="#64748b">提示：S3mini 系列 PCB 通常只焊了蓝色 LED，红绿引脚仍定义但灯珠未贴 —— 看红绿前先确认自己板子上有没有这两颗灯</text>
+</svg>

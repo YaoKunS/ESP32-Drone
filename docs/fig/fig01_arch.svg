@@ -1,0 +1,129 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 640" width="1000" height="640" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+  <defs>
+    <marker id="ar1" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#94a3b8"/>
+    </marker>
+    <marker id="ar2" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#2563eb"/>
+    </marker>
+    <marker id="ar3" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#dc2626"/>
+    </marker>
+  </defs>
+  <rect width="1000" height="640" fill="#ffffff"/>
+
+  <!-- L1 表现层 -->
+  <rect x="30" y="20" width="940" height="86" rx="10" fill="#eff6ff" stroke="#2563eb" stroke-width="1.6"/>
+  <text x="46" y="42" font-size="14" font-weight="bold" fill="#1e40af">L1　表现层 / 通信层</text>
+  <rect x="46" y="52" width="200" height="42" rx="7" fill="#ffffff" stroke="#93c5fd"/>
+  <text x="146" y="70" font-size="12.5" font-weight="bold" fill="#1e3a8a" text-anchor="middle">Web 遥控界面</text>
+  <text x="146" y="87" font-size="10.5" fill="#475569" text-anchor="middle">drone_web_ui.h（内嵌于 Flash）</text>
+
+  <rect x="262" y="52" width="196" height="42" rx="7" fill="#ffffff" stroke="#93c5fd"/>
+  <text x="360" y="70" font-size="12.5" font-weight="bold" fill="#1e3a8a" text-anchor="middle">WebSocket JSON 协议</text>
+  <text x="360" y="87" font-size="10.5" fill="#475569" text-anchor="middle">rc.ino　onWsEvent / handleWsText</text>
+
+  <rect x="474" y="52" width="196" height="42" rx="7" fill="#ffffff" stroke="#93c5fd"/>
+  <text x="572" y="70" font-size="12.5" font-weight="bold" fill="#1e3a8a" text-anchor="middle">遥测下行</text>
+  <text x="572" y="87" font-size="10.5" fill="#475569" text-anchor="middle">telemetry.ino　20 Hz JSON</text>
+
+  <rect x="686" y="52" width="266" height="42" rx="7" fill="#ffffff" stroke="#93c5fd"/>
+  <text x="819" y="70" font-size="12.5" font-weight="bold" fill="#1e3a8a" text-anchor="middle">WiFi SoftAP（192.168.4.1）</text>
+  <text x="819" y="87" font-size="10.5" fill="#475569" text-anchor="middle">ESPAsyncWebServer + AsyncTCP</text>
+
+  <!-- L2 决策层 -->
+  <rect x="30" y="130" width="940" height="100" rx="10" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.6"/>
+  <text x="46" y="152" font-size="14" font-weight="bold" fill="#15803d">L2　决策层 / 安全层</text>
+  <rect x="46" y="164" width="278" height="54" rx="7" fill="#ffffff" stroke="#86efac"/>
+  <text x="185" y="184" font-size="12.5" font-weight="bold" fill="#14532d" text-anchor="middle">解锁状态机 + 故障保护</text>
+  <text x="185" y="201" font-size="10.5" fill="#475569" text-anchor="middle">failsafe.ino　canArm / updateArmingState</text>
+  <text x="185" y="214" font-size="10.5" fill="#475569" text-anchor="middle">disarmNow / requestKill（8 种故障原因）</text>
+
+  <rect x="340" y="164" width="278" height="54" rx="7" fill="#ffffff" stroke="#86efac"/>
+  <text x="479" y="184" font-size="12.5" font-weight="bold" fill="#14532d" text-anchor="middle">控制主循环 controlStep()</text>
+  <text x="479" y="201" font-size="10.5" fill="#475569" text-anchor="middle">500 Hz 定周期调度（kLoopPeriodUs=2000）</text>
+  <text x="479" y="214" font-size="10.5" fill="#475569" text-anchor="middle">优先级：KILL &gt; 电机测试 &gt; dt 校验 &gt; IMU</text>
+
+  <rect x="634" y="164" width="318" height="54" rx="7" fill="#ffffff" stroke="#86efac"/>
+  <text x="793" y="184" font-size="12.5" font-weight="bold" fill="#14532d" text-anchor="middle">PID 控制与混控</text>
+  <text x="793" y="201" font-size="10.5" fill="#475569" text-anchor="middle">control.ino　5 路串级 PID + X 型混控 + 扭矩缩放</text>
+  <text x="793" y="214" font-size="10.5" fill="#475569" text-anchor="middle">drone_pid.h　位置式 PID + 积分抗饱和</text>
+
+  <!-- L3 感知层 -->
+  <rect x="30" y="254" width="940" height="100" rx="10" fill="#fefce8" stroke="#ca8a04" stroke-width="1.6"/>
+  <text x="46" y="276" font-size="14" font-weight="bold" fill="#a16207">L3　感知层 / 估计层</text>
+  <rect x="46" y="288" width="278" height="54" rx="7" fill="#ffffff" stroke="#fde047"/>
+  <text x="185" y="308" font-size="12.5" font-weight="bold" fill="#854d0e" text-anchor="middle">IMU 驱动（自动识别）</text>
+  <text x="185" y="325" font-size="10.5" fill="#475569" text-anchor="middle">MPU6050 / I2C @400kHz　MPU6500 / SPI</text>
+  <text x="185" y="338" font-size="10.5" fill="#475569" text-anchor="middle">±8 g　±2000 °/s　软件轴重映射</text>
+
+  <rect x="340" y="288" width="278" height="54" rx="7" fill="#ffffff" stroke="#fde047"/>
+  <text x="479" y="308" font-size="12.5" font-weight="bold" fill="#854d0e" text-anchor="middle">姿态解算（三选一）</text>
+  <text x="479" y="325" font-size="10.5" fill="#475569" text-anchor="middle">Madgwick 梯度下降 / Mahony PI 修正</text>
+  <text x="479" y="338" font-size="10.5" fill="#475569" text-anchor="middle">互补滤波　→　欧拉角（度）</text>
+
+  <rect x="634" y="288" width="318" height="54" rx="7" fill="#ffffff" stroke="#fde047"/>
+  <text x="793" y="308" font-size="12.5" font-weight="bold" fill="#854d0e" text-anchor="middle">加速度计信任度 + 静止检测</text>
+  <text x="793" y="325" font-size="10.5" fill="#475569" text-anchor="middle">acc_trust 依据 |a|−1g 偏差自适应调参</text>
+  <text x="793" y="338" font-size="10.5" fill="#475569" text-anchor="middle">静止 400 ms → 自动水平校准</text>
+
+  <!-- L4 驱动层 -->
+  <rect x="30" y="378" width="940" height="100" rx="10" fill="#fef2f2" stroke="#dc2626" stroke-width="1.6"/>
+  <text x="46" y="400" font-size="14" font-weight="bold" fill="#b91c1c">L4　硬件驱动层</text>
+  <rect x="46" y="412" width="200" height="54" rx="7" fill="#ffffff" stroke="#fca5a5"/>
+  <text x="146" y="432" font-size="12.5" font-weight="bold" fill="#7f1d1d" text-anchor="middle">电机　LEDC PWM</text>
+  <text x="146" y="449" font-size="10.5" fill="#475569" text-anchor="middle">20 kHz / 10-bit / ch0~3</text>
+  <text x="146" y="462" font-size="10.5" fill="#475569" text-anchor="middle">hardware.ino</text>
+
+  <rect x="262" y="412" width="200" height="54" rx="7" fill="#ffffff" stroke="#fca5a5"/>
+  <text x="362" y="432" font-size="12.5" font-weight="bold" fill="#7f1d1d" text-anchor="middle">LED 状态灯　红/绿/蓝</text>
+  <text x="362" y="449" font-size="10.5" fill="#475569" text-anchor="middle">PWM ch4/5 + GPIO，蓝灯三级态</text>
+  <text x="362" y="462" font-size="10.5" fill="#475569" text-anchor="middle">drone_led.h</text>
+
+  <rect x="478" y="412" width="200" height="54" rx="7" fill="#ffffff" stroke="#fca5a5"/>
+  <text x="578" y="432" font-size="12.5" font-weight="bold" fill="#7f1d1d" text-anchor="middle">蜂鸣器状态机</text>
+  <text x="578" y="449" font-size="10.5" fill="#475569" text-anchor="middle">14 种音效，非阻塞播放</text>
+  <text x="578" y="462" font-size="10.5" fill="#475569" text-anchor="middle">drone_buzzer.h</text>
+
+  <rect x="694" y="412" width="258" height="54" rx="7" fill="#ffffff" stroke="#fca5a5"/>
+  <text x="823" y="432" font-size="12.5" font-weight="bold" fill="#7f1d1d" text-anchor="middle">电池电压监测</text>
+  <text x="823" y="449" font-size="10.5" fill="#475569" text-anchor="middle">ADC 12-bit / 11dB 衰减 / 2:1 分压</text>
+  <text x="823" y="462" font-size="10.5" fill="#475569" text-anchor="middle">三级告警 → 蜂鸣 + LED 覆盖</text>
+
+  <!-- L5 配置与存储 -->
+  <rect x="30" y="502" width="940" height="100" rx="10" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.6"/>
+  <text x="46" y="524" font-size="14" font-weight="bold" fill="#6d28d9">L5　配置与参数持久化</text>
+  <rect x="46" y="536" width="290" height="54" rx="7" fill="#ffffff" stroke="#c4b5fd"/>
+  <text x="191" y="556" font-size="12.5" font-weight="bold" fill="#5b21b6" text-anchor="middle">config.h　硬件与常量</text>
+  <text x="191" y="573" font-size="10.5" fill="#475569" text-anchor="middle">5 种 PCB 板型条件编译</text>
+  <text x="191" y="586" font-size="10.5" fill="#475569" text-anchor="middle">引脚 / PWM / PID 限幅 / 阈值</text>
+
+  <rect x="352" y="536" width="290" height="54" rx="7" fill="#ffffff" stroke="#c4b5fd"/>
+  <text x="497" y="556" font-size="12.5" font-weight="bold" fill="#5b21b6" text-anchor="middle">storage.ino　NVS 命名空间 "drone"</text>
+  <text x="497" y="573" font-size="10.5" fill="#475569" text-anchor="middle">9 PID + 7 配置 + 3 水平偏置</text>
+  <text x="497" y="586" font-size="10.5" fill="#475569" text-anchor="middle">滤波模式 / 静音 / 起飞音效次数</text>
+
+  <rect x="658" y="536" width="294" height="54" rx="7" fill="#ffffff" stroke="#c4b5fd"/>
+  <text x="805" y="556" font-size="12.5" font-weight="bold" fill="#5b21b6" text-anchor="middle">drone_types.h　公共契约</text>
+  <text x="805" y="573" font-size="10.5" fill="#475569" text-anchor="middle">结构体 / 枚举 / inline 工具</text>
+  <text x="805" y="586" font-size="10.5" fill="#475569" text-anchor="middle">全部跨模块 extern 声明</text>
+
+  <!-- 数据流说明：改为每层右上角的流向标签，避免长箭头横穿框体压住文字 -->
+  <text x="962" y="40" font-size="10.5" fill="#2563eb" font-weight="bold" text-anchor="end">↓ 指令下传　遥测 ↑ 上送</text>
+  <text x="962" y="150" font-size="10.5" fill="#15803d" font-weight="bold" text-anchor="end">↓ 消费遥控指令　产出电机指令 ↓</text>
+  <text x="962" y="274" font-size="10.5" fill="#a16207" font-weight="bold" text-anchor="end">↑ 姿态 / 角速度　↓ 控制设定</text>
+  <text x="962" y="398" font-size="10.5" fill="#b91c1c" font-weight="bold" text-anchor="end">↑ 执行输出　↓ 寄存器配置</text>
+  <text x="962" y="522" font-size="10.5" fill="#6d28d9" font-weight="bold" text-anchor="end">→ 编译期依赖（NVS 双向绑定）</text>
+
+  <!-- 层间短箭头（只跨 24px 间隙） -->
+  <path d="M300,106 L300,130" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#ar2)"/>
+  <path d="M300,230 L300,254" stroke="#94a3b8" stroke-width="2" fill="none" marker-end="url(#ar1)"/>
+  <path d="M700,254 L700,230" stroke="#16a34a" stroke-width="2" fill="none" marker-end="url(#ar1)"/>
+  <path d="M300,354 L300,378" stroke="#94a3b8" stroke-width="2" fill="none" marker-end="url(#ar1)"/>
+  <path d="M700,378 L700,354" stroke="#dc2626" stroke-width="2" fill="none" marker-end="url(#ar3)"/>
+  <path d="M300,478 L300,502" stroke="#94a3b8" stroke-width="2" fill="none" marker-end="url(#ar1)"/>
+  <path d="M500,502 L500,478" stroke="#7c3aed" stroke-width="2" stroke-dasharray="5 4" fill="none" marker-end="url(#ar1)"/>
+
+  <path d="M658,563 L336,563" stroke="#7c3aed" stroke-width="1.6" fill="none" stroke-dasharray="5 4" marker-end="url(#ar1)"/>
+  <text x="497" y="556" font-size="10" fill="#7c3aed" text-anchor="middle">编译期依赖（config.h ↔ 全部模块）</text>
+</svg>

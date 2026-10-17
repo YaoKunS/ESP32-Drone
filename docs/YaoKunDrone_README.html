@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>耀坤飞控 YaoKunDrone　项目说明文档</title>
+<style>
+  :root{
+    --brand:#c8102e; --brand-dark:#8f0c22; --ink:#0f172a; --ink2:#334155;
+    --ink3:#64748b; --line:#e2e8f0; --bg:#ffffff; --bg2:#f8fafc;
+    --code-bg:#0f172a;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg2); color:var(--ink);
+    font-family:"Microsoft YaHei","PingFang SC","Hiragino Sans GB","Source Han Sans SC",sans-serif;
+    font-size:15px; line-height:1.85; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1080px; margin:0 auto; padding:0 24px 80px; background:var(--bg);
+         box-shadow:0 0 40px rgba(15,23,42,.06);}
+
+  /* ── 封面 ── */
+  .cover{padding:64px 24px 48px; background:linear-gradient(135deg,#0f172a 0%,#1e293b 55%,#7f1d1d 130%);
+         color:#fff; margin:0 -24px 40px;}
+  .cover .badge{display:inline-block; background:rgba(255,255,255,.13); border:1px solid rgba(255,255,255,.25);
+         padding:4px 14px; border-radius:20px; font-size:12.5px; letter-spacing:.5px; margin-bottom:20px;}
+  .cover h1{margin:0 0 12px; font-size:40px; font-weight:800; letter-spacing:1px; line-height:1.3;}
+  .cover .sub{font-size:16.5px; color:#cbd5e1; margin-bottom:28px; font-weight:300;}
+  .cover .facts{display:flex; flex-wrap:wrap; gap:10px 30px; font-size:13.5px; color:#e2e8f0;
+         border-top:1px solid rgba(255,255,255,.16); padding-top:20px;}
+  .cover .facts b{color:#fff; font-weight:600;}
+
+  /* ── 目录 ── */
+  .toc{background:var(--bg2); border:1px solid var(--line); border-radius:12px;
+       padding:26px 30px; margin-bottom:48px;}
+  .toc h2{margin:0 0 16px; font-size:17px; color:var(--brand); border:0; padding:0;}
+  .toc ol{columns:2; column-gap:40px; margin:0; padding-left:22px; font-size:14px;}
+  .toc li{margin:5px 0; break-inside:avoid;}
+  .toc a{color:var(--ink2); text-decoration:none;}
+  .toc a:hover{color:var(--brand);}
+  .toc .d{font-size:12px; color:var(--ink3); margin-left:6px;}
+
+  /* ── 标题 ── */
+  h2{font-size:25px; font-weight:700; color:var(--brand); margin:56px 0 20px;
+     padding-bottom:12px; border-bottom:3px solid var(--brand); letter-spacing:.5px;}
+  h3{font-size:19px; font-weight:700; color:var(--ink); margin:36px 0 14px;
+     padding-left:13px; border-left:5px solid var(--brand);}
+  h4{font-size:16px; font-weight:700; color:var(--ink2); margin:24px 0 10px;}
+  p{margin:12px 0;}
+
+  /* ── 元素 ── */
+  code{background:#f1f5f9; color:#b91c1c; padding:2px 7px; border-radius:4px;
+       font-family:"Cascadia Mono","Consolas","Courier New",monospace; font-size:13.5px;}
+  pre{background:var(--code-bg); color:#e2e8f0; padding:18px 22px; border-radius:10px;
+      overflow-x:auto; font-size:13.5px; line-height:1.75;
+      font-family:"Cascadia Mono","Consolas","Courier New",monospace;}
+  pre code{background:none; color:inherit; padding:0; font-size:13.5px;}
+  .note{background:#eff6ff; border-left:5px solid #2563eb; padding:14px 20px; border-radius:0 8px 8px 0; margin:18px 0;}
+  .warn{background:#fff7ed; border-left:5px solid #ea580c; padding:14px 20px; border-radius:0 8px 8px 0; margin:18px 0;}
+  .danger{background:#fef2f2; border-left:5px solid var(--brand); padding:14px 20px; border-radius:0 8px 8px 0; margin:18px 0;}
+  .ok{background:#f0fdf4; border-left:5px solid #16a34a; padding:14px 20px; border-radius:0 8px 8px 0; margin:18px 0;}
+  .note b,.warn b,.danger b,.ok b{color:inherit;}
+
+  table{width:100%; border-collapse:collapse; margin:18px 0; font-size:14px;}
+  th{background:#f1f5f9; color:var(--ink); font-weight:700; padding:11px 12px;
+     border:1px solid var(--line); text-align:left;}
+  td{padding:10px 12px; border:1px solid var(--line); vertical-align:top;}
+  tbody tr:nth-child(even){background:#fcfdfe;}
+  table.tight td, table.tight th{padding:7px 10px; font-size:13.5px;}
+
+  figure{margin:26px 0; text-align:center;}
+  figure img{max-width:100%; height:auto; border:1px solid var(--line); border-radius:8px;
+              background:#fff; padding:6px;}
+  figcaption{font-size:13.5px; color:var(--ink3); margin-top:10px; font-style:italic;}
+
+  ul,ol{padding-left:26px;} li{margin:6px 0;}
+
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:20px 0;}
+  .card{background:var(--bg2); border:1px solid var(--line); border-radius:10px; padding:18px 22px;}
+  .card h5{margin:0 0 8px; font-size:14.5px; color:var(--brand); font-weight:700;}
+  .card p{margin:0; font-size:13.5px; color:var(--ink2); line-height:1.7;}
+
+  .step{display:flex; gap:16px; margin:14px 0; align-items:flex-start;}
+  .step .no{flex:0 0 34px; height:34px; border-radius:50%; background:var(--brand); color:#fff;
+       display:flex; align-items:center; justify-content:center; font-weight:700; font-size:15px;}
+  .step .tx{flex:1;}
+  .step .tx b{display:block; margin-bottom:2px; color:var(--ink);}
+  .step .tx span{font-size:13.5px; color:var(--ink3);}
+
+  footer{margin-top:70px; padding-top:26px; border-top:2px solid var(--line);
+         text-align:center; color:var(--ink3); font-size:13px; line-height:2;}
+
+  @media print{
+    body{background:#fff;} .wrap{box-shadow:none; max-width:100%; padding:0;}
+    .toc{page-break-after:always;}
+    h2{page-break-after:avoid;} h3{page-break-after:avoid;}
+    figure,table,pre{page-break-inside:avoid;}
+    .cover{-webkit-print-color-adjust:exact; print-color-adjust:exact;}
+    *{-webkit-print-color-adjust:exact; print-color-adjust:exact;}
+  }
+  .gal{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:14px 0 18px;}
+  .gal figure{margin:0;}
+  .gal img{width:100%;display:block;border-radius:10px;border:1px solid #e2e8f0;}
+  .gal figcaption{font-size:12.5px;color:#64748b;margin-top:7px;line-height:1.5;}
+  @media (max-width:760px){
+    .grid2{grid-template-columns:1fr;} .toc ol{columns:1;}
+    .cover h1{font-size:28px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="cover">
+  <span class="badge">嘉立创开源硬件平台 · 星火计划 2026 开源项目</span>
+  <h1>耀坤飞控 YaoKunDrone</h1>
+  <div class="sub">基于 ESP32-S3 的纯姿态自稳四轴飞控　·　浏览器直连遥控　·　全参数在线可调</div>
+  <div class="facts">
+    <span>主控　<b>ESP32-S3</b>（立创 R8N8 开发板）</span>
+    <span>姿态解算　<b>Madgwick / Mahony / 互补滤波</b></span>
+    <span>控制频率　<b>500 Hz</b></span>
+    <span>代码规模　<b>5173 行</b></span>
+    <span>开发板型　<b>4 种</b>已实现 + 4 种规划</span>
+    <span>代码仓库　<b>github.com/YaoKunS/ESP32-Drone</b></span>
+  </div>
+</div>
+
+<div class="toc">
+  <h2>目录</h2>
+  <ol>
+    <li><a href="#s1">项目简介</a><span class="d">它是什么，能做什么</span></li>
+    <li><a href="#s2">功能特征</a><span class="d">14 项能力清单</span></li>
+    <li><a href="#s3">系统架构</a><span class="d">五层分层与模块依赖</span></li>
+    <li><a href="#s4">控制主流程</a><span class="d">500 Hz 流水线与 6 道安全闸门</span></li>
+    <li><a href="#s5">控制算法</a><span class="d">串级双环 PID 与混控</span></li>
+    <li><a href="#s6">姿态解算</a><span class="d">三滤波器与自适应信任度</span></li>
+    <li><a href="#s7">安全机制</a><span class="d">8 种故障源与解锁状态机</span></li>
+    <li><a href="#s8">通信与 Web 遥控</a><span class="d">协议时序与界面结构</span></li>
+    <li><a href="#s9">音效与灯效</a><span class="d">14 种音效谱与三色灯语</span></li>
+    <li><a href="#s10">硬件与引脚</a><span class="d">板型切换与接线</span></li>
+    <li><a href="#s11">编译与烧录</a><span class="d">环境、库、步骤、常见问题</span></li>
+    <li><a href="#s12">使用方法</a><span class="d">首次上电到飞行的完整流程</span></li>
+    <li><a href="#s13">调参指南</a><span class="d">PID 与限值整定</span></li>
+    <li><a href="#s14">故障排查</a><span class="d">症状 → 原因 → 处置</span></li>
+    <li><a href="#s15">设计取舍与已知边界</a><span class="d">诚实的局限性说明</span></li>
+    <li><a href="#s16">扩展路线</a><span class="d">预留引脚指向的下一步</span></li>
+    <li><a href="#s17">同类开源飞控对比</a><span class="d">vs Flix / ESP-FC / ESP-Drone</span></li>
+    <li><a href="#s18">开源地址与支持渠道</a><span class="d">GitHub / 立创 / B站 / 淘宝</span></li>
+  </ol>
+</div>
+
+<!-- ══════════════════════ 1 简介 ══════════════════════ -->
+<h2 id="s1">一、项目简介</h2>
+
+<p><b>耀坤飞控（YaoKunDrone）</b>是一套完全自主研发的、基于 ESP32-S3 微控制器的四轴无人机飞控固件。它运行在 Arduino 框架上，把姿态解算、串级 PID 控制、安全保护、遥测上报和浏览器遥控界面整合进 <b>5173 行</b>可读性很强的 C/C++ 代码中，无需图形化上位机工具、无需专用地面站，一台手机连上飞机热点打开网页就能操控、调参、看状态。</p>
+
+<p>这个项目的出发点不是做一个「能飞的玩具」，而是做一套<strong>能被完整读懂、能被放心修改的开源飞控教学与实践平台</strong>。因此代码里的每一个常数都有出处注释，每一处非直觉的设计都写清了「为什么这么写」和「不这么写会怎样」——它同时也是一份可运行的中文飞控教材。</p>
+
+<h3>1.1 实物一览</h3>
+
+<p>整机由一块<strong>免费打样的 PCB 机架</strong> + ESP32-S3 开发板 + MPU6050/6500 模块 + 四个 8520 空心杯电机组成，飞控热点是 <code>YaoKun_Drone</code>。以下实物图来自开源仓库 <a href="https://github.com/YaoKunS/ESP32-Drone">github.com/YaoKunS/ESP32-Drone</a>：</p>
+
+<div class="gal">
+  <figure>
+    <img src="img/K1_01.jpg" alt="两代整机并排">
+    <figcaption>图 1-1　两代整机并排：两机均为立创 ESP32-S3 全功能版</figcaption>
+  </figure>
+  <figure>
+    <img src="img/K1_03.jpg" alt="俯视 PCB 即机架">
+    <figcaption>图 1-2　俯视图：PCB 即机架——X 型四臂、8520 空心杯电机、65 mm 桨与可拆卸保护圈</figcaption>
+  </figure>
+  <figure>
+    <img src="img/K1_02.jpg" alt="K1.0 单机特写">
+    <figcaption>图 1-3　K1.0 单机特写：立创 ESP32-S3 R8N8 核心板直插 PCB 插座，尼龙扎带固定 1S 电池</figcaption>
+  </figure>
+  <figure>
+    <img src="img/K1_04.jpg" alt="两机近景对比">
+    <figcaption>图 1-4　两机近景对比：均为立创 ESP32-S3 全功能版，共用同一套 PCB 机架（桨叶配色不同便于区分）</figcaption>
+  </figure>
+</div>
+
+<h3>1.2 飞行能力定位（请先读这一段）</h3>
+
+<div class="warn">
+  <p style="margin:0 0 8px"><b>本机是「纯姿态自稳 + 手动油门」飞控，没有任何位置或速度传感器。</b></p>
+  <p style="margin:0">机身上只有一个六轴 IMU，没有 GPS、气压计、激光测距、光流、磁罗盘。所以：</p>
+</div>
+
+<table class="tight">
+  <thead><tr><th style="width:180px">能力</th><th>说明</th></tr></thead>
+  <tbody>
+    <tr><td><b>能做</b></td><td>姿态自稳——松开摇杆时机体会自己把水平面稳住；横滚、俯仰、偏航三轴可控；油门手动。</td></tr>
+    <tr><td><b>不能做</b></td><td>悬停定点。松杆时姿态被稳住，但<strong>会保持既有水平速度继续飘</strong>；<strong>松油门就掉高度</strong>。</td></tr>
+    <tr><td><b>因此</b></td><td>飞行时需要持续微操修正，属于「运动相机式的手动飞行」体验，而非消费级无刷机的 GPS 定点体验。</td></tr>
+  </tbody>
+</table>
+
+<div class="note">
+  <p style="margin:0">想获得真正的定点悬停能力，需要接入激光测距（VL53L1X）+ 光流（PMW3901）——本工程已为此预留了 SPI 与第二组 I2C 引脚，详见 <a href="#s16">第十六节 扩展路线</a>。</p>
+</div>
+
+<h3>1.3 目标平台与开源信息</h3>
+
+<table>
+  <thead><tr><th style="width:180px">项目</th><th>内容</th></tr></thead>
+  <tbody>
+    <tr><td>主控平台</td><td>ESP32-S3（默认适配立创 ESP32-S3 R8N8 开发板，同时兼容 ESP32-S3 Supermini 系列）</td></tr>
+    <tr><td>姿态传感器</td><td>MPU6050（I2C）或 MPU6500（SPI），开机自动探测，无需手动配置</td></tr>
+    <tr><td>动力输出</td><td>四路 LEDC 硬件 PWM，20 kHz / 10-bit</td></tr>
+    <tr><td>通信方式</td><td>WiFi SoftAP + WebSocket（飞控自建热点，无需路由器）</td></tr>
+    <tr><td>代码仓库</td><td><a href="https://github.com/YaoKunS/ESP32-Drone">github.com/YaoKunS/ESP32-Drone</a>（GPL v3 开源，含全部源码与实物图）</td></tr>
+    <tr><td>开源硬件</td><td><a href="https://oshwhub.com/lindahe">嘉立创开源硬件平台 · 耀坤的主页（oshwhub.com/lindahe）</a>——耀坤无人机（星火计划 2026 开源项目），原理图 / PCB 免费下载</td></tr>
+    <tr><td>元器件套件</td><td>淘宝店「耀坤智联」<a href="https://shop35432590.taobao.com/">shop35432590.taobao.com</a>，基础元件仅需 9.9 元</td></tr>
+    <tr><td>视频教程</td><td>哔哩哔哩 B 站「耀坤智联」<a href="https://space.bilibili.com/3707011699050767">space.bilibili.com/3707011699050767</a></td></tr>
+  </tbody>
+</table>
+
+<!-- ══════════════════════ 2 功能特征 ══════════════════════ -->
+<h2 id="s2">二、功能特征</h2>
+
+<h3>2.1 飞行控制</h3>
+<div class="grid2">
+  <div class="card"><h5>串级双环控制</h5><p>横滚与俯仰采用「角度外环 + 角速率内环」串级结构，偏航为单环角速率控制。500 Hz 固定周期调度。</p></div>
+  <div class="card"><h5>X 型混控</h5><p>四电机分处机臂对角，单电机故障时仍保留剩余推力与部分控制能力，容错优于 H 型。</p></div>
+  <div class="card"><h5>低油门扭矩补偿</h5><p>按油门线性缩放控制量，抵消电调线性区对操控性的侵蚀，悬停时仍能精细微调。</p></div>
+  <div class="card"><h5>积分抗饱和</h5><p>PID 输出触顶时积分项按 0.99 系数缓慢衰减，防止限幅期间积分失控，恢复后姿态猛甩。</p></div>
+</div>
+
+<h3>2.2 姿态估计</h3>
+<ul>
+  <li><b>三套解算器可运行时切换</b>：Madgwick 梯度下降、Mahony（Betaflight 式 PI 修正 DCM）、互补滤波，默认 Mahony。</li>
+  <li><b>加速度计信任度自适应</b>：实时计算 <code>|a|</code> 偏离 1g 的程度得到信任度，据此动态调整 Madgwick 的 β 或互补滤波的 α。剧烈机动或自由落体时滤波器自动退化为纯陀螺积分，不会被错误的重力方向带跑。</li>
+  <li><b>三种 IMU 自动识别</b>：MPU6050（I2C，WHO_AM_I = 0x68/0x70）与 MPU6500（SPI，WHO_AM_I = 0x70）开机自检识别。</li>
+  <li><b>软件轴重映射</b>：<code>SwapXY / FlipX / FlipY / FlipZ</code> 四个开关适配不同模块的贴装朝向，换 IMU 不用改驱动。</li>
+  <li><b>自动水平校准</b>：上锁状态下检测到静止满 400 ms，自动以加速度计读数重置水平参考并同步给三个解算器。</li>
+</ul>
+
+<h3>2.3 安全保护</h3>
+<ul>
+  <li><b>8 种故障保护原因</b>统一编码（IMU 失效 / dt 超限 / 倾斜超限 / 遥控超时 / WS 断连 / KILL / 手动上锁 / 电机硬件故障），全部收敛到唯一的 <code>disarmNow()</code> 出口。</li>
+  <li><b>解锁四条件互锁</b> + 800 ms 保持时间：油门、摇杆回中、机身姿态端正、无故障，缺一不可且需持续保持，杜绝误解锁。</li>
+  <li><b>故障后锁定需显式解除</b>：必须先关闭解锁开关且油门归零，才能回到可解锁状态，防止故障抖动引发反复解锁。</li>
+  <li><b>低油门强制停转</b>：油门 ≤ 0.05 时直接关电机并复位全部 PID，清理悬停临界区积累的积分。</li>
+  <li><b>三重 NaN 防护</b>：IMU 读数失败、姿态解算出 NaN/Inf、PID 输出 NaN，三处独立判据，任一命中立即上锁，阻断 NaN 向电机输出的传播。</li>
+  <li><b>电机测试三重闸门</b>：输出 ≤ 20% 油门、时长钳位 100~2000 ms、已解锁 / 电机故障 / 摇杆有输入时直接拒绝执行。</li>
+</ul>
+
+<h3>2.4 人机交互</h3>
+<ul>
+  <li><b>飞控自建 WiFi 热点</b>（默认 <code>YaoKun_Drone</code> / <code>12345678</code>，IP <code>192.168.4.1</code>），野外无网环境照样能飞。</li>
+  <li><b>零依赖单页界面</b>：HTML / CSS / JS 全部编译进固件（1651 行），不引用任何 CDN 或图片资源，断网可用。</li>
+  <li><b>双虚拟摇杆</b>：左杆油门 / 偏航，右杆俯仰 / 横滚，Pointer Events 同时支持鼠标与触摸，<strong>摇杆释放时三轴自动回中而油门保持</strong>。</li>
+  <li><b>20 Hz 固定节拍发包</b>：与界面渲染帧率彻底解耦，手机掉帧或浏览器后台节流都不会导致飞控侧判定指令超时。</li>
+  <li><b>三色状态灯语义</b>：红灯 / 绿灯常亮 = 已解锁；同步呼吸 = 上锁待机；120 ms 快闪 = 故障；蓝灯快闪 = 正在飞行，常亮 = 网页已连接，慢闪 = 待机。</li>
+  <li><b>14 种蜂鸣音效</b>：上电、就绪、解锁成功长鸣、双短鸣（陀螺标定）、三短鸣（水平标定）、起飞提示（次数 1~10 可调）、急促故障报警、三级电压告警、紧急停止专用音，并支持全局静音。<b>完整节奏谱与触发场景见第九章</b>。</li>
+  <li><b>三级电池电压告警</b>：3.70 / 3.50 / 3.30 V 三档阈值，灯光与蜂鸣节奏同步递进，告警优先级高于飞控状态灯。</li>
+  <li><b>12 套主题配色</b>（浅色 / 暗黑 + 10 种中国传统色），选中项存入浏览器 localStorage，下次打开自动恢复。</li>
+</ul>
+
+<h3>2.5 参数与可维护性</h3>
+<ul>
+  <li><b>五板型条件编译</b>：<code>config.h</code> 中改一行宏即可切换 PCB，引脚完全隔离互不干扰。</li>
+  <li><b>全参数在线可调</b>：9 个 PID 增益 + 7 项飞行限值 + 滤波器模式 + 蜂鸣器设置，全部 Web 端热更新并持久化到 NVS。</li>
+  <li><b>参数双重限幅</b>：写入时钳位一次，从 NVS 读出后再钳位一次，防止旧固件残留值造成越界。</li>
+  <li><b>五组临界区保护共享状态</b>：遥控指令、配置 / PID、KILL 请求、电机测试、校准请求，FreeRTOS 双上下文下无竞争。</li>
+  <li><b>命令全部有 ack 应答</b>：参数没生效、命令被拒绝（如已解锁时下发校准）都能在界面上立刻看到原因。</li>
+</ul>
+
+<!-- ══════════════════════ 3 架构 ══════════════════════ -->
+<h2 id="s3">三、系统架构</h2>
+
+<p>整套固件按职责切成五层，层与层之间只通过 <code>drone_types.h</code> 中声明的接口通信，不存在跨层直接操作。这让「换一块 PCB」「改一个算法」「重写整个界面」都可以各自独立进行，互不牵连。</p>
+
+<figure>
+  <img src="fig/fig01_arch.svg" alt="系统五层架构图">
+  <figcaption>图 3-1　五层分层架构：表现层 / 决策层 / 感知层 / 硬件驱动层 / 配置与存储</figcaption>
+</figure>
+
+<div class="note">
+  <p style="margin:0"><b>为什么要分层？</b>本项目支持多种 PCB 板型（4 种已实现、4 种规划中），而板型差异只体现在 <code>config.h</code> 的引脚定义里。若硬件访问散落在算法代码中，换板型就要翻遍全工程。把所有 <code>ledcWrite</code>、<code>Wire.begin</code>、<code>SPI.transfer</code> 收敛到 <code>hardware.ino</code> 之后，<strong>上层算法完全不知道自己跑在哪个引脚上</strong>——这是本工程能以单份代码覆盖多板型的前提。</p>
+</div>
+
+<h3>3.1 模块依赖关系</h3>
+
+<figure>
+  <img src="fig/fig08_modules.svg" alt="模块依赖关系图">
+  <figcaption>图 3-2　模块依赖：头文件契约层 + 六个 .ino 实现文件，以及 FreeRTOS 双上下文下的并发模型</figcaption>
+</figure>
+
+<table class="tight">
+  <thead><tr><th style="width:210px">文件</th><th style="width:80px">行数</th><th>职责</th></tr></thead>
+  <tbody>
+    <tr><td><code>YaoKunDrone.ino</code></td><td>598</td><td>主入口：<code>setup()</code> / <code>loop()</code>，以及控制流水线 <code>controlStep()</code>、WiFi/Web 启动、电压告警与校准辅助</td></tr>
+    <tr><td><code>drone_types.h</code></td><td>312</td><td>公共契约：5 个结构体、4 个枚举、inline 工具函数、全部跨模块 extern 声明</td></tr>
+    <tr><td><code>config.h</code></td><td>376</td><td>五种 PCB 板型条件编译 + 全部系统常量（引脚 / PWM / PID 限幅 / 阈值）</td></tr>
+    <tr><td><code>hardware.ino</code></td><td>885</td><td>四类硬件驱动实现 + Madgwick / Mahony / Mpu6050 / Mpu6500 / ImuDriver 五个类的方法</td></tr>
+    <tr><td><code>drone_imu.h</code></td><td>199</td><td>上述五个类的声明 + <code>accelToRollPitchDeg</code> / <code>isImuStationary</code> 两个 inline 辅助</td></tr>
+    <tr><td><code>drone_pid.h</code></td><td>183</td><td>通用位置式 PID 类，带积分抗饱和与输出限幅（含大段教学式注释）</td></tr>
+    <tr><td><code>rc.ino</code></td><td>291</td><td>遥控指令临界区读写封装 + WebSocket 事件回调与 14 类下行命令解析</td></tr>
+    <tr><td><code>control.ino</code></td><td>80</td><td>5 个 PID 实例定义、增益应用、脏标志热更新机制</td></tr>
+    <tr><td><code>failsafe.ino</code></td><td>113</td><td>安全核心：解锁条件、状态机、上锁与紧急停止，完全独立于控制算法</td></tr>
+    <tr><td><code>storage.ino</code></td><td>145</td><td>NVS 命名空间 <code>"drone"</code> 的参数加载与保存，含二次限幅</td></tr>
+    <tr><td><code>telemetry.ino</code></td><td>114</td><td>遥测 JSON 组帧与周期门控，三个枚举标签翻译函数</td></tr>
+    <tr><td><code>drone_led.h</code> / <code>drone_buzzer.h</code></td><td>147 / 79</td><td>LED 模式枚举与呼吸算法 / 音效枚举与蜂鸣器状态机接口</td></tr>
+    <tr><td><code>drone_web_ui.h</code></td><td>1651</td><td>完整单页前端应用，全内嵌，无外部资源依赖</td></tr>
+  </tbody>
+</table>
+
+<div class="note">
+  <p style="margin:0"><b>两个必须知道的 Arduino 约定：</b>① <code>.ino</code> 文件会被 IDE 自动生成函数原型并强制包含，而 <code>.h</code> 不会——所以跨模块声明统一集中在 <code>drone_types.h</code>，各 <code>.ino</code> 只需 <code>#include</code> 它就能拿到全部接口。② <code>drone_pid.h</code> 内部用到了 <code>clampf()</code>，而 <code>clampf</code> 定义在 <code>drone_types.h</code> 里，因此该头文件必须在工具函数定义之后才被包含——头文件依赖遵循「被依赖者在前」的基本准则。</p>
+</div>
+
+<h3>3.2 代码规模分布</h3>
+
+<figure>
+  <img src="fig/fig12_stats.svg" alt="代码规模分布图">
+  <figcaption>图 3-3　5173 行代码的分布：前端占三分之一，硬件驱动占近四分之一</figcaption>
+</figure>
+
+<!-- ══════════════════════ 4 主流程 ══════════════════════ -->
+<h2 id="s4">四、控制主流程</h2>
+
+<p><code>loop()</code> 被刻意做成极简：刷新 LED、推进蜂鸣器状态机，然后检查是否到了控制周期。没到就 <code>delayMicroseconds(50)</code> 空转，让出 CPU 给 WiFi 任务；到了就以累加器方式补偿时间基准，把滞后的时间槽一次补齐，然后进入 <code>controlStep()</code>。</p>
+
+<pre><code>// 时间基准与补偿：即使某一周期超时，也不会让后续周期永久漂移
+if ((int32_t)(now_us - next_us) &gt;= 0) {
+    while ((int32_t)(now_us - next_us) &gt;= 0) next_us += kLoopPeriodUs;
+    const float dt = (now_us - last_us) * 1e-6f;
+    last_us = now_us;
+    controlStep(dt);
+    // …电压告警 200 ms、蓝灯 50 ms、告警 LED 覆盖
+} else {
+    delayMicroseconds(50);
+}</code></pre>
+
+<figure>
+  <img src="fig/fig02_flow.svg" alt="控制主流程图">
+  <figcaption>图 4-1　<code>controlStep()</code> 控制流水线：KILL → 电机测试 → dt 校验 → IMU 读取 → 姿态解算 → 倾斜保护 → 遥控超时 → 解锁状态机 → PID 混控</figcaption>
+</figure>
+
+<h3>4.1 优先级编排：为什么是这个顺序</h3>
+
+<p>这个流水线的顺序不是随意排的，每一步都在为「万一前面已经出问题了，后面不该再执行」服务：</p>
+
+<table class="tight">
+  <thead><tr><th style="width:52px">次序</th><th style="width:130px">环节</th><th>为什么放在这个位置</th></tr></thead>
+  <tbody>
+    <tr><td><b>①</b></td><td>KILL 请求</td><td>最高优先级。用户按下「紧急上锁」时，即使此刻电机正在转、IMU 已经失灵，也必须<strong>立刻</strong>停机，不能被后续任何判定阻挡。</td></tr>
+    <tr><td><b>②</b></td><td>电机测试模式</td><td>一旦进入测试就要跑完整个时长，中途被飞行逻辑插一脚会造成电机忽转忽停。所以它抢在控制逻辑之前，且结束后直接 <code>return</code>。</td></tr>
+    <tr><td><b>③</b></td><td>dt 有效性</td><td>dt 异常意味着调度被长时间阻塞，此时算出的任何控制量都不可信，必须先停下来说明原因。</td></tr>
+    <tr><td><b>④</b></td><td>IMU 读取</td><td>没有姿态数据就无从控制。<b>注意 IMU 读不到就 return</b>，绝不拿上一周期的旧姿态凑合——那会让飞机"凭记忆"飞。</td></tr>
+    <tr><td><b>⑤⑥</b></td><td>姿态 NaN 校验<br>倾斜保护</td><td>两者都在解算之后立刻判定，早于解锁状态机。原因很实际：如果飞机已经翻倒或姿态发散，此时进入解锁流程毫无意义。</td></tr>
+    <tr><td><b>⑦</b></td><td>遥控超时</td><td>指令龄期超限说明操纵者已经失去控制能力，属于"不该继续飞"的信号，排在解锁判定之前。</td></tr>
+    <tr><td><b>⑧</b></td><td>解锁状态机</td><td>只有确认"应当处于飞行状态"之后，才进入 PID 与混控。上锁状态下依然发送遥测，保证界面随时能看到状态。</td></tr>
+  </tbody>
+</table>
+
+<div class="ok">
+  <p style="margin:0"><b>一个容易被忽略的正确设计：</b>安全路径上每一次上锁后都会调用 <code>sendTelemetry()</code> 再 <code>return</code>。也就是说<strong>即使飞机正在故障，Web 界面依然能实时看到故障原因</strong>。很多飞控在保护状态下就哑了，用户只能盲猜哪里出了问题。</p>
+</div>
+
+<h3>4.2 上电启动时序</h3>
+
+<figure>
+  <img src="fig/fig11_boot.svg" alt="上电启动时序图">
+  <figcaption>图 4-2　<code>setup()</code> 启动时序：串口 → 电机 LEDC → IMU 自动探测 → 陀螺标定 → 参数加载 → 上锁 → 自建热点</figcaption>
+</figure>
+
+<div class="danger">
+  <p style="margin:0 0 6px"><b>两个不可省的等待：</b></p>
+  <p style="margin:0 0 6px">① <b>陀螺零偏标定约需 1~2 秒</b>（500 次采样 × 2 ms）。标定期间飞机必须绝对静止——若在转动，零偏会被记成角速度，飞机上电后认为自己正在自旋，一推油门就会猛甩。</p>
+  <p style="margin:0">② <b>IMU 探测失败会直接停机</b>：<code>begin()</code> 返回 false 时 setup 进入 <code>while(true) delay(1000)</code> 死循环。这是刻意设计——没有姿态数据时飞控不可能安全，绝不放行让用户以为"能飞"。</p>
+</div>
+
+<p>电机 LEDC 绑定失败则不同：它只置 <code>FS_MOTOR_FAIL</code> 标志并禁止解锁，<strong>系统继续运行</strong>。因为此时 IMU、姿态解算、Web 界面全部正常，用户还有机会打开网页读日志定位问题，直接死循环反而失去诊断手段。</p>
+
+<!-- ══════════════════════ 5 控制算法 ══════════════════════ -->
+<h2 id="s5">五、控制算法详解</h2>
+
+<figure>
+  <img src="fig/fig03_pid.svg" alt="串级PID控制链路图">
+  <figcaption>图 5-1　串级双环控制链路：外环出期望角速度，内环出归一化扭矩，扭矩缩放后进 X 型混控</figcaption>
+</figure>
+
+<h3>5.1 为什么要串两个环</h3>
+
+<p>单环控制的根本矛盾在于：<b>角度误差和角速度误差需要不同的增益量纲</b>。飞控里直接用「角度误差 × Kp」去出电机扭矩，会出现典型的两难——</p>
+<ul>
+  <li>想要响应快 → 调大 Kp → 电机打满饱和 → 一出小角度就直接满油门，没有任何缓冲余量；</li>
+  <li>想要动作柔和 → 调小 Kp → 响应迟钝，稍微快点的手法就变成大幅振荡。</li>
+</ul>
+
+<p>串级把这两个诉求拆到两个不同量纲的环上：</p>
+<ul>
+  <li><b>外环（角度环）</b>：输入是"角度差多少度"，输出是"应该转多快（°/s）"。它的输出限幅 ±250 °/s 相当于一道<strong>天然的速度安全阀</strong>——机体最多以 250 °/s 的角速度去追目标姿态，这个速度本身是安全的。</li>
+  <li><b>内环（角速率环）</b>：输入是"角速度差多少 °/s"，输出是归一化扭矩。它工作在一个「跟随」问题上，只需把内环稳定地拉住，姿态转换就变得可控而线性。</li>
+</ul>
+
+<div class="note">
+  <p style="margin:0"><b>这是 Betaflight / PX4 等主流飞控都采用的经典结构</b>，不是本项目的发明。但多数教程讲到「串级 PID」就停了，本工程把每个环的量纲、限幅值和整定思路都写在代码注释里，可以逐行对照理解。</p>
+</div>
+
+<h3>5.2 偏航为何只用单环</h3>
+
+<p>偏航没有角度外环。因为本机<strong>没有磁罗盘、没有任何绝对航向参考</strong>，偏航角是陀螺仪纯积分出来的，误差会随时间无限制漂移。给一个会漂移的量设外环，等于给积分漂移又套一层积分，稳态误差反而更糟。所以偏航直接采用角速率单环（<code>g_yaw_rate_pid</code>），把「指令要转多快」这件事直接做对，不去管最终转到哪个朝向。输出限幅 ±0.3，比横滚俯仰的 ±0.5 更保守——因为偏航只影响两个电机，权限小一点更安全。</p>
+
+<h3>5.3 X 型混控矩阵</h3>
+
+<pre><code>M0 左前 FL = throttle + roll_torque + pitch_torque - yaw_torque
+M1 右前 FR = throttle - roll_torque + pitch_torque + yaw_torque
+M2 右后 RR = throttle - roll_torque - pitch_torque - yaw_torque
+M3 左后 RL = throttle + roll_torque - pitch_torque + yaw_torque</code></pre>
+
+<p>符号的来历：横滚靠对角电机差速（FL+RL 增、FR+RR 减产生右倾），俯仰靠前后电机差速，偏航靠同侧反向旋转（左侧减、右侧增产生偏航）。三者叠加后再限幅到 <code>[0, 1]</code>。</p>
+
+<div class="warn">
+  <p style="margin:0"><b>混控符号必须和实际电机安装方向一致，否则会形成正反馈——摇杆往右飞机往左飞，而且越修越偏。</b>本工程把电机布局定义为「X 型，机头方向位于 M4（左后）与 M1（右前）之间」。首次装机请务必用「测试」页逐个确认电机转向，不要直接推油门试飞。详见 <a href="#s12">第十二节 使用方法</a>第 3 步。</p>
+</div>
+
+<h3>5.4 低油门扭矩缩放</h3>
+
+<pre><code>const float torque_scale = clampf(cfg.torque_scale_min + throttle * cfg.torque_scale_slope, 0.0f, 1.0f);
+// 默认 = 0.20 + throttle × 2.0
+roll_torque  = g_roll_rate_pid.update(...)  * torque_scale;</code></pre>
+
+<p>为什么需要它：无刷电调在低油门区存在明显的死区与非线性。悬停时油门在 30% 上下，正是线性最差的区域，直接输出 0.1 的扭矩差，实际转速差可能只有 0.02——摇杆推到底飞机几乎没反应，"手感发死"。乘上缩放系数后（30% 油门时 scale ≈ 0.8），同样的 PID 输出能换来更明显的实际转速差，微调就灵活了。</p>
+
+<p>代价是高油门时缩放系数会超过 1 被钳到 1，等于不做补偿——这正是想要的：高速时本来就不需要额外放大，否则容易振荡。</p>
+
+<h3>5.5 PID 参数默认值</h3>
+
+<table class="tight">
+  <thead><tr><th style="width:150px">控制器</th><th style="width:130px">默认 Kp / Ki / Kd</th><th style="width:100px">输出限幅</th><th>物理含义</th></tr></thead>
+  <tbody>
+    <tr><td>角度环（横滚 / 俯仰共用）</td><td>2.0 / 0.001 / 0</td><td>±250 °/s</td><td>输出是期望角速度，单位 °/s</td></tr>
+    <tr><td>角速率环（横滚 / 俯仰共用）</td><td>0.025 / 0 / 0.0002</td><td>±0.5</td><td>输出是归一化扭矩，无量纲</td></tr>
+    <tr><td>偏航角速率环</td><td>0.030 / 0 / 0</td><td>±0.3</td><td>限幅更保守，因只影响两电机</td></tr>
+  </tbody>
+</table>
+
+<p>注意外环 Ki = 0.001 <strong>很小</strong>——这是有意的。姿态环的稳态误差本来就由重力静力学自然补偿（机体倾斜时重力本身产生恢复力矩），过大的积分反而会在持续倾斜时积累大量风控量，退出倾斜时产生严重过冲。角速率环则完全不用积分（Ki = 0），因为陀螺零偏在标定阶段已经被减掉了。</p>
+
+<!-- ══════════════════════ 6 姿态解算 ══════════════════════ -->
+<h2 id="s6">六、姿态解算</h2>
+
+<figure>
+  <img src="fig/fig04_ahrs.svg" alt="姿态解算流程图">
+  <figcaption>图 6-1　姿态解算链路：IMU 采样 → 轴重映射 → 信任度计算 → 三选一解算器 → 欧拉角 → 扣除水平偏置</figcaption>
+</figure>
+
+<h3>6.1 加速度计信任度：整套解算的"理智开关"</h3>
+
+<p>这是本工程在姿态估计上最值得说的一处设计。加速度计能测重力方向，陀螺仪能测角速度，两者是互补的——但<strong>加速度计只在"没有额外加速度干扰"时才可信</strong>。飞机一拉升，加速度计读到的是「重力 + 推力加速度」的合力，方向就不再代表水平面了；如果此时还拿它去修正姿态，就会把不该有的修正加进去，姿态越修越偏。</p>
+
+<pre><code>const float acc_norm = sqrtf(ax*ax + ay*ay + az*az);
+const float dev = fabsf(acc_norm - 1.0f);        // 偏离 1g 多少
+if (kAccTrustLo &gt; kAccTrustHi)
+    acc_trust = (kAccTrustLo - dev) / (kAccTrustLo - kAccTrustHi);   // 线性映射到 0~1
+acc_trust = clampf(acc_trust, 0.0f, 1.0f);</code></pre>
+
+<table class="tight">
+  <thead><tr><th style="width:120px">参数</th><th style="width:80px">值</th><th>含义</th></tr></thead>
+  <tbody>
+    <tr><td><code>kAccTrustHi</code></td><td>0.08</td><td>偏离小于 0.08 g 视为完全可信，trust = 1</td></tr>
+    <tr><td><code>kAccTrustLo</code></td><td>0.35</td><td>偏离大于 0.35 g 视为完全不可信，trust = 0（纯陀螺积分）</td></tr>
+  </tbody>
+</table>
+
+<p>trust 随后被送进两个地方：Madgwick 的 β 线性插值（<code>β = 0.02 + trust × 0.12</code>）、互补滤波的 α 动态下调，以及 Mahony 的 PI 修正项整体乘以 trust。三套解算器因此<strong>共享同一个"该信谁"的判断</strong>，行为一致。</p>
+
+<h3>6.2 三套解算器对比</h3>
+
+<table>
+  <thead><tr><th style="width:130px">解算器</th><th style="width:80px">状态</th><th>算法要点</th><th style="width:170px">适用场景</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><b>Mahony</b></td><td><b>默认</b></td>
+      <td>用外积计算姿态与重力方向的误差向量 e，以 <code>g' = g + Kp·e + ∫Ki·e dt</code> 修正角速度再积分四元数。积分限幅 ±0.35 rad/s，自旋超 180 °/s 时冻结积分防止发散。</td>
+      <td>默认选择。计算量适中、参数少、对零偏不敏感，与 Betaflight 同源，资料多。</td>
+    </tr>
+    <tr>
+      <td>Madgwick</td><td>可选</td>
+      <td>梯度下降法，把重力对齐问题写成目标函数，用 β 步长做梯度下降。β 自适应插值到 0.02~0.14。加速度模长过小时自动切纯陀螺积分。</td>
+      <td>想自己调 β 感受"信任度"效果时；需要理解梯度下降的读者。</td>
+    </tr>
+    <tr>
+      <td>互补滤波</td><td>可选</td>
+      <td>最朴素：陀螺积分 + 加速度 <code>atan2</code> 直接求角，按 α = 0.98 一阶互补。α 随 trust 动态上调（更信陀螺）。</td>
+      <td>教学首选，公式最直观；也是验证另两套是否出问题的对照组。</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="note">
+  <p style="margin:0"><b>切换时如何保持姿态连续？</b>若直接换解算器，新解算器内部四元数还是单位四元数（水平），而飞机实际已经倾斜了几十度——切换瞬间姿态会突然"跳回零"，控制环立刻输出满扭矩把飞机抽飞。所以代码里先把<strong>旧解算器的当前欧拉角</strong>取出来，用 <code>setEulerDeg()</code> 注入新解算器，互补滤波则直接接管内部状态，三者对齐后再继续。这是本工程里一个容易被忽略但至关重要的细节。</p>
+</div>
+
+<h3>6.3 水平校准的两条路径</h3>
+
+<table class="tight">
+  <thead><tr><th style="width:150px">方式</th><th>触发条件</th><th>行为</th></tr></thead>
+  <tbody>
+    <tr><td><b>手动校准</b></td><td>「设置」页点击按钮（须上锁，发 <code>CAL,LEVEL</code>）</td><td>读取当前加速度计解算的水平角存入 <code>g_level_roll_offset_deg</code> / <code>g_level_pitch_offset_deg</code>，立即存 NVS，三短鸣确认</td></tr>
+    <tr><td><b>自动校准</b></td><td>上锁 + 静止满 400 ms（加速度模长偏离 &lt; 0.10 g 且三轴角速度 &lt; 1.5 °/s）</td><td>用加速度计读数覆盖解算姿态，并同步重置三个解算器与互补滤波内部状态</td></tr>
+  </tbody>
+</table>
+
+<p>输出姿态始终是「解算值 − 校准偏置」，所以偏置只存一次、长期生效。偏航偏置变量虽然存在（<code>g_level_yaw_offset_deg</code>），但当前 UI 没有写入入口，恒为 0。</p>
+
+<div class="danger">
+  <p style="margin:0"><b>换 IMU 模块后必须重跑水平校准。</b>不同模块的贴装朝向和零偏都不同，校准偏置是绑定在"这块板子 + 这个模块"上的。换模块不清零，姿态球会持续歪着，自动校准也会一直按错误基准重置。</p>
+</div>
+
+<!-- ══════════════════════ 7 安全 ══════════════════════ -->
+<h2 id="s7">七、安全机制</h2>
+
+<figure>
+  <img src="fig/fig06_failsafe.svg" alt="故障保护体系图">
+  <figcaption>图 7-1　八种故障触发源全部汇聚到 <code>disarmNow()</code> 单一出口，加上三道不进入枚举的额外保护</figcaption>
+</figure>
+
+<h3>7.1 统一上锁出口</h3>
+
+<p>无论从哪条路径发现故障，最终都调用同一个函数 <code>disarmNow(reason)</code>。它按固定顺序做七件事：</p>
+<ol>
+  <li>清除已解锁标志 <code>g_armed = false</code></li>
+  <li>四个电机 PWM 全部写 0</li>
+  <li>复位全部 5 路 PID（清零积分与微分历史）</li>
+  <li>置解锁禁止标志 <code>g_arm_inhibit = true</code></li>
+  <li>记录故障原因到 <code>g_last_fs</code> 并写状态消息</li>
+  <li>蜂鸣短鸣（KILL 用专用音，因为 KILL 已经播过 <code>BUZ_KILL</code>）</li>
+  <li>停止任何循环报警音</li>
+</ol>
+
+<div class="note">
+  <p style="margin:0"><b>为什么坚持"单一出口"？</b>如果每个故障分支各自写一套关电机逻辑，早晚会有某个分支忘了清积分或者忘了停报警音。用户看到的现象是"电机停了但蜂鸣器还在尖叫"或者"解锁后飞机猛地一抽"——这类 bug 极难定位。收敛到一个函数后，新增故障类型只需加一个枚举值，代码改动量归零。</p>
+</div>
+
+<h3>7.2 解锁状态机</h3>
+
+<figure>
+  <img src="fig/fig05_arm.svg" alt="解锁状态机图">
+  <figcaption>图 7-2　三态解锁状态机：DISARMED → ARMING → ARMED，含四条件互锁与故障抑制</figcaption>
+</figure>
+
+<h4>解锁四条件（缺一不可）</h4>
+<table class="tight">
+  <thead><tr><th style="width:60px">条件</th><th style="width:200px">要求</th><th>防的是什么</th></tr></thead>
+  <tbody>
+    <tr><td>① 油门</td><td>≤ 0.05（<code>kArmThrottleMax</code>）</td><td>避免带油门解锁，一解锁电机就猛转</td></tr>
+    <tr><td>② 摇杆</td><td>横滚 / 俯仰 / 偏航 |值| ≤ 0.15（<code>kStickCenterMax</code>）</td><td>避免带着操纵指令解锁，起飞瞬间就偏航</td></tr>
+    <tr><td>③ 姿态</td><td>|roll| 与 |pitch| ≤ 45°</td><td>避免倒着或大角度倾斜时解锁</td></tr>
+    <tr><td>④ 状态</td><td>无电机硬件故障、不在故障抑制中</td><td>避免电机故障后反复尝试解锁</td></tr>
+  </tbody>
+</table>
+
+<p>四条件必须<strong>连续保持 800 ms</strong>（<code>kArmHoldMs</code>）才真正解锁。任何一帧被破坏，计时立即清零重来。这个设计直接针对消费级飞控最常见的事故——"手一碰摇杆开关就解锁起飞"。</p>
+
+<h3>7.3 故障后的恢复路径</h3>
+
+<div class="warn">
+  <p style="margin:0 0 8px"><b>注意：故障后不会自动恢复可解锁状态。</b></p>
+  <p style="margin:0">必须先<strong>关闭解锁开关</strong>（<code>arm_request = false</code>）<strong>且把油门归零</strong>，解锁禁止标志才被清除。这个"必须显式复位"的设计是有意的：故障刚发生时，机体姿态、电机状态往往还没稳，让操作者主动做一次"我确认安全了"的动作，比系统自作主张重新允许解锁安全得多。</p>
+</div>
+
+<h3>7.4 三道不进入枚举的额外保护</h3>
+<table class="tight">
+  <thead><tr><th style="width:160px">保护</th><th>规则</th></tr></thead>
+  <tbody>
+    <tr><td><b>低油门强制停转</b></td><td><code>throttle ≤ 0.05</code> 时直接写 0 并复位全部 PID。悬停临界区最容易积累积分，必须清。</td></tr>
+    <tr><td><b>电机测试三重闸门</b></td><td>输出 ≤ 20%；时长钳位 100~2000 ms 且到时自动停；已解锁 / 电机故障 / 摇杆有输入时命令直接被拒绝并回 ack。</td></tr>
+    <tr><td><b>参数双重限幅</b></td><td>写入时钳位，从 NVS 读出后再钳位一次，防止旧固件残留值造成越界。</td></tr>
+  </tbody>
+</table>
+
+<!-- ══════════════════════ 8 通信 ══════════════════════ -->
+<h2 id="s8">八、通信与 Web 遥控</h2>
+
+<figure>
+  <img src="fig/fig07_comm.svg" alt="通信时序图">
+  <figcaption>图 8-1　HTTP 取页 → WebSocket 握手 → 配置下发 → 20 Hz 双向循环 → 命令通道全景</figcaption>
+</figure>
+
+<h3>8.1 通信链路</h3>
+
+<p>飞控上电即开启 SoftAP 并注册三类路由：<code>/</code> 返回内嵌单页应用，<code>/health</code> 返回 <code>OK</code>（用于探测设备是否在线），<code>/ws</code> 是 WebSocket 端点。浏览器访问 <code>http://192.168.4.1</code> 拿到页面后立刻建立 WebSocket 连接，连接建立瞬间固件就把全量配置推给前端，之后进入 20 Hz 双向循环。</p>
+
+<div class="note">
+  <p style="margin:0"><b>为什么用 WebSocket 文本帧而不是二进制 MAVLink？</b>本工程的定位是"浏览器直连遥控"，操作者就是拿着手机的人而不是地面站。文本 JSON 换来三个实际好处：① 串口助手、浏览器控制台、Python 脚本都能直接收发，调试门槛为零；② 前端解析一行 <code>JSON.parse</code>，不需要引入 mavlink 解析库和消息注册表；③ 没有字节序和字段对齐问题，人肉可读。代价是带宽略高（每帧约 200 字节 × 20 Hz ≈ 4 KB/s），对 WiFi 来说完全无压力。</p>
+</div>
+
+<h3>8.2 上行：遥控指令（20 Hz）</h3>
+
+<pre><code>C,throttle,roll,pitch,yaw,arm_request
+例：C,0.320,-0.150,0.080,-0.200,1
+    油门 30%   横滚     俯仰     偏航     解锁请求</code></pre>
+
+<p>前端用 <code>setInterval(…, 20)</code> 固定节拍发送，与用户手势频率无关。这是为了保证<strong>即使摇杆不动，指令帧也持续刷新</strong>——固件侧靠 <code>cmd_age &gt; cmd_timeout</code>（默认 300 ms）判定失联，若改成"只有动了才发"，静止状态下 300 ms 后就会被判定超时上锁。</p>
+
+<h4>其它上行控制命令</h4>
+<table class="tight">
+  <thead><tr><th style="width:230px">命令</th><th>作用</th></tr></thead>
+  <tbody>
+    <tr><td><code>K</code></td><td>紧急停止，对应 <code>FS_KILL</code>，固件侧最高优先级</td></tr>
+    <tr><td><code>GET</code></td><td>主动拉取全量配置（浏览器刷新或点「获取参数」）</td></tr>
+    <tr><td><code>SAVE</code></td><td>把当前内存参数落盘到 NVS（对应界面「保存参数」）</td></tr>
+    <tr><td><code>PID,ANGLE\|RATE\|YAW,kp,ki,kd</code></td><td>热更新某组 PID 增益，置脏标志，下一控制周期统一应用并复位 PID</td></tr>
+    <tr><td><code>CFG,KEY,VALUE</code></td><td>修改 7 项飞行限值或切换滤波器模式，全部按 kMin/kMax 钳位</td></tr>
+    <tr><td><code>CAL,LEVEL\|GYRO</code></td><td>请求水平校准 / 陀螺标定，仅上锁态允许</td></tr>
+    <tr><td><code>MTEST,idx,thr,ms</code> / <code>MTEST,STOP</code></td><td>单电机测试 / 停止测试</td></tr>
+    <tr><td><code>BUZZER_MUTE,0\|1</code></td><td>蜂鸣器全局静音（写入即存 NVS）</td></tr>
+    <tr><td><code>TAKEOFF_REPEAT,1~10</code></td><td>起飞音效重复轮数</td></tr>
+  </tbody>
+</table>
+
+<h3>8.3 下行：遥测（20 Hz）</h3>
+
+<pre><code>{"type":"tel","t":1234567,"armed":1,"roll":-3.21,"pitch":1.05,"yaw":45.30,
+ "dt_ms":2.01,"loop_hz":497.5,"cmd_age":42,"m0":0.310,"m1":0.298,
+ "m2":0.295,"m3":0.305,"vbatt":3.842,"fs":0,"cal":"IDLE","msg":"ARMED"}</code></pre>
+
+<table class="tight">
+  <thead><tr><th style="width:120px">字段</th><th>含义</th></tr></thead>
+  <tbody>
+    <tr><td><code>armed</code></td><td>是否已解锁</td></tr>
+    <tr><td><code>roll/pitch/yaw</code></td><td>姿态角（度），已扣除水平校准偏置</td></tr>
+    <tr><td><code>dt_ms</code> / <code>loop_hz</code></td><td>实际控制周期与循环频率，调参时判断算力是否吃紧的关键指标</td></tr>
+    <tr><td><code>cmd_age</code></td><td>遥控指令龄期（毫秒），逼近 300 ms 就要松手找问题了</td></tr>
+    <tr><td><code>m0~m3</code></td><td>四电机实际输出（0~1），判断混控是否正确、是否饱和</td></tr>
+    <tr><td><code>vbatt</code></td><td>电池电压，读取失败时为 <code>null</code> 而非 0</td></tr>
+    <tr><td><code>fs</code></td><td>故障原因码，取值见 7.1 节</td></tr>
+    <tr><td><code>cal</code> / <code>msg</code></td><td>校准状态与人类可读状态消息</td></tr>
+  </tbody>
+</table>
+
+<h4>ack 应答机制</h4>
+<p>所有控制命令都有 <code>{"type":"ack","op":"…","tag":"…","ok":0|1,"msg":"…"}</code> 应答，<code>msg</code> 给出具体原因：<code>ARMED</code>（已解锁时下发校准）、<code>MOTOR_FAIL</code>、<code>RC_ACTIVE</code>（摇杆有输入时下发电机测试）、<code>BAD_IDX</code>、<code>QUEUED</code>、<code>RUN</code>、<code>MUTED</code> 等。前端把它映射为中文提示并显示 2 秒，让「改了参数没生效」这类问题变得可诊断。</p>
+
+<h3>8.4 Web 界面</h3>
+
+<figure>
+  <img src="fig/fig10_webui.svg" alt="Web界面结构图">
+  <figcaption>图 8-2　四大视图：遥控（双摇杆 + 遥测面板）、设置（姿态球 + 调参）、测试（单电机）、主题（12 套配色）</figcaption>
+</figure>
+
+<div class="note">
+  <p style="margin:0"><b>零外部依赖不是省事，是刚需。</b>整个界面 1651 行全部编译进固件，不引用任何 CDN、字体文件或图片。野外飞行没有外网、在干扰环境下 CDN 请求可能超时几分钟——如果界面依赖外部资源，那正是飞机最容易出问题的时候。所以这里刻意做成"一个 HTML 文件就是完整应用"，浏览器拿到页面后立刻可用。</p>
+</div>
+
+<table class="tight">
+  <thead><tr><th style="width:110px">视图</th><th>内容</th></tr></thead>
+  <tbody>
+    <tr><td><b>遥控</b></td><td>左摇杆（纵油门 / 横偏航）、右摇杆（纵俯仰 / 横横滚）、ARM 开关、紧急上锁按钮、油门与连接状态、状态消息、8 项遥测读数</td></tr>
+    <tr><td><b>设置</b></td><td>Canvas 姿态球（含地平线）、三轴读数、水平校准与陀螺标定按钮及状态回显、蜂鸣器静音与起飞音效次数、滤波器下拉选择、获取/保存参数、9 个 PID 输入框、7 项飞行限值</td></tr>
+    <tr><td><b>测试</b></td><td>电机索引选择、油门与时长设定、单电机启停</td></tr>
+    <tr><td><b>主题</b></td><td>12 套配色网格（浅色 / 暗黑 + 海棠 / 朱红 / 藕荷 / 湖蓝 / 晴蓝 / 藏青 / 葱绿 / 甘青 / 翡翠 / 松花），点击即换肤，选中项存 localStorage</td></tr>
+  </tbody>
+</table>
+
+<h4>摇杆回中的设计取舍</h4>
+<p>右摇杆（俯仰 / 横滚）松手时三轴立即归零，回到「姿态自稳」状态；左摇杆的油门则<strong>保持当前位置不回零</strong>。若油门也回零，飞机会瞬间掉高度。刻意让两个摇杆行为不同，是为了让"松手"这个动作的含义明确——姿态回稳、高度自己掉，操作者心里有数。</p>
+
+<!-- ══════════════════════ 9 硬件 ══════════════════════ -->
+<!-- ══════════════════════ 9 音效与灯效 ══════════════════════ -->
+<h2 id="s9">九、音效与灯效系统</h2>
+
+<p>这套飞控没有屏幕，<strong>蜂鸣器和三色灯就是它的「仪表盘」</strong>。作者把 14 种提示音和 3 色灯语设计成一套完整的反馈语言：不用连网页、不用看串口，光靠听和看就能知道飞机正处在什么状态、出了什么事。整套系统的实现原则是<strong>彻底的非阻塞</strong>——所有音效灯效都由 <code>millis()</code> 时间戳驱动的状态机刷新（<code>buzzerUpdate()</code> / <code>ledUpdate()</code> 在主循环里轮询），全程没有一处 <code>delay()</code>，500 Hz 控制循环永远不会被一声「嘀」卡住。</p>
+
+<h3>9.1 全流程声光联动</h3>
+
+<p>先看一遍从上电到降落的完整生命周期——每个阶段声音和灯光都在配合讲故事：</p>
+
+<figure>
+  <img src="fig/fig15_flow_av.svg" alt="声光联动全流程">
+  <figcaption>图 9-1　声光联动全流程：8 个阶段的声音 + 红绿灯 + 蓝灯组合，以及随时可能插入的故障分支</figcaption>
+</figure>
+
+<div class="note">
+  <p style="margin:0"><b>两条反馈通道各管一摊，互不干扰：</b>红绿灯表达<strong>飞控核心状态</strong>（启动 / 待机 / 解锁 / 故障），蓝灯表达<strong>遥控链路状态</strong>（有没有连上网页、是否真的在飞）。这样「灯在快闪」时你不用猜是故障还是飞行——看颜色就分得清。</p>
+</div>
+
+<h3>9.2 蜂鸣器：14 种音效的节奏谱</h3>
+
+<p>14 种音效按用途分五类：状态播报（单次）、校准确认（连击）、起飞（重复）、等待催促（循环）、报警（循环）。每一段的节奏都对应 <code>hardware.ino</code> 里状态机的真实参数：</p>
+
+<figure>
+  <img src="fig/fig13_buzzer.svg" alt="蜂鸣器音效节奏谱">
+  <figcaption>图 9-2　14 种音效的节奏谱：实心块 = 蜂鸣器响，横轴为毫秒；右侧为触发场景</figcaption>
+</figure>
+
+<table class="tight">
+  <thead><tr><th style="width:210px">音效（枚举）</th><th style="width:190px">节奏</th><th>触发场景与要点</th></tr></thead>
+  <tbody>
+    <tr><td><code>BUZ_POWER_ON</code> 上电</td><td>单声 200 ms</td><td><code>setup()</code> 完成硬件初始化后立即响，等于「通电自检通过」。</td></tr>
+    <tr><td><code>BUZ_READY</code> 就绪</td><td>单声 100 ms</td><td>WiFi 热点与 Web 服务起来后响，与蓝灯转入慢闪同步。</td></tr>
+    <tr><td><code>BUZ_SHORT_BEEP</code> 短鸣</td><td>单声 100 ms</td><td>关闭 ARM 时确认上锁——听到它才说明电机真的断电了。</td></tr>
+    <tr><td><code>BUZ_LONG_BEEP</code> 长鸣</td><td>单声 400 ms</td><td>解锁开关保持约 0.8 s 达成时响起，<b>从这一刻起桨下就是危险区</b>。</td></tr>
+    <tr><td><code>BUZ_MOTOR_TEST</code> 电机测试</td><td>单声 50 ms</td><td>每次启动单电机测试前提示，留出「手离开桨」的反应时间。</td></tr>
+    <tr><td><code>BUZ_DOUBLE_BEEP</code> 双短鸣</td><td>100 / 停 100 / 100</td><td>Web 端「陀螺仪校准」成功。</td></tr>
+    <tr><td><code>BUZ_TRIPLE_BEEP</code> 三短鸣</td><td>100 ×3，间隔 100</td><td>Web 端「水平校准」成功。两种校准靠连击次数区分，闭眼都能分。</td></tr>
+    <tr><td><code>BUZ_TAKEOFF</code> 起飞</td><td>双短鸣 × 3 轮（1~10 可设）</td><td>解锁后<strong>首次推油门</strong>触发一次（<code>g_takeoff_sounded</code> 标志防重复）。</td></tr>
+    <tr><td><code>BUZ_QUICK_TICK</code> 滴答</td><td>周期 200 / 响 50，循环</td><td>解锁等待期的催促声，与红绿慢闪同步，松手即停。</td></tr>
+    <tr><td><code>BUZ_FAST_ALARM</code> 急促报警</td><td>周期 160 / 响 80，循环</td><td>六类故障（IMU 失效 / 遥控超时 / 姿态异常 / 倾斜过大 / PID 异常 / 周期超限）任一触发。</td></tr>
+    <tr><td><code>BUZ_VOLT_ALERT_SLOW</code></td><td>周期 1000 / 响 200</td><td>单体电压 &lt; 3.70 V，Ⅰ 级。</td></tr>
+    <tr><td><code>BUZ_VOLT_ALERT_MED</code></td><td>周期 500 / 响 100</td><td>&lt; 3.50 V，Ⅱ 级。</td></tr>
+    <tr><td><code>BUZ_VOLT_ALERT_FAST</code></td><td>周期 200 / 响 50</td><td>&lt; 3.30 V，Ⅲ 级，濒临过放。</td></tr>
+    <tr><td><code>BUZ_KILL</code> 紧急停止</td><td>100 / 停 50 / 100</td><td>收到 <code>kill</code> 指令立即断油门时的专用音，<b>不会被其它音效覆盖</b>（<code>buzzerPlay()</code> 里唯一有豁免权的音效）。</td></tr>
+  </tbody>
+</table>
+
+<div class="warn">
+  <p style="margin:0"><b>一个值得知道的细节：</b>起飞音效的注释写的是「重复多次双短鸣」，但按子状态机逐步推演，<code>phase==0</code> 分支只负责关断、不补发声——实际听感是第 1 轮完整双短鸣（0 / 200 ms），第 2、3 轮各只在 600 / 1000 ms 响一声。若希望每轮都是规整的双短鸣，把 <code>phase==0</code> 分支里的 <code>buzzerSet(false)</code> 改为先响一声再进入 <code>phase==1</code> 即可。这是读代码时发现的<strong>行为与注释不符</strong>之处，先如实记录。</p>
+</div>
+
+<h3>9.3 三色灯语</h3>
+
+<figure>
+  <img src="fig/fig14_led.svg" alt="三色灯语">
+  <figcaption>图 9-3　三色灯语：红/绿 5 种模式、蓝灯 3 种状态、电压 3 级覆盖的亮度-时间曲线</figcaption>
+</figure>
+
+<p>红绿灯由 <code>g_led_mode</code> 驱动（LEDC 通道 4/5，与电机通道 0~3 完全隔离，互不打架），蓝灯由主循环里一段 50 ms 刷新的独立逻辑控制：</p>
+
+<table class="tight">
+  <thead><tr><th style="width:150px">灯</th><th style="width:220px">状态</th><th>表现与含义</th></tr></thead>
+  <tbody>
+    <tr><td rowspan="5"><b>红 + 绿</b><br><span style="color:#64748b">LEDC PWM<br>通道 4 / 5</span></td><td><code>LED_BOOT</code> 启动中</td><td>红绿交替闪 220 ms——系统初始化，尚未进入待机。</td></tr>
+    <tr><td><code>LED_DISARMED</code> 待机</td><td>红绿同步呼吸 1.4 s（正弦渐变）——已上锁，<b>呼吸灯 = 可以安全靠近</b>。</td></tr>
+    <tr><td><code>LED_ARMING</code> 解锁等待</td><td>同步慢闪 300 ms + 滴答声——正在等你确认。</td></tr>
+    <tr><td><code>LED_ARMED</code> 已解锁</td><td>红绿常亮——电机带电，远离桨。</td></tr>
+    <tr><td><code>LED_FAILSAFE</code> 故障</td><td>同步快闪 120 ms + 急促报警——需要立即处理。</td></tr>
+    <tr><td rowspan="3"><b>蓝</b><br><span style="color:#64748b">普通 GPIO<br>50 ms 刷新</span></td><td>慢闪（周期 1 s）</td><td>待机：没有网页连接，也未解锁。</td></tr>
+    <tr><td>常亮</td><td>WebSocket 已连接——有人正开着网页遥控它。</td></tr>
+    <tr><td>快闪（周期 200 ms）</td><td><b>飞行中</b>：已解锁且油门 &gt; 5%。「蓝灯快闪 = 我真的在飞」。</td></tr>
+    <tr><td rowspan="3"><b>电压覆盖</b><br><span style="color:#64748b">优先级最高</span></td><td>Ⅰ 级 &lt; 3.70 V</td><td>蓝色慢闪——电量偏低，准备降落。</td></tr>
+    <tr><td>Ⅱ 级 &lt; 3.50 V</td><td>绿色慢闪——明显衰减，尽快落地。</td></tr>
+    <tr><td>Ⅲ 级 &lt; 3.30 V</td><td>红绿蓝三色快闪——濒临过放，立即降落。</td></tr>
+  </tbody>
+</table>
+
+<div class="note">
+  <p style="margin:0"><b>为什么要一层「覆盖」而不是改状态？</b>电压告警由 <code>applyVoltageLed()</code> 在状态灯刷新<strong>之后</strong>直接改写三色灯，不改动 <code>g_led_mode</code> 本身。这样告警只「借走」灯几秒，电压恢复或降落后灯语原样接续，两个逻辑完全解耦——比在五 个 LedMode 里各插一种告警态干净得多。</p>
+</div>
+
+<h3>9.4 设计上的几个讲究</h3>
+
+<div class="grid2">
+  <div class="card"><h5>非阻塞状态机</h5><p>每种音效都是「子状态 + 截止时间戳」的小状态机，由 <code>buzzerUpdate()</code> 轮询推进。任何时刻主循环都不会等一声播完——这对 500 Hz 实时控制是底线要求。</p></div>
+  <div class="card"><h5>静音只拦「发声」</h5><p><code>buzzerSet()</code> 开头检查静音标志：静音时状态机照常推进，只是不驱动引脚。取消静音后一切自然接续，不会出现「静音期间状态卡死」。</p></div>
+  <div class="card"><h5>循环音单独管理</h5><p><code>buzzerStopLoop()</code> 只停 5 种循环音（滴答 / 报警 / 三级电压），<b>不砍刚触发的单次音</b>。所以上锁短鸣不会被紧接着的报警「吃掉」，提示音永远完整。</p></div>
+  <div class="card"><h5>参数持久化</h5><p>静音开关与起飞音效轮数在 Web 端设置后写入 NVS（<code>BUZZER_MUTE</code> / <code>TAKEOFF_REPEAT</code> 命令），断电重启自动恢复，不用每次重设。</p></div>
+</div>
+
+<h3>9.5 想自己加一种音效？三步就够</h3>
+
+<ol>
+  <li><b>注册枚举</b>：<code>drone_types.h</code> 的 <code>BuzzerPattern</code> 里加一项（如 <code>BUZ_CAL_FAIL</code>）。</li>
+  <li><b>写节奏</b>：单次音只需在 <code>buzzerPlay()</code> 的 switch 里给时长；复杂节奏（连击/循环）在 <code>buzzerUpdate()</code> 里加一个 <code>if (g_buzzer_pattern == ...)</code> 分支，用 <code>g_buzzer_sub_state</code> 推进。</li>
+  <li><b>找位置触发</b>：在对应业务点调 <code>buzzerPlay(你的音效)</code>，完毕。</li>
+</ol>
+
+<div class="ok">
+  <p style="margin:0"><b>听音辨障速查：</b>一声 200 ms = 上电自检过　·　一声 100 ms = 就绪 / 已上锁　·　两短 = 陀螺校准好　·　三短 = 水平校准好　·　长鸣 = 已解锁（危险）　·　嘀嘀嘀（快）= 故障　·　慢滴滴→快滴滴 = 电压在掉　·　两声急促 = 紧急停止。</p>
+</div>
+
+<!-- ══════════════════════ 10 硬件 ══════════════════════ -->
+<h2 id="s10">十、硬件与引脚定义</h2>
+
+<figure>
+  <img src="fig/fig09_pins.svg" alt="引脚定义与硬件接线图">
+  <figcaption>图 10-1　板型切换方式、默认板型完整引脚表、预留扩展口与电压告警阈值</figcaption>
+</figure>
+
+<h3>10.1 板型与切换（4 种已实现）</h3>
+
+<p>所有板型差异集中在 <code>config.h</code> 的条件编译里，切换只需修改开头的一行 <code>#define</code>。文件开头有一个兜底判断：若 <code>PCB_YaoKun_*</code> 系列宏一个都没定义，自动选中默认板型 <code>PCB_YaoKun_LCKFB_ESP32S3</code>。要注意的是：<strong>随手定义一个还不存在的规划板型宏（如 <code>PCB_YaoKun_ESP32Dev</code>）不会报错</strong>——它会被兜底逻辑拉回默认板型，用默认引脚编译通过，末尾的 <code>#error</code> 分支实际不可达。所以切换板型时只应填下表四个已实现的宏之一。</p>
+
+<table class="tight">
+  <thead><tr><th style="width:230px">板型宏</th><th style="width:130px">对应硬件</th><th>电机引脚</th></tr></thead>
+  <tbody>
+    <tr><td><code>PCB_YaoKun_LCKFB_ESP32S3</code><br><span style="color:var(--brand);font-size:12px">★ 默认</span></td><td>Yaokun K1.0 立创 ESP32-S3 R8N8 全功能板</td><td>16 / 6 / 5 / 15</td></tr>
+    <tr><td><code>PCB_YaoKun_S3mini</code></td><td>YaoKun S1.0C　ESP32-S3 Supermini（已开源）</td><td>8 / 4 / 3 / 9</td></tr>
+    <tr><td><code>PCB_YaoKun_S3mini_B</code></td><td>YaoKun S1.0B　内部测试版</td><td>10 / 4 / 3 / 11</td></tr>
+    <tr><td><code>PCB_YaoKun_S3mini_A</code></td><td>YaoKun S1.0A　内部测试第 1 版</td><td>8 / 4 / 1 / 9</td></tr>
+    <tr><td><code>PCB_YaoKun_ESP32Dev</code></td><td colspan="2">规划中：YaoKun D1.0　适配 30P ESP32 开发板</td></tr>
+  </tbody>
+</table>
+
+<div class="warn">
+  <p style="margin:0"><b>S3mini 系列引脚紧张</b>，实际 PCB 上红绿 LED 可能并未焊接（引脚号仍定义着，只是接了 LED 灯珠不亮）。另外 S1.0A/B 是内部测试版本，引脚对应实物，不建议直接照抄到自己的板子上。</p>
+</div>
+
+<h3>10.2 IMU 轴映射</h3>
+
+<p>不同 IMU 模块的贴装朝向不一样，代码用四个软件开关在<strong>软件层</strong>做重映射，不需要改动驱动：</p>
+
+<table class="tight">
+  <thead><tr><th style="width:230px">模块</th><th style="width:60px">SwapXY</th><th style="width:60px">FlipX</th><th style="width:60px">FlipY</th><th style="width:60px">FlipZ</th></tr></thead>
+  <tbody>
+    <tr><td>原厂 MPU6050（4×4 mm）</td><td>true</td><td>false</td><td>false</td><td>false</td></tr>
+    <tr><td>国产 MPU6050（3×3 mm）</td><td>true</td><td>false</td><td>false</td><td>false</td></tr>
+    <tr><td>MPU6500 模块</td><td>true</td><td><b>true</b></td><td><b>true</b></td><td>false</td></tr>
+  </tbody>
+</table>
+
+<p><code>SwapXY</code> 分支里除了交换 X/Y，还把两轴角速度同时取反——这不是笔误：交换坐标系后手性会翻转，必须同时反向才能保持右手系。</p>
+
+<div class="note">
+  <p style="margin:0"><b>验证方法（<code>config.h</code> 里也写了这段）：</b>改完重新编译烧录，打开网页 → 设置页 → 观察姿态球。飞机<strong>向左倾斜约 30°</strong>，Roll 读数应为<strong>负值</strong>且地平线左低右高；飞机<strong>抬头</strong>，姿态球应显示天空（俯仰为正）；飞机<strong>低头</strong>，姿态球应显示地面（俯仰为负）。一般试 2~3 组组合就能找到正确配置。</p>
+</div>
+
+<h3>10.3 电池电压检测</h3>
+
+<p>GPIO2 走 ADC1_CH2，12-bit 分辨率 + 11 dB 衰减（可测至约 3.9 V），配合 PCB 上 100K + 100K 的分压电路（比值 2.0）覆盖 1S 锂电 4.2 V 满电范围。告警分三级（正常态不报警）：</p>
+
+<table class="tight">
+  <thead><tr><th style="width:110px">等级</th><th style="width:110px">阈值（1S）</th><th style="width:170px">灯光</th><th>蜂鸣</th></tr></thead>
+  <tbody>
+    <tr><td>正常</td><td>≥ 3.70 V</td><td>恢复正常状态显示</td><td>无</td></tr>
+    <tr><td>低电</td><td>&lt; 3.70 V</td><td>蓝灯 1 s 慢闪</td><td>1 s 周期</td></tr>
+    <tr><td>警告</td><td>&lt; 3.50 V</td><td>绿灯 1 s 慢闪</td><td>0.5 s 周期</td></tr>
+    <tr><td>危急</td><td>&lt; 3.30 V</td><td>红绿灯 0.5 s 快闪</td><td>0.2 s 周期</td></tr>
+  </tbody>
+</table>
+
+<p>电压告警的灯光优先级<strong>高于飞控状态灯</strong>——低电量是比"是否解锁"更紧急的信息，必须让飞行员第一时间看到。</p>
+
+<h3>10.4 预留扩展引脚</h3>
+<table class="tight">
+  <thead><tr><th style="width:130px">总线</th><th style="width:250px">引脚（默认板型）</th><th>规划用途</th></tr></thead>
+  <tbody>
+    <tr><td>SPI</td><td>MOSI 18 / CLK 38 / MISO 21 / CS 17</td><td>PMW3901 光流模块；MPU6500 也走这组</td></tr>
+    <tr><td>第二组 I2C</td><td>SCL 4 / SDA 3</td><td>VL53L1X 激光测距模块</td></tr>
+    <tr><td>UART</td><td>TX 12 / RX 11</td><td>ELRS 接收机（未来接实体遥控器）</td></tr>
+    <tr><td>SBUS</td><td>GPIO 1</td><td>SBUS 接收机输入（UART 硬件反相）</td></tr>
+  </tbody>
+</table>
+
+<div class="danger">
+  <p style="margin:0"><b>以上四组引脚在当前代码中只是"定义"，没有任何驱动实现。</b>收到 Web 遥控指令之外，固件不会从这些接口读任何数据。当前版本只能通过浏览器操控。</p>
+</div>
+
+<!-- ══════════════════════ 10 编译 ══════════════════════ -->
+<h2 id="s11">十一、编译与烧录</h2>
+
+<h3>11.1 环境准备</h3>
+
+<table>
+  <thead><tr><th style="width:180px">项目</th><th>要求</th></tr></thead>
+  <tbody>
+    <tr><td>集成开发环境</td><td><b>Arduino IDE 2.x</b>（推荐）或 Arduino CLI / PlatformIO</td></tr>
+    <tr><td>开发板支持包</td><td>Espressif Systems → <b>esp32</b>（版本 ≥ 2.0.14，需支持 ESP32-S3）</td></tr>
+    <tr><td>开发板型号</td><td>ESP32S3 Dev Module（或对应开发板的等效选项）</td></tr>
+    <tr><td>第三方库</td><td><code>ESPAsyncWebServer</code>、<code>AsyncTCP</code>（见下方安装说明）</td></tr>
+    <tr><td>串口驱动</td><td>CH340 / CP2102 等对应 USB 转串口芯片驱动</td></tr>
+  </tbody>
+</table>
+
+<div class="note">
+  <p style="margin:0"><b>关于 AsyncTCP：</b>这是 <code>ESPAsyncWebServer</code> 的硬依赖。ESP32 官方库管理器里的同名包默认分支面向 ESP32 而非 ESP32-S3，<strong>在 S3 上编译可能报错</strong>。稳妥做法是克隆 <code>esphome/AsyncTCP</code> 的 <code>master</code> 分支（已含 S3 支持），把文件夹放进 Arduino 的 <code>libraries</code> 目录；IDE 里若同时存在库管理器版本与手动版本，手动版本优先。</p>
+</div>
+
+<h3>11.2 安装第三方库</h3>
+
+<pre><code># 方式一：Arduino IDE 库管理器
+#   搜索 ESPAsyncWebServer → 安装
+#   搜索 AsyncTCP          → 若编译报错，改用方式二
+
+# 方式二：手动安装（ESP32-S3 推荐）
+cd &lt;Arduino IDE 安装目录&gt;/libraries
+git clone https://github.com/esphome/AsyncTCP.git
+git clone https://github.com/mathieucarbou/ESPAsyncWebServer.git
+# 若 ESPAsyncWebServer 也报错，克隆 esphome 分支：
+#   git clone -b esphome https://github.com/mathieucarbou/ESPAsyncWebServer.git</code></pre>
+
+<h3>11.3 编译与烧录步骤</h3>
+
+<div class="step"><div class="no">1</div><div class="tx"><b>打开工程</b><span>先获取源码：<code>git clone https://github.com/YaoKunS/ESP32-Drone.git</code>（或到仓库页面下载 zip）。然后 Arduino IDE → 文件 → 打开项目 → 选择 <code>YaoKun_Drone/YaoKun_Drone.ino</span>。IDE 会自动把同目录所有 .ino / .h 纳入工程，<b>不要只复制单个文件</b>。</span></div></div>
+<div class="step"><div class="no">2</div><div class="tx"><b>选择板型</b><span>工具 → 开发板 → ESP32 Arduino → <code>ESP32S3 Dev Module</code>；工具 → Upload Speed → 921600（不稳定时降到 115200）；工具 → Flash Size → <code>4MB (FS:1MB OTA:0.5MB)</code> 或按实际板卡配置。</span></div></div>
+<div class="step"><div class="no">3</div><div class="tx"><b>确认 config.h 板型宏</b><span>打开 <code>config.h</code>，确认开头默认的 <code>#define PCB_YaoKun_LCKFB_ESP32S3</code> 与你的 PCB 一致。若不是，改这一行后即可，<b>其余引脚不用动</b>。</span></div></div>
+<div class="step"><div class="no">4</div><div class="tx"><b>连接并烧录</b><span>USB 连接开发板 → 工具 → 端口 → 选择新出现的 COM 口 → 点击上传。若进不了下载模式，按住 BOOT 键再点上传，上传成功后松开。</span></div></div>
+<div class="step"><div class="no">5</div><div class="tx"><b>打开串口监视器</b><span>波特率 <b>115200</b>。正常会依次打印 <code>Boot...</code> → <code>LEDC attach: 1 1 1 1</code> → <code>Detected MPU6050 (I2C)</code> → <code>Gyro calibration done</code> → <code>Ready. Open http://192.168.4.1/</code>。</span></div></div>
+
+<div class="danger">
+  <p style="margin:0 0 8px"><b>烧录时必须知道的两个坑：</b></p>
+  <p style="margin:0 0 6px">① <b>合并整片烧录会清 NVS。</b>若你习惯用 <code>esptool merge_bin</code> 把 bootloader + partitions + app 合成一个 4 MB 镜像从头烧，偏移 <code>0x9000</code> 的 NVS 分区会被覆盖，WiFi 名称、IMU 识别结果、调好的 PID 全部丢失。调试期建议只用 IDE 的"上传"按钮（只写 app 分区）。</p>
+  <p style="margin:0">② <b>烧完停在下载模式。</b>出现 <code>ESP-ROM … boot:0x0 DOWNLOAD waiting for download</code> 说明芯片停在 bootloader。先用 <code>--before no-reset</code> 连一下确认还能连上，再回读 <code>0x10000</code> 首字节是否为 <code>0xE9</code> 确认镜像完好；<code>run</code> / <code>--after hard-reset</code> 可能反复落回下载模式（BOOT 脚被拉低），改用 <code>--after watchdog-reset</code> 即可跳出。</p>
+</div>
+
+<h3>11.4 编译选项说明</h3>
+<pre><code>Serial 输出：115200 波特，用于查看 IMU 识别结果与 LEDC 绑定状态
+Flash 频率：80 MHz（默认）
+PSRAM：ESP32-S3 R8N8 开发板自带 PSRAM，工具里按板卡实际情况设置
+核心数 / 分核频率：默认即可，控制循环跑在哪个核心不影响正确性</code></pre>
+
+<p>若需要高频姿态调试输出，把 <code>config.h</code> 中的 <code>kEnableSerialAttDebug</code> 改为 <code>true</code>，会以 100 Hz 打印 <code>ATT,roll,pitch,yaw</code>。<strong>正常飞行时务必保持 false</strong>——串口打印是阻塞操作，会挤占控制周期时间。</p>
+
+<!-- ══════════════════════ 11 使用 ══════════════════════ -->
+<h2 id="s12">十二、使用方法</h2>
+
+<h3>12.1 首次上电（严格按顺序）</h3>
+
+<div class="danger">
+  <p style="margin:0"><b>安全提示：首次装机务必拆掉螺旋桨完成下面第 1~4 步。</b>电机转向和混控符号的错误在带桨时会造成炸机。等第 4 步全部通过再装桨。</p>
+</div>
+
+<div class="step"><div class="no">1</div><div class="tx"><b>静止放平，上电</b><span>把飞机放在水平桌面上，<b>保持绝对静止</b>约 2 秒。陀螺零偏标定期间若在转动，零偏会被记成角速度，上电后飞机认为自己正在自旋，一推油门就会猛甩。听到就绪短鸣说明标定完成。</span></div></div>
+
+<div class="step"><div class="no">2</div><div class="tx"><b>确认串口输出正常</b><span>串口监视器应打印出 IMU 型号识别结果与 <code>Ready. Open http://192.168.4.1/</code>。若停在 <code>IMU init FAILED</code>，说明没识别到传感器——检查 I2C 接线（SDA=9 / SCL=8）或确认模块是否为 MPU6500。</span></div></div>
+
+<div class="step"><div class="no">3</div><div class="tx"><b>连接热点，打开网页，做水平校准</b><span>手机连 WiFi <code>YaoKun_Drone</code>（密码 <code>12345678</code>）→ 浏览器打开 <code>http://192.168.4.1</code> → 进「设置」页 → 看姿态球是否水平（不应歪）→ 点「水平校准」听三短鸣 → 若姿态球歪了，切换到互补滤波模式对照看读数，判断是不是 IMU 轴映射错了（见 10.2 节）。</span></div></div>
+
+<div class="step"><div class="no">4</div><div class="tx"><b>逐个测试电机方向（拆桨状态下）</b><span>进「测试」页 → 依次点 M0 / M1 / M2 / M3，每个给 0.12 油门、600 ms。核对：M0 转时是<strong>左前</strong>桨、M1 是<strong>右前</strong>、M2 是<strong>右后</strong>、M3 是<strong>左后</strong>。若某个电机转错或方向反了（从机头方向看是顺时针还是逆时针），<b>先别装桨</b>，需要调整电机输出线序或修改 <code>config.h</code> 中对应引脚映射。</span></div></div>
+
+<div class="step"><div class="no">5</div><div class="tx"><b>装桨，检查桨向</b><span>确认四个电机旋向两两相反（X 型混控的前提）后装桨。同一个电机的桨必须是"推力方向一致"，这是最基础也最容易装反的地方。</span></div></div>
+
+<div class="step"><div class="no">6</div><div class="tx"><b>低高度试飞</b><span>回到「遥控」页 → 油门摇杆缓缓上推一点点到 20~30% 让它离地 → <b>立刻</b>打「ARM」开关，<b>保持不动 1 秒</b>等解锁成功长鸣 → 微调油门保持高度 → 轻推右摇杆测试横滚 / 俯仰方向是否正确（推右飞机应右倾）。方向反了立刻上锁，修正后重试。</span></div></div>
+
+<h3>12.2 每次飞行前检查</h3>
+<ul>
+  <li>电池电压充足（&gt; 3.7 V 以上），接线牢固，桨叶无损伤、无松动</li>
+  <li>上电后等待陀螺标定完成（保持静止）</li>
+  <li>网页能连上，姿态球水平无漂移</li>
+  <li>解锁时油门归零、三摇杆回中、机身水平</li>
+  <li>周围无障碍物，无人站在起降点附近</li>
+</ul>
+
+<h3>12.3 常用操作速查</h3>
+<table class="tight">
+  <thead><tr><th style="width:180px">想做什么</th><th>怎么操作</th></tr></thead>
+  <tbody>
+    <tr><td>解锁</td><td>油门归零 + 三摇杆回中 + 机身水平 → 打开 ARM 开关 → <b>保持 1 秒</b> → 听到长鸣即成功</td></tr>
+    <tr><td>上锁</td><td>关闭 ARM 开关，或点「紧急上锁」按钮</td></tr>
+    <tr><td>紧急停止</td><td>点「紧急上锁」→ 发 <code>K</code> → 电机立即停转（最优先）</td></tr>
+    <tr><td>飞偏了修回来</td><td>减小油门让它落地 → 修正姿态 → 重新解锁。不要在空中大幅反向推杆找平衡</td></tr>
+    <tr><td>调 PID</td><td>「设置」页改 Kp/Ki/Kd → 点「应用」→ 飞出感受 → 满意后点「保存参数」写入 NVS</td></tr>
+    <tr><td>换姿态解算器</td><td>「设置」页下拉选择 → 应用（<b>必须上锁</b>）→ 自动存 NVS</td></tr>
+    <tr><td>恢复出厂参数</td><td>清除 NVS（烧录时擦除 NVS 分区）后重新烧录</td></tr>
+  </tbody>
+</table>
+
+<!-- ══════════════════════ 12 调参 ══════════════════════ -->
+<h2 id="s13">十三、PID 调参指南</h2>
+
+<h3>13.1 整定顺序：必须从内环到外环</h3>
+
+<div class="danger">
+  <p style="margin:0"><b>不要同时调两个环。</b>外环在动，内环的行为就无法判断，你会分不清"反应慢"是外环 Kp 小还是内环跟不上。先把内环调稳，再调外环——这是串级控制的唯一正确顺序。</p>
+</div>
+
+<h4>第一步：先调角速率内环（<code>RATE</code> 组）</h4>
+<p>先在设置页把角度环 Kp <b>降到 0.5 左右</b>，让外环变弱，减少干扰。然后：</p>
+<ul>
+  <li><b>偏慢</b>（推杆后转速跟不上）→ 提高 Kp</li>
+  <li><b>振荡</b>（机身高频抖动）→ 降低 Kp，或增加 Kd</li>
+  <li>范围参考：Kp 0.015~0.040，Kd 0~0.0005</li>
+</ul>
+
+<h4>第二步：再调角度外环（<code>ANGLE</code> 组）</h4>
+<p>内环稳定后再动外环：</p>
+<ul>
+  <li><b>回中太慢、机身软</b> → 提高角度 Kp</li>
+  <li><b>来回摆动振荡</b> → 降低角度 Kp</li>
+  <li><b>总有固定倾角停不住</b> → 略加 Ki（0.0005~0.002），<b>不要超过 0.005</b></li>
+  <li>范围参考：Kp 1.5~3.0，Ki 0~0.002，Kd 一般保持 0</li>
+</ul>
+
+<h4>第三步：偏航（<code>YAW</code> 组）</h4>
+<p>偏航通常不用调，默认值即可工作。若转向有轻微延迟可把 Kp 从 0.030 提到 0.040；<b>不要给偏航加 Ki</b>——航向角本来就在漂，积分只会把漂移放大成持续偏转。</p>
+
+<h3>13.2 安全限值的整定</h3>
+<table class="tight">
+  <thead><tr><th style="width:150px">参数</th><th style="width:100px">默认</th><th style="width:100px">可调范围</th><th>整定建议</th></tr></thead>
+  <tbody>
+    <tr><td>最大倾角</td><td>30°</td><td>5~80°</td><td>新手保持 20~30°。这是"最大允许倾斜"，直接决定飞机能被压到多平</td></tr>
+    <tr><td>最大偏航速率</td><td>180 °/s</td><td>30~360</td><td>新手 120~180 足够。太大容易转晕自己</td></tr>
+    <tr><td>倾斜保护角</td><td>80°</td><td>20~85°</td><td>越低越安全。60~70° 就能有效保护，别为了"能压得更平"往上调</td></tr>
+    <tr><td>遥控超时</td><td>300 ms</td><td>100~2000</td><td>弱信号环境可适当放宽到 500~800；信号好时别低于 200，否则偶发丢包就上锁</td></tr>
+    <tr><td>遥测周期</td><td>50 ms</td><td>20~500</td><td>默认 20 Hz 够用。改成 20 ms（50 Hz）会明显增加 WiFi 负担</td></tr>
+    <tr><td>扭矩缩放</td><td>0.20 / 2.0</td><td>0~1 / 0~4</td><td>悬停手感发死就提高 min 或 slope；振荡则降低</td></tr>
+  </tbody>
+</table>
+
+<div class="note">
+  <p style="margin:0"><b>每次只改一个参数。</b>改完必须实测并记录，改了三项就分不清是哪项起的作用。所有参数在 NVS 里持久化，不点「保存参数」重启就丢——但<b>在地面调试时建议每次都点保存</b>，避免意外断电丢失配置。</p>
+</div>
+
+<h3>13.3 调试时该盯哪些遥测字段</h3>
+<table class="tight">
+  <thead><tr><th style="width:110px">字段</th><th>正常范围</th><th>异常含义</th></tr></thead>
+  <tbody>
+    <tr><td><code>loop_hz</code></td><td>480~500</td><td>长期低于 450 说明有阻塞源（串口打印、网络拥塞），控制精度已下降</td></tr>
+    <tr><td><code>dt_ms</code></td><td>约 2.0</td><td>偶发跳到 5~10 说明有单次阻塞（WS 推送、Flash 写入）。持续 &gt; 5 会触发 dt 保护</td></tr>
+    <tr><td><code>cmd_age</code></td><td>&lt; 50</td><td>逼近 300 会突然上锁。说明网页没连上或 WiFi 丢包</td></tr>
+    <tr><td><code>m0~m3</code></td><td>悬停时 0.25~0.45</td><td>长期贴着 0 或 1 说明扭矩不足或偏置不对；四电机差值大说明配平或重心有问题</td></tr>
+    <tr><td><code>fs</code></td><td>0</td><td>非 0 直接读故障码，见 7.1 节</td></tr>
+  </tbody>
+</table>
+
+<!-- ══════════════════════ 13 排查 ══════════════════════ -->
+<h2 id="s14">十四、故障排查</h2>
+
+<table>
+  <thead><tr><th style="width:220px">症状</th><th style="width:230px">可能原因</th><th>处置</th></tr></thead>
+  <tbody>
+    <tr>
+      <td>串口停在 <code>IMU init FAILED</code></td>
+      <td>没识别到 IMU</td>
+      <td>确认 SDA=9 / SCL=8 接线；确认模块是 MPU6050（I2C）还是 MPU6500（SPI）；查 I2C 接线是否接反</td>
+    </tr>
+    <tr>
+      <td>姿态球歪着 / Roll 读数不对</td>
+      <td>IMU 轴映射错 或 水平校准未做</td>
+      <td>先做水平校准；无效则按 10.2 节验证方法换 <code>SwapXY/FlipX/FlipY</code> 组合重烧</td>
+    </tr>
+    <tr>
+      <td>上电后飞机自己认为是倾斜的</td>
+      <td>陀螺标定时机身不静止</td>
+      <td>把飞机放平静止后重新上电，等就绪音结束再操作</td>
+    </tr>
+    <tr>
+      <td>推右摇杆飞机往左飞</td>
+      <td>电机接反或混控符号不符</td>
+      <td>拆桨，用测试页逐个核对电机索引与位置；确认是<b>左右</b>反了（整体镜像）还是<b>旋转</b>反了（单电机接反）</td>
+    </tr>
+    <tr>
+      <td>打开 ARM 没反应 / 立刻又断开</td>
+      <td>解锁四条件未满足</td>
+      <td>油门推到最低、三摇杆回中、把飞机摆平、保持开关不动 1 秒以上</td>
+    </tr>
+    <tr>
+      <td>解锁后 1 秒自动上锁</td>
+      <td>遥控超时</td>
+      <td>看遥测 <code>cmd_age</code>。若接近 300ms，是网页连接不稳——确认还在热点上、关掉省电模式、靠近手机</td>
+    </tr>
+    <tr>
+      <td>飞行中突然上锁</td>
+      <td>倾斜超限 / WS 断连 / 遥控超时</td>
+      <td>看 <code>fs</code> 字段：4=TILT_LIMIT（撞到障碍或电机无力）2=WS_DISCONNECT（手机走远或息屏）1=CMD_TIMEOUT（链路问题）</td>
+    </tr>
+    <tr>
+      <td>网页打不开 192.168.4.1</td>
+      <td>没连上热点 / 串口卡住</td>
+      <td>确认连的是 <code>YaoKun_Drone</code>（不是路由器同名 WiFi）；<b>部分手机会提示"该 WiFi 无法访问互联网"并自动断开，需在设置里选"保持连接"或关闭该提示</b></td>
+    </tr>
+    <tr>
+      <td>网页时好时坏 / 遥测卡顿</td>
+      <td>多台设备信道干扰</td>
+      <td>只留一台飞机上电（多机同 SSID 会抢占同一信道）；手机切到飞行模式关掉数据；靠近路由器或改用 5G 频段</td>
+    </tr>
+    <tr>
+      <td>改完参数没效果</td>
+      <td>没点「应用」/ 没点「保存」</td>
+      <td>「应用」= 立刻生效（仅本次）；「保存参数」= 写入 NVS（重启仍保留）。两个都要点</td>
+    </tr>
+    <tr>
+      <td>校准按钮点了没反应</td>
+      <td>飞机已解锁</td>
+      <td>校准只允许上锁时进行，先关闭 ARM 开关</td>
+    </tr>
+    <tr>
+      <td>电机不转 / 单转</td>
+      <td>电调没上电 / 油门过低</td>
+      <td>确认电调 BEC 供电；注意本机 <b>throttle ≤ 0.05 时强制停转</b>，低于 5% 油门必然不转</td>
+    </tr>
+    <tr>
+      <td>串口能开网页打不开</td>
+      <td>固件版本过旧 / 编译未完成</td>
+      <td>确认已重新编译烧录；本工程 Web 界面对应较新版本固件</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="note">
+  <p style="margin:0"><b>通用诊断三步法：</b>① 看串口——有没有 <code>Detected MPU6050/6500</code> 和 <code>LEDC attach: 1 1 1 1</code>；② 看网页遥测——姿态对不对、<code>loop_hz</code> 是否接近 500、<code>fs</code> 是不是 0；③ 拆桨做单电机测试。三步能把九成问题定位到"传感器 / 链路 / 混控"三类。</p>
+</div>
+
+<!-- ══════════════════════ 14 取舍 ══════════════════════ -->
+<h2 id="s15">十五、设计取舍与已知边界</h2>
+
+<h3>15.1 这套代码做对了什么</h3>
+<table class="tight">
+  <thead><tr><th style="width:170px">设计点</th><th>价值</th></tr></thead>
+  <tbody>
+    <tr><td>单一上锁出口</td><td>新增故障类型只需加一个枚举值，不存在"某个分支忘了关电机"的漏洞</td></tr>
+    <tr><td>安全路径也发遥测</td><td>故障时界面照样实时显示原因，不用盲猜</td></tr>
+    <tr><td>五组临界区保护</td><td>FreeRTOS 双上下文下共享状态零竞争，且临界区都很短，不影响 500 Hz 时序</td></tr>
+    <tr><td>加速度计信任度</td><td>把"什么时候不能信加速度计"变成显式可计算的量，而不是靠固定权重碰运气</td></tr>
+    <tr><td>滤波器切换保连续</td><td>避免切换瞬间姿态跳变导致满扭矩抽飞——这是同类项目里常见的隐蔽 bug</td></tr>
+    <tr><td>参数双重限幅</td><td>写入钳位 + 读出再钳位，防止旧固件残留值造成越界</td></tr>
+    <tr><td>固定节拍发包</td><td>界面卡顿不影响指令帧率，这是遥控系统稳定性的基础</td></tr>
+    <tr><td>注释密度极高</td><td>每个常数有出处、每个非直觉处有"为什么"，可作为中文飞控教材阅读</td></tr>
+  </tbody>
+</table>
+
+<h3>15.2 诚实的局限性</h3>
+<table class="tight">
+  <thead><tr><th style="width:190px">局限</th><th>影响与说明</th></tr></thead>
+  <tbody>
+    <tr><td><b>无法定点悬停</b></td><td>只有 IMU，没有位置或垂向参考。松杆保持水平速度继续飘，松油门就掉高度。这不是 bug，是传感器配置决定的物理边界。</td></tr>
+    <tr><td><b>偏航会缓慢漂移</b></td><td>无磁罗盘，偏航角是陀螺纯积分结果，长时间飞行航向会偏。上锁静止时因静止检测会持续校正，飞行中无法校正。</td></tr>
+    <tr><td><b>只能浏览器操控</b></td><td>SBUS / ELRS 引脚已定义但无驱动实现，当前版本没有实体遥控器支持。</td></tr>
+    <tr><td>没有黑匣子</td><td>故障后无法回放飞行数据定位原因。NVS 只存参数，不存飞行日志。</td></tr>
+    <tr><td>没有地面站协议</td><td>用 WebSocket 文本 JSON 而非 MAVLink，QGC 等地面站无法直接连接。这是"浏览器直连"定位的取舍。</td></tr>
+    <tr><td>无 OTA 升级</td><td>需 USB 重新烧录。</td></tr>
+    <tr><td>偏航权限偏小</td><td>输出限幅 ±0.3，比横滚俯仰保守。高速偏航时可能显得"转不动"。</td></tr>
+    <tr><td>代码未做模块化收尾</td><td><code>controlStep()</code>（约 250 行）仍在主文件里，<code>hardware.ino</code> 885 行同时承载四类驱动——能跑能读，但再往上加功能建议先拆分。</td></tr>
+  </tbody>
+</table>
+
+<!-- ══════════════════════ 15 扩展 ══════════════════════ -->
+<h2 id="s16">十六、扩展路线</h2>
+
+<p>工程已在 PCB 与引脚层面为以下升级留好了口。按投入产出比排序：</p>
+
+<table class="tight">
+  <thead><tr><th style="width:60px">优先级</th><th style="width:200px">项目</th><th>说明</th></tr></thead>
+  <tbody>
+    <tr><td><b>高</b></td><td>VL53L1X 激光测距<br>+ PMW3901 光流</td><td>接 SPI + 第二组 I2C，做"无 GPS 悬停"——这是本机最值得做的升级，能从根本上解决无法定点的短板。原理：光流测水平位移，测距测高度，两者配合就能估计出水平速度并做定点修正。</td></tr>
+    <tr><td><b>高</b></td><td>气压计定高</td><td>SPL06-01 或 BMP280，与 IMU 共总线。气压高度 + 卡尔曼滤波 + 双环 PID，把垂向也闭环，是实现"松杆悬停"的必经之路。</td></tr>
+    <tr><td>中</td><td>SBUS 接收机支持</td><td>GPIO1 已预留（UART 硬件反相）。接入实体遥控器后可脱离浏览器，带宽和延迟都会改善。注意 SBUS 是 100 Hz 远低于当前 20 Hz 指令的假设，需要相应调整超时阈值。</td></tr>
+    <tr><td>中</td><td>QMC5883L 磁罗盘</td><td>校正偏航漂移，把偏航从单环升级为双环。但要注意磁场干扰（电机电流、扬声器磁铁），需做硬磁软磁校准。</td></tr>
+    <tr><td>中</td><td>飞行日志 / 黑匣子</td><td>把姿态、电机输出、故障状态循环写入 SPI Flash，异常后可通过 Web 端导出，用数据复盘而不是靠猜。</td></tr>
+    <tr><td>低</td><td>MAVLink 协议</td><td>接入 QGC / Mission Planner。代价是要引入解析库和消息注册表，与当前"零依赖单页应用"的简洁性有冲突，需权衡。</td></tr>
+    <tr><td>低</td><td>代码拆分</td><td>把 <code>controlStep()</code> 拆成独立模块、<code>hardware.ino</code> 按驱动类型分成四个文件。当前 5173 行仍可读，但继续膨胀会失控。</td></tr>
+  </tbody>
+</table>
+
+<div class="ok">
+  <p style="margin:0"><b>如果只做一件事：</b>做定高（测距或气压 + 双环 PID）。它带来的改变是质变级的——从"手动飞行"变成"能松杆的飞行"，是这个飞控从"能飞"到"好用"的分水岭。</p>
+</div>
+
+<!-- ══════════════════════ 16 同类对比 ══════════════════════ -->
+<h2 id="s17">十七、与同类开源飞控对比</h2>
+
+<p>下表对比耀坤飞控与 <b>Flix</b>、<b>ESP-FC</b>、<b>ESP-Drone</b> 三个主流开源项目。<b>原评估表由 DeepSeek 生成，仅供参考</b>；其中涉及本项目的客观数据（代码行数、板型数量、控制频率等）已按源码实测核对修正——例如行数为 5173 行（含 1651 行前端）而非 ~2500 行，板型为 4 种已实现 + 4 种规划而非 8 种。</p>
+
+<h3>17.1 核心架构对比</h3>
+<table class="tight">
+  <thead><tr><th style="width:150px">架构维度</th><th>耀坤飞控</th><th>Flix</th><th>ESP-FC</th><th>ESP-Drone</th></tr></thead>
+  <tbody>
+    <tr><td>开发框架</td><td>Arduino（模块化文件）</td><td>Arduino（&lt;2000 行）</td><td>原生 ESP-IDF / Arduino</td><td>ESP-IDF + FreeRTOS</td></tr>
+    <tr><td>控制循环频率</td><td>500 Hz</td><td>1000 Hz</td><td>1-2 kHz</td><td>500 Hz</td></tr>
+    <tr><td>操作系统</td><td>裸机大循环</td><td>裸机</td><td>裸机</td><td>FreeRTOS</td></tr>
+    <tr><td>协议支持</td><td>WebSocket + HTTP</td><td>MAVLink (QGC)</td><td>Betaflight Configurator</td><td>CRTP + cfclient</td></tr>
+    <tr><td>参数配置方式</td><td>网页直连调参</td><td>MAVLink 参数服务</td><td>Betaflight 配置器/CLI</td><td>cfclient 上位机</td></tr>
+  </tbody>
+</table>
+
+<h3>17.2 姿态解算与传感器融合</h3>
+<table class="tight">
+  <thead><tr><th style="width:150px">算法维度</th><th>耀坤飞控</th><th>Flix</th><th>ESP-FC</th><th>ESP-Drone</th></tr></thead>
+  <tbody>
+    <tr><td>姿态解算器</td><td><b>Madgwick / Mahony / 互补滤波</b>（3 种可选 + 热切换）</td><td>互补滤波</td><td>四元数 + 互补滤波</td><td>Crazyflie EKF</td></tr>
+    <tr><td>滤波器种类</td><td>低通 + 加速度计信任度自适应</td><td>LPF</td><td>LPF、动态 Notch、RPM 滤波</td><td>标准滤波</td></tr>
+    <tr><td>陀螺仪支持</td><td>MPU6050/6500（自动检测 I2C/SPI）</td><td>MPU9250/6500/6050</td><td>MPU6050/9250、ICM20602、BMI160</td><td>MPU6050</td></tr>
+    <tr><td>自适应算法</td><td>✅ 加速度计信任度动态调整</td><td>❌</td><td>✅ 动态 Notch 滤波</td><td>❌</td></tr>
+    <tr><td>滤波器调参</td><td>Web 界面</td><td>CLI</td><td>Betaflight 界面</td><td>cfclient</td></tr>
+  </tbody>
+</table>
+
+<h3>17.3 PID 控制与飞行性能</h3>
+<table class="tight">
+  <thead><tr><th style="width:150px">控制维度</th><th>耀坤飞控</th><th>Flix</th><th>ESP-FC</th><th>ESP-Drone</th></tr></thead>
+  <tbody>
+    <tr><td>控制架构</td><td><b>串级 PID</b>（角度环→角速率环）</td><td>三维二级串级 PID</td><td>Betaflight 风格 PID</td><td>Crazyflie PID</td></tr>
+    <tr><td>偏航控制</td><td>独立偏航角速率 PID</td><td>集成在三维 PID</td><td>标准 PID</td><td>标准 PID</td></tr>
+    <tr><td>扭矩缩放/抗饱和</td><td>✅ 低油门动态缩放 + 积分抗饱和</td><td>❌</td><td>Betaflight 标准</td><td>标准</td></tr>
+    <tr><td>积分抗饱和</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr>
+    <tr><td>飞行模式</td><td>自稳（可扩展定高）</td><td>ACRO / ANGLE</td><td>ACRO / ANGLE / AIRMODE</td><td>自稳 / 定高 / 定点</td></tr>
+  </tbody>
+</table>
+
+<h3>17.4 开发门槛与教育适用性</h3>
+<table class="tight">
+  <thead><tr><th style="width:150px">教育维度</th><th>耀坤飞控</th><th>Flix</th><th>ESP-FC</th><th>ESP-Drone</th></tr></thead>
+  <tbody>
+    <tr><td>代码行数</td><td><b>5173 行</b>（含 1651 行前端），模块化</td><td>&lt;2000 行，模块化</td><td>较大（模拟 Betaflight）</td><td>中等（FreeRTOS）</td></tr>
+    <tr><td>学习难度</td><td><b>★★☆☆☆</b>（Arduino 友好）</td><td>★★☆☆☆</td><td>★★★★☆</td><td>★★★★☆</td></tr>
+    <tr><td>中文文档</td><td>✅ 完善（注释 + 教程）</td><td>社区翻译</td><td>较少</td><td>✅ 官方中文文档</td></tr>
+    <tr><td>推荐人群</td><td>嵌入式初学者 / 电子爱好者 / 教师 / 科创竞赛</td><td>极简风格爱好者</td><td>穿越机进阶玩家</td><td>专业开发者</td></tr>
+    <tr><td>教学价值</td><td>★★★★★</td><td>★★★★☆</td><td>★★★☆☆</td><td>★★★★☆</td></tr>
+  </tbody>
+</table>
+
+<h3>17.5 功能完整度对比</h3>
+<table class="tight">
+  <thead><tr><th style="width:150px">功能</th><th>耀坤飞控</th><th>Flix</th><th>ESP-FC</th><th>ESP-Drone</th></tr></thead>
+  <tbody>
+    <tr><td>WiFi 无线控制</td><td>✅ Web 网页（免 APP）</td><td>✅ MAVLink + QGC</td><td>✅ ESP-NOW、SBUS 等多种</td><td>✅ APP / 游戏手柄</td></tr>
+    <tr><td>手机 APP 控制</td><td>通过网页（无需安装）</td><td>QGC 地面站</td><td>❌</td><td>✅ 专用 APP</td></tr>
+    <tr><td>地面站支持</td><td>网页定制</td><td>QGroundControl</td><td>Betaflight Configurator</td><td>cfclient</td></tr>
+    <tr><td>黑盒记录</td><td>❌（可扩展 SD）</td><td>✅ 日志分析</td><td>✅</td><td>✅</td></tr>
+    <tr><td>电机测试</td><td>✅ 网页端</td><td>未明确</td><td>✅ Betaflight 滑块</td><td>✅ 上位机调试</td></tr>
+    <tr><td>传感器校准</td><td>✅ 陀螺仪 / 水平</td><td>✅ IMU 校准</td><td>✅ Betaflight 界面</td><td>✅ cfclient</td></tr>
+    <tr><td>定高 / 定点</td><td>可扩展（预留 I2C/SPI）</td><td>计划中</td><td>❌</td><td>✅</td></tr>
+  </tbody>
+</table>
+
+<div class="note">
+  <p style="margin:0"><b>对比总结：</b>耀坤飞控的差异化定位是<b>「麻雀虽小五脏俱全」</b>——在保持 Arduino 低门槛的基础上实现商业级飞控的核心架构。它不仅是一架可以飞的无人机，更是一本活教材：每个模块都在演示嵌入式系统如何做工程化的软件架构。尤其适合正在学习嵌入式系统的学生、寻找开源飞控项目的开发者、需要教学案例的教师，以及希望快速验证算法的科研人员。</p>
+</div>
+
+<!-- ══════════════════════ 17 开源地址 ══════════════════════ -->
+<h2 id="s18">十八、开源地址与支持渠道</h2>
+
+<table>
+  <thead><tr><th style="width:200px">渠道</th><th>地址与说明</th></tr></thead>
+  <tbody>
+    <tr><td><b>GitHub 代码仓库</b></td><td><a href="https://github.com/YaoKunS/ESP32-Drone">https://github.com/YaoKunS/ESP32-Drone</a><br><span style="color:#64748b">固件全部源码、Web 界面、实物图。克隆：<code>git clone https://github.com/YaoKunS/ESP32-Drone.git</code>。GPL v3 协议，欢迎 Star / Fork / Issue。</span></td></tr>
+    <tr><td><b>立创开源硬件平台</b></td><td><a href="https://oshwhub.com/lindahe">https://oshwhub.com/lindahe</a><br><span style="color:#64748b">耀坤的个人主页——耀坤无人机系列 PCB（星火计划 2026 开源项目）。原理图 / PCB 工程文件免费下载，嘉立创打样可直接下单。</span></td></tr>
+    <tr><td><b>哔哩哔哩视频教程</b></td><td><a href="https://space.bilibili.com/3707011699050767">https://space.bilibili.com/3707011699050767</a><br><span style="color:#64748b">「耀坤智联」主页——装机教程、飞行演示与系列讲解视频。</span></td></tr>
+    <tr><td><b>淘宝元器件套件</b></td><td><a href="https://shop35432590.taobao.com/">https://shop35432590.taobao.com/</a><br><span style="color:#64748b">淘宝店「耀坤智联」——本项目所需电子元器件套件，基础元件仅需 9.9 元。</span></td></tr>
+  </tbody>
+</table>
+
+<div class="ok">
+  <p style="margin:0"><b>支持项目：</b>如果这个项目对你有帮助，欢迎到 GitHub 点一个 Star，或在 B 站关注「耀坤智联」追更教程——这些都是对开源作者最直接的支持。</p>
+</div>
+
+<footer>
+  <b>耀坤智联 YaoKunSmart</b><br>
+  GitHub：<a href="https://github.com/YaoKunS/ESP32-Drone">github.com/YaoKunS/ESP32-Drone</a>　·　
+  淘宝店：<a href="https://shop35432590.taobao.com/">shop35432590.taobao.com</a><br>
+  哔哩哔哩：<a href="https://space.bilibili.com/3707011699050767">耀坤智联</a>　·　
+  嘉立创开源硬件平台：<a href="https://oshwhub.com/lindahe">oshwhub.com/lindahe</a>（星火计划 2026 开源项目）<br>
+  文档依据工程源码深度分析整理　·　固件 5173 行
+</footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 660" width="1000" height="660" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+  <defs>
+    <marker id="e" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#dc2626"/>
+    </marker>
+    <marker id="eg" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#16a34a"/>
+    </marker>
+  </defs>
+  <rect width="1000" height="660" fill="#ffffff"/>
+
+  <text x="20" y="28" font-size="15" font-weight="bold" fill="#0f172a">故障保护体系：8 种触发源与统一收敛出口</text>
+
+  <!-- 触发源列 -->
+  <text x="30" y="60" font-size="12" font-weight="bold" fill="#b91c1c">触发源（FailSafeReason 枚举）</text>
+
+  <rect x="30" y="72" width="290" height="46" rx="7" fill="#fef2f2" stroke="#dc2626" stroke-width="1.4"/>
+  <text x="44" y="92" font-size="11.5" font-weight="bold" fill="#991b1b">FS_IMU_FAIL　IMU 失效</text>
+  <text x="44" y="109" font-size="10" fill="#7f1d1d">读数失败 / 姿态 NaN / PID 输出 NaN</text>
+
+  <rect x="30" y="126" width="290" height="46" rx="7" fill="#fef2f2" stroke="#dc2626" stroke-width="1.4"/>
+  <text x="44" y="146" font-size="11.5" font-weight="bold" fill="#991b1b">FS_DT_LIMIT　周期异常</text>
+  <text x="44" y="163" font-size="10" fill="#7f1d1d">dt ≤ 0 或 &gt; 20 ms（调度被阻塞）</text>
+
+  <rect x="30" y="180" width="290" height="46" rx="7" fill="#fef2f2" stroke="#dc2626" stroke-width="1.4"/>
+  <text x="44" y="200" font-size="11.5" font-weight="bold" fill="#991b1b">FS_TILT_LIMIT　倾斜超限</text>
+  <text x="44" y="217" font-size="10" fill="#7f1d1d">|roll| 或 |pitch| &gt; 80°（可调 20~85）</text>
+
+  <rect x="30" y="234" width="290" height="46" rx="7" fill="#fef2f2" stroke="#dc2626" stroke-width="1.4"/>
+  <text x="44" y="254" font-size="11.5" font-weight="bold" fill="#991b1b">FS_CMD_TIMEOUT　遥控超时</text>
+  <text x="44" y="271" font-size="10" fill="#7f1d1d">指令龄期 &gt; 300 ms（可调 100~2000）</text>
+
+  <rect x="30" y="288" width="290" height="46" rx="7" fill="#fef2f2" stroke="#dc2626" stroke-width="1.4"/>
+  <text x="44" y="308" font-size="11.5" font-weight="bold" fill="#991b1b">FS_WS_DISCONNECT　WebSocket 断连</text>
+  <text x="44" y="325" font-size="10" fill="#7f1d1d">浏览器关闭 / 手机走人 / AP 丢失</text>
+
+  <rect x="30" y="342" width="290" height="46" rx="7" fill="#fef2f2" stroke="#dc2626" stroke-width="1.4"/>
+  <text x="44" y="362" font-size="11.5" font-weight="bold" fill="#991b1b">FS_KILL　紧急停止</text>
+  <text x="44" y="379" font-size="10" fill="#7f1d1d">Web 端「紧急上锁」按钮</text>
+
+  <rect x="30" y="396" width="290" height="46" rx="7" fill="#fef2f2" stroke="#dc2626" stroke-width="1.4"/>
+  <text x="44" y="416" font-size="11.5" font-weight="bold" fill="#991b1b">FS_MANUAL　手动上锁</text>
+  <text x="44" y="433" font-size="10" fill="#7f1d1d">主动关闭解锁开关</text>
+
+  <rect x="30" y="450" width="290" height="46" rx="7" fill="#fef2f2" stroke="#dc2626" stroke-width="1.4"/>
+  <text x="44" y="470" font-size="11.5" font-weight="bold" fill="#991b1b">FS_MOTOR_FAIL　电机硬件故障</text>
+  <text x="44" y="487" font-size="10" fill="#7f1d1d">LEDC 通道绑定失败（上电即检出）</text>
+
+  <!-- 汇聚线 -->
+  <path d="M320,95 L368,95 L368,270" stroke="#dc2626" stroke-width="2" fill="none"/>
+  <path d="M320,149 L368,149" stroke="#dc2626" stroke-width="2" fill="none"/>
+  <path d="M320,203 L368,203" stroke="#dc2626" stroke-width="2" fill="none"/>
+  <path d="M320,257 L368,257" stroke="#dc2626" stroke-width="2" fill="none"/>
+  <path d="M320,311 L368,311" stroke="#dc2626" stroke-width="2" fill="none"/>
+  <path d="M320,365 L368,365" stroke="#dc2626" stroke-width="2" fill="none"/>
+  <path d="M320,419 L368,419" stroke="#dc2626" stroke-width="2" fill="none"/>
+  <path d="M320,473 L368,473" stroke="#dc2626" stroke-width="2" fill="none"/>
+
+  <!-- 出口 -->
+  <rect x="368" y="176" width="262" height="190" rx="10" fill="#fee2e2" stroke="#dc2626" stroke-width="2.2"/>
+  <text x="499" y="202" font-size="13.5" font-weight="bold" fill="#7f1d1d" text-anchor="middle">disarmNow(reason)</text>
+  <text x="499" y="222" font-size="11" fill="#7f1d1d" text-anchor="middle">唯一的关电机出口</text>
+  <text x="384" y="248" font-size="11" fill="#7f1d1d">· g_armed = false</text>
+  <text x="384" y="268" font-size="11" fill="#7f1d1d">· motorsWriteAll(0,0,0,0)</text>
+  <text x="384" y="288" font-size="11" fill="#7f1d1d">· resetAllPid()（5 路清零）</text>
+  <text x="384" y="308" font-size="11" fill="#7f1d1d">· g_arm_inhibit = true</text>
+  <text x="384" y="328" font-size="11" fill="#7f1d1d">· g_last_fs = reason</text>
+  <text x="384" y="348" font-size="11" fill="#7f1d1d">· 蜂鸣短鸣（KILL 用专用音）</text>
+
+  <path d="M630,271 L700,271" stroke="#dc2626" stroke-width="2.2" fill="none" marker-end="url(#e)"/>
+
+  <!-- 收敛后行为 -->
+  <rect x="702" y="150" width="268" height="242" rx="10" fill="#f8fafc" stroke="#334155" stroke-width="1.6"/>
+  <text x="836" y="176" font-size="12.5" font-weight="bold" fill="#0f172a" text-anchor="middle">系统收敛后的状态</text>
+  <text x="716" y="202" font-size="11" fill="#334155">· 电机停转，PID 归零</text>
+  <text x="716" y="222" font-size="11" fill="#334155">· LED 切故障快闪（120 ms）</text>
+  <text x="716" y="242" font-size="11" fill="#334155">· 蜂鸣急促报警（160 ms）</text>
+  <text x="716" y="262" font-size="11" fill="#334155">· 状态消息「FAILSAFE: xxx」</text>
+  <text x="716" y="282" font-size="11" fill="#334155">· 遥测仍以 20 Hz 上送</text>
+  <text x="716" y="302" font-size="11" fill="#334155">· Web 端显示 fs 故障码</text>
+  <rect x="716" y="316" width="240" height="60" rx="7" fill="#fffbeb" stroke="#ca8a04" stroke-width="1.3"/>
+  <text x="836" y="336" font-size="11" font-weight="bold" fill="#854d0e" text-anchor="middle">注意：飞控仍在运行</text>
+  <text x="836" y="354" font-size="10.5" fill="#475569" text-anchor="middle">不是复位，而是「安全上锁 + 等待人工」</text>
+  <text x="836" y="370" font-size="10.5" fill="#475569" text-anchor="middle">姿态解算、遥测、Web 服务全部照常</text>
+
+  <!-- 附加安全 -->
+  <text x="30" y="530" font-size="12" font-weight="bold" fill="#15803d">不进入故障枚举、但同样保护硬件的三重限制</text>
+
+  <rect x="30" y="542" width="300" height="98" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="46" y="564" font-size="11.5" font-weight="bold" fill="#15803d">① 电机测试三重闸门</text>
+  <text x="46" y="584" font-size="10.5" fill="#166534">· 输出 ≤ 20% 油门上限</text>
+  <text x="46" y="602" font-size="10.5" fill="#166534">· 时长钳位 100~2000 ms 自动停</text>
+  <text x="46" y="620" font-size="10.5" fill="#166534">· 已解锁 / 电机故障 / 摇杆有输入时直接拒绝</text>
+
+  <rect x="348" y="542" width="300" height="98" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="364" y="564" font-size="11.5" font-weight="bold" fill="#15803d">② 低油门强制停转</text>
+  <text x="364" y="584" font-size="10.5" fill="#166534">· throttle ≤ 0.05 时直接写 0</text>
+  <text x="364" y="602" font-size="10.5" fill="#166534">· 同时复位全部 PID，避免积分残留</text>
+  <text x="364" y="620" font-size="10.5" fill="#166534">· 悬停临界区最易积累积分，必须清</text>
+
+  <rect x="666" y="542" width="304" height="98" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="682" y="564" font-size="11.5" font-weight="bold" fill="#15803d">③ 参数写入限幅</text>
+  <text x="682" y="584" font-size="10.5" fill="#166534">· 所有 Web 参数按 kMin/kMax 钳位</text>
+  <text x="682" y="602" font-size="10.5" fill="#166534">· 读取时再钳位一次（双重保险）</text>
+  <text x="682" y="620" font-size="10.5" fill="#166534">· PID 与滤波模式切换均需上锁状态</text>
+</svg>
