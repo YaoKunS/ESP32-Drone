@@ -11,6 +11,22 @@
 #define CONFIG_H
 #include <Arduino.h>
 // ============================================================================
+// 第零部分：固件身份信息（开机 IDENTITY 横幅 + 指纹校验用）
+// 为什么放在 config.h：版本号/品牌信息全工程只允许这一处数据源，
+// 以后发新版本只改这里，开机横幅、发布文档自动跟着变。
+// __DATE__ / __TIME__ 是编译器内置宏，在预处理期展开为本次编译的日期时间，
+// 因此每台机器固件里的 Built 字段都精确对应它真实的那一次编译。
+// ============================================================================
+#define FK_ID_NAME     "YaoKunS   耀坤S3自研飞控 / YaoKunDrone"  // 产品名（IDENTITY 首行）
+#define FK_ID_VERSION  "v1.0"                                     // 固件版本（发版时同步改！）
+#define FK_ID_SOURCE   "Source  : 20260613"                       // 源码基线日期（对应 .ino 头部 @version）
+#define FK_ID_AUTHOR   "Author  : 耀坤 <espnow@163.com>"
+#define FK_ID_BILI     "BiliBili : 耀坤智联  https://space.bilibili.com/3707011699050767/"
+#define FK_ID_OSH      "OSHWHub  : 耀坤无人机  https://oshwhub.com/lindahe/"
+#define FK_ID_TAOBAO   "Taobao   : 耀坤智联  https://shop35432590.taobao.com/"
+#define FK_ID_GITHUB   "GitHub   : https://github.com/YaoKunS/"
+
+// ============================================================================
 // 第一部分：多 PCB 板型选择（引脚定义）
 // 默认使用 PCB_YaoKun_LCKFB_ESP32S3配置，即立创ESP32S3-R8N8开发板 
 // 全功能完整版,预留6针VL53L1x激光模块插座、9针PMW3901光流模块插座

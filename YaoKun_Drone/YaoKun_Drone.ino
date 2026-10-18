@@ -3,7 +3,7 @@
  * @brief 耀坤飞控主程序 -主入口
  * @version 1.0 (20260613)
  * @brief 淘宝店: 耀坤智联 https://shop35432590.taobao.com/
- * @brief 提供本项目所需电子元器件套件，基础元件仅需9.9元 ；
+ * @brief 提供本项目所需电子元器件套件，基础元件仅需9.9元 ； 
  * @brief 哔哩哔哩B站：耀坤智联 ； 
  * @brief 嘉立创开源硬件平台：耀坤无人机（星火计划2026开源项目）
  *
@@ -479,10 +479,45 @@ static void controlStep(float dt) {
 // ============================================================================
 // 系统初始化与主循环
 // ============================================================================
+
+/**
+ * @brief 打印固件身份横幅（开机 IDENTITY）
+ *
+ * 用途：
+ *   1) 用户接上串口（115200，原生 USB-CDC）一眼确认烧的是哪个版本；
+ *   2) 作为发布固件的"指纹"之一 —— 版本/编译时间都打印在串口里，
+ *      配合发布包《指纹与烧录说明》可唯一确定固件来源。
+ *
+ * 参数：无。返回：无。
+ * 调用时机：setup() 最开头（Serial.begin 之后），保证横幅是开机第一屏，
+ *           不会被后续校准日志冲掉。
+ *
+ * 为什么用 FK_ID_* 宏而不是把字符串写死在这里：
+ *   版本号等数据源统一收敛在 config.h 第零部分，发新版只改那一处，
+ *   横幅和文档自动同步，避免"代码是 v1.1、横幅还打 v1.0"的漂移。
+ */
+static void printIdentity() {
+  // 拼接写在 F() 括号里面：相邻字符串字面量在预处理期合并成一条，
+  // 整条仍放进 flash（PROGMEM），不占 RAM。F() 展开后是指针，不能与字面量相加，
+  // 所以绝不能写成 F("...") FK_ID_NAME 的形式。
+  Serial.println(F("IDENTITY: ============================================"));
+  Serial.println(F("IDENTITY:   " FK_ID_NAME));
+  Serial.println(F("IDENTITY:   Version : " FK_ID_VERSION));
+  Serial.println(F("IDENTITY:   " FK_ID_SOURCE));
+  Serial.println(F("IDENTITY:   Built   : " __DATE__ " " __TIME__));
+  Serial.println(F("IDENTITY:   " FK_ID_AUTHOR));
+  Serial.println(F("IDENTITY:   " FK_ID_BILI));
+  Serial.println(F("IDENTITY:   " FK_ID_OSH));
+  Serial.println(F("IDENTITY:   " FK_ID_TAOBAO));
+  Serial.println(F("IDENTITY:   " FK_ID_GITHUB));
+  Serial.println(F("IDENTITY: ============================================"));
+}
+
 void setup() {
   Serial.begin(115200);
   delay(200);
   Serial.println("Boot...");
+  printIdentity();   // 开机第一屏：版本与品牌横幅（指纹校验用）
 
   // LED 初始化（红绿蓝）
   g_led_mode = LED_BOOT;
