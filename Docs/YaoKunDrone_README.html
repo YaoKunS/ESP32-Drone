@@ -156,6 +156,10 @@
 
 <p>这个项目的出发点不是做一个「能飞的玩具」，而是做一套<strong>能被完整读懂、能被放心修改的开源飞控教学与实践平台</strong>。因此代码里的每一个常数都有出处注释，每一处非直觉的设计都写清了「为什么这么写」和「不这么写会怎样」——它同时也是一份可运行的中文飞控教材。</p>
 
+<div class="note">
+  <p style="margin:0"><b>当前固件版本 v1.1（2026-10-23）</b>，相对 v1.0 的三项变更（均由真机试飞问题驱动，详见对应章节）：① 关闭芯片欠压复位（brownout）——修复地面临界油门必重启的问题，见第七节；② 偏航环加入积分 Ki=0.005——消除电机/桨扭矩不对称导致的匀速自旋，见 5.5 节；③ 偏航扭矩符号适配（<code>kYawTorqueSign</code>）——适配实测电机布局，修复起飞加速自旋，见 5.3 节。</p>
+</div>
+
 <h3>1.1 实物一览</h3>
 
 <p>整机由一块<strong>免费打样的 PCB 机架</strong> + ESP32-S3 开发板 + MPU6050/6500 模块 + 四个 8520 空心杯电机组成，飞控热点是 <code>YaoKun_Drone</code>。以下实物图来自开源仓库 <a href="https://github.com/YaoKunS/ESP32-Drone">github.com/YaoKunS/ESP32-Drone</a>：</p>
@@ -259,7 +263,7 @@
 
 <h3>2.5 参数与可维护性</h3>
 <ul>
-  <li><b>五板型条件编译</b>：<code>config.h</code> 中改一行宏即可切换 PCB，引脚完全隔离互不干扰。</li>
+  <li><b>多板型条件编译</b>：<code>config.h</code> 中改一行宏即可切换 PCB，引脚完全隔离互不干扰。</li>
   <li><b>全参数在线可调</b>：9 个 PID 增益 + 7 项飞行限值 + 滤波器模式 + 蜂鸣器设置，全部 Web 端热更新并持久化到 NVS。</li>
   <li><b>参数双重限幅</b>：写入时钳位一次，从 NVS 读出后再钳位一次，防止旧固件残留值造成越界。</li>
   <li><b>五组临界区保护共享状态</b>：遥控指令、配置 / PID、KILL 请求、电机测试、校准请求，FreeRTOS 双上下文下无竞争。</li>
@@ -292,7 +296,7 @@
   <tbody>
     <tr><td><code>YaoKunDrone.ino</code></td><td>598</td><td>主入口：<code>setup()</code> / <code>loop()</code>，以及控制流水线 <code>controlStep()</code>、WiFi/Web 启动、电压告警与校准辅助</td></tr>
     <tr><td><code>drone_types.h</code></td><td>312</td><td>公共契约：5 个结构体、4 个枚举、inline 工具函数、全部跨模块 extern 声明</td></tr>
-    <tr><td><code>config.h</code></td><td>376</td><td>五种 PCB 板型条件编译 + 全部系统常量（引脚 / PWM / PID 限幅 / 阈值）</td></tr>
+    <tr><td><code>config.h</code></td><td>376</td><td>多 PCB 板型条件编译 + 全部系统常量（引脚 / PWM / PID 限幅 / 阈值）</td></tr>
     <tr><td><code>hardware.ino</code></td><td>885</td><td>四类硬件驱动实现 + Madgwick / Mahony / Mpu6050 / Mpu6500 / ImuDriver 五个类的方法</td></tr>
     <tr><td><code>drone_imu.h</code></td><td>199</td><td>上述五个类的声明 + <code>accelToRollPitchDeg</code> / <code>isImuStationary</code> 两个 inline 辅助</td></tr>
     <tr><td><code>drone_pid.h</code></td><td>183</td><td>通用位置式 PID 类，带积分抗饱和与输出限幅（含大段教学式注释）</td></tr>
@@ -402,19 +406,22 @@ if ((int32_t)(now_us - next_us) &gt;= 0) {
 
 <h3>5.2 偏航为何只用单环</h3>
 
-<p>偏航没有角度外环。因为本机<strong>没有磁罗盘、没有任何绝对航向参考</strong>，偏航角是陀螺仪纯积分出来的，误差会随时间无限制漂移。给一个会漂移的量设外环，等于给积分漂移又套一层积分，稳态误差反而更糟。所以偏航直接采用角速率单环（<code>g_yaw_rate_pid</code>），把「指令要转多快」这件事直接做对，不去管最终转到哪个朝向。输出限幅 ±0.3，比横滚俯仰的 ±0.5 更保守——因为偏航只影响两个电机，权限小一点更安全。</p>
+<p>偏航没有角度外环。因为本机<strong>没有磁罗盘、没有任何绝对航向参考</strong>，偏航角是陀螺仪纯积分出来的，误差会随时间无限制漂移。给一个会漂移的量设外环，等于给积分漂移又套一层积分，稳态误差反而更糟。所以偏航直接采用角速率单环（<code>g_yaw_rate_pid</code>），把「指令要转多快」这件事直接做对，不去管最终转到哪个朝向。输出限幅 ±0.3，比横滚俯仰的 ±0.5 更保守——因为偏航只影响两个电机，权限小一点更安全。v1.1 起偏航环带有小积分（Ki=0.005），用积分项自动抵消电机/桨扭矩不对称的合力，消除匀速自旋（见 5.5 节说明）。</p>
 
 <h3>5.3 X 型混控矩阵</h3>
 
-<pre><code>M0 左前 FL = throttle + roll_torque + pitch_torque - yaw_torque
-M1 右前 FR = throttle - roll_torque + pitch_torque + yaw_torque
-M2 右后 RR = throttle - roll_torque - pitch_torque - yaw_torque
-M3 左后 RL = throttle + roll_torque - pitch_torque + yaw_torque</code></pre>
+<pre><code>yaw_t = yaw_torque * kYawTorqueSign   // 偏航符号适配系数（见下方说明）
+M0 左前 FL = throttle + roll_torque + pitch_torque - yaw_t
+M1 右前 FR = throttle - roll_torque + pitch_torque + yaw_t
+M2 右后 RR = throttle - roll_torque - pitch_torque - yaw_t
+M3 左后 RL = throttle + roll_torque - pitch_torque + yaw_t</code></pre>
 
 <p>符号的来历：横滚靠对角电机差速（FL+RL 增、FR+RR 减产生右倾），俯仰靠前后电机差速，偏航靠同侧反向旋转（左侧减、右侧增产生偏航）。三者叠加后再限幅到 <code>[0, 1]</code>。</p>
 
+<p><b>偏航符号为什么要乘系数</b>：混控默认约定电机旋向为「左前=逆时针、右前=顺时针、右后=逆时针、左后=顺时针」（对角两两同向）。而 v1.1 实测装机的旋向恰好<strong>每颗都相反</strong>（左前 GPIO16=顺、右前 GPIO6=逆、右后 GPIO5=顺、左后 GPIO15=逆，对角仍两两同向）——这种布局本身合法，但偏航反扭矩方向整体翻转：不翻转符号时偏航环变成<strong>正反馈</strong>，起飞后机头越转越快、配合倾斜后推力矢量绕圈，表现为「加速自旋 → 螺旋升天」。解决方式是在 PID 输出之后、进混控之前乘 <code>kYawTorqueSign = -1</code>（<code>config.h</code>）：翻转点选在这里，摇杆杆向、遥控器通道方向、姿态球全部不用改；横滚/俯仰扭矩只与电机<strong>位置</strong>有关，位置没变故不受影响。</p>
+
 <div class="warn">
-  <p style="margin:0"><b>混控符号必须和实际电机安装方向一致，否则会形成正反馈——摇杆往右飞机往左飞，而且越修越偏。</b>本工程把电机布局定义为「X 型，机头方向位于 M4（左后）与 M1（右前）之间」。首次装机请务必用「测试」页逐个确认电机转向，不要直接推油门试飞。详见 <a href="#s12">第十二节 使用方法</a>第 3 步。</p>
+  <p style="margin:0"><b>混控符号必须和实际电机安装方向一致，否则偏航环会失效甚至正反馈——表现为起飞后匀速自旋（布局对角同向但整体反向）或加速自旋螺旋升天（相邻同向的非法布局，任何混控都救不了）。</b>首次装机请务必「不装桨」用「测试」页逐个确认电机转向（见第十二节第 4 步），再决定是调电机线序还是改 <code>kYawTorqueSign</code>。详见 <a href="#s12">第十二节 使用方法</a>第 3 步。</p>
 </div>
 
 <h3>5.4 低油门扭矩缩放</h3>
@@ -434,11 +441,13 @@ roll_torque  = g_roll_rate_pid.update(...)  * torque_scale;</code></pre>
   <tbody>
     <tr><td>角度环（横滚 / 俯仰共用）</td><td>2.0 / 0.001 / 0</td><td>±250 °/s</td><td>输出是期望角速度，单位 °/s</td></tr>
     <tr><td>角速率环（横滚 / 俯仰共用）</td><td>0.025 / 0 / 0.0002</td><td>±0.5</td><td>输出是归一化扭矩，无量纲</td></tr>
-    <tr><td>偏航角速率环</td><td>0.030 / 0 / 0</td><td>±0.3</td><td>限幅更保守，因只影响两电机</td></tr>
+    <tr><td>偏航角速率环</td><td>0.030 / 0.005 / 0</td><td>±0.3</td><td>限幅更保守，因只影响两电机</td></tr>
   </tbody>
 </table>
 
-<p>注意外环 Ki = 0.001 <strong>很小</strong>——这是有意的。姿态环的稳态误差本来就由重力静力学自然补偿（机体倾斜时重力本身产生恢复力矩），过大的积分反而会在持续倾斜时积累大量风控量，退出倾斜时产生严重过冲。角速率环则完全不用积分（Ki = 0），因为陀螺零偏在标定阶段已经被减掉了。</p>
+<p>注意外环 Ki = 0.001 <strong>很小</strong>——这是有意的。姿态环的稳态误差本来就由重力静力学自然补偿（机体倾斜时重力本身产生恢复力矩），过大的积分反而会在持续倾斜时积累大量风控量，退出倾斜时产生严重过冲。横滚/俯仰的角速率环完全不用积分（Ki = 0），因为陀螺零偏在标定阶段已经被减掉了。</p>
+
+<p><b>偏航环的 Ki = 0.005 是 v1.1 新加的</b>（此前为 0）。偏航是单层角速率环，没有外环兜底，而四颗电机与桨的扭矩<strong>永远不可能完全对称</strong>——这个不对称合力需要一个恒定的反向扭矩去抵消。纯 P 控制器消除稳态扰动的唯一方式是「保留一点残余转速」：转起来产生误差、P 项输出反扭矩与之平衡，于是飞机会<strong>匀速缓慢自旋</strong>（近地面地效还会放大不对称）。加入小积分后，I 项约 1 秒内即可积出抵消不对称所需的反扭矩，自旋消失；PID 类自带「输出限幅时积分 ×0.99 衰减」的抗饱和机制，不会积爆。⚠️ 从 v1.0 升级且板子里保存过参数的用户：请到网页把偏航 Ki 手动改为 0.005（或点「恢复默认」）；整片刷写会清 NVS，新默认自动生效。</p>
 
 <!-- ══════════════════════ 6 姿态解算 ══════════════════════ -->
 <h2 id="s6">六、姿态解算</h2>
@@ -534,6 +543,10 @@ acc_trust = clampf(acc_trust, 0.0f, 1.0f);</code></pre>
 
 <div class="note">
   <p style="margin:0"><b>为什么坚持"单一出口"？</b>如果每个故障分支各自写一套关电机逻辑，早晚会有某个分支忘了清积分或者忘了停报警音。用户看到的现象是"电机停了但蜂鸣器还在尖叫"或者"解锁后飞机猛地一抽"——这类 bug 极难定位。收敛到一个函数后，新增故障类型只需加一个枚举值，代码改动量归零。</p>
+</div>
+
+<div class="note">
+  <p style="margin:0"><b>v1.1 起芯片欠压复位（brownout）已关闭</b>（<code>setup()</code> 首条语句清 <code>RTC_CNTL_BROWN_OUT_ENA</code>，与 Flix 飞控同款做法）。原因：1S 锂电 + LDO 供电压差余量小，四电机满载浪涌会把 3.3V 轨拉到芯片欠压阈值（约 2.43V）以下，触发芯片硬复位——实测表现为「放地上推油到即将离地必重启、手上测试却正常」（临界油门=电流最大时刻）。关闭后软件侧 <code>FS_</code> 故障码不受影响，但<strong>真欠压时芯片不再自保护复位</strong>，只剩蜂鸣器三级电压告警（&lt;3.70V 慢鸣 / &lt;3.50V 快鸣 / &lt;3.30V 急促），请飞手留意电压、及时返航。治本方向：供电线加粗、电源加电解电容、或用独立 BEC 给飞控供电。</p>
 </div>
 
 <h3>7.2 解锁状态机</h3>
@@ -739,7 +752,7 @@ acc_trust = clampf(acc_trust, 0.0f, 1.0f);</code></pre>
 </table>
 
 <div class="note">
-  <p style="margin:0"><b>为什么要一层「覆盖」而不是改状态？</b>电压告警由 <code>applyVoltageLed()</code> 在状态灯刷新<strong>之后</strong>直接改写三色灯，不改动 <code>g_led_mode</code> 本身。这样告警只「借走」灯几秒，电压恢复或降落后灯语原样接续，两个逻辑完全解耦——比在五 个 LedMode 里各插一种告警态干净得多。</p>
+  <p style="margin:0"><b>为什么要一层「覆盖」而不是改状态？</b>电压告警由 <code>applyVoltageLed()</code> 在状态灯刷新<strong>之后</strong>直接改写三色灯，不改动 <code>g_led_mode</code> 本身。这样告警只「借走」灯几秒，电压恢复或降落后灯语原样接续，两个逻辑完全解耦——比在五个 LedMode 里各插一种告警态干净得多。</p>
 </div>
 
 <h3>9.4 设计上的几个讲究</h3>
@@ -875,7 +888,7 @@ git clone https://github.com/mathieucarbou/ESPAsyncWebServer.git
 
 <h3>11.3 编译与烧录步骤</h3>
 
-<div class="step"><div class="no">1</div><div class="tx"><b>打开工程</b><span>先获取源码：<code>git clone https://github.com/YaoKunS/ESP32-Drone.git</code>（或到仓库页面下载 zip）。然后 Arduino IDE → 文件 → 打开项目 → 选择 <code>YaoKun_Drone/YaoKun_Drone.ino</span>。IDE 会自动把同目录所有 .ino / .h 纳入工程，<b>不要只复制单个文件</b>。</span></div></div>
+<div class="step"><div class="no">1</div><div class="tx"><b>打开工程</b><span>先获取源码：<code>git clone https://github.com/YaoKunS/ESP32-Drone.git</code>（或到仓库页面下载 zip）。然后 Arduino IDE → 文件 → 打开项目 → 选择 <code>YaoKun_Drone/YaoKun_Drone.ino</code></span>。IDE 会自动把同目录所有 .ino / .h 纳入工程，<b>不要只复制单个文件</b>。</span></div></div>
 <div class="step"><div class="no">2</div><div class="tx"><b>选择板型</b><span>工具 → 开发板 → ESP32 Arduino → <code>ESP32S3 Dev Module</code>；工具 → Upload Speed → 921600（不稳定时降到 115200）；工具 → Flash Size → <code>4MB (FS:1MB OTA:0.5MB)</code> 或按实际板卡配置。</span></div></div>
 <div class="step"><div class="no">3</div><div class="tx"><b>确认 config.h 板型宏</b><span>打开 <code>config.h</code>，确认开头默认的 <code>#define PCB_YaoKun_LCKFB_ESP32S3</code> 与你的 PCB 一致。若不是，改这一行后即可，<b>其余引脚不用动</b>。</span></div></div>
 <div class="step"><div class="no">4</div><div class="tx"><b>连接并烧录</b><span>USB 连接开发板 → 工具 → 端口 → 选择新出现的 COM 口 → 点击上传。若进不了下载模式，按住 BOOT 键再点上传，上传成功后松开。</span></div></div>
@@ -908,11 +921,11 @@ PSRAM：ESP32-S3 R8N8 开发板自带 PSRAM，工具里按板卡实际情况设�
 
 <div class="step"><div class="no">2</div><div class="tx"><b>确认串口输出正常</b><span>串口监视器应打印出 IMU 型号识别结果与 <code>Ready. Open http://192.168.4.1/</code>。若停在 <code>IMU init FAILED</code>，说明没识别到传感器——检查 I2C 接线（SDA=9 / SCL=8）或确认模块是否为 MPU6500。</span></div></div>
 
-<div class="step"><div class="no">3</div><div class="tx"><b>连接热点，打开网页，做水平校准</b><span>手机连 WiFi <code>YaoKun_Drone</code>（密码 <code>12345678</code>）→ 浏览器打开 <code>http://192.168.4.1</code> → 进「设置」页 → 看姿态球是否水平（不应歪）→ 点「水平校准」听三短鸣 → 若姿态球歪了，切换到互补滤波模式对照看读数，判断是不是 IMU 轴映射错了（见 10.2 节）。</span></div></div>
+<div class="step"><div class="no">3</div><div class="tx"><b>连接热点，打开网页，做水平校准</b><span>手机连 WiFi <code>YaoKun_Drone</code>（密码 <code>48539491</code>）→ 浏览器打开 <code>http://192.168.4.1</code> → 进「设置」页 → 看姿态球是否水平（不应歪）→ 点「水平校准」听三短鸣 → 若姿态球歪了，切换到互补滤波模式对照看读数，判断是不是 IMU 轴映射错了（见 10.2 节）。</span></div></div>
 
-<div class="step"><div class="no">4</div><div class="tx"><b>逐个测试电机方向（拆桨状态下）</b><span>进「测试」页 → 依次点 M0 / M1 / M2 / M3，每个给 0.12 油门、600 ms。核对：M0 转时是<strong>左前</strong>桨、M1 是<strong>右前</strong>、M2 是<strong>右后</strong>、M3 是<strong>左后</strong>。若某个电机转错或方向反了（从机头方向看是顺时针还是逆时针），<b>先别装桨</b>，需要调整电机输出线序或修改 <code>config.h</code> 中对应引脚映射。</span></div></div>
+<div class="step"><div class="no">4</div><div class="tx"><b>逐个测试电机方向（拆桨状态下）</b><span>进「测试」页 → 依次点 M0 / M1 / M2 / M3，每个给 0.12 油门、600 ms。核对位置：M0 转时是<strong>左前</strong>、M1 是<strong>右前</strong>、M2 是<strong>右后</strong>、M3 是<strong>左后</strong>；再核对旋向（俯视）：<b>M0 左前=顺时针、M1 右前=逆时针、M2 右后=顺时针、M3 左后=逆时针</b>（对角两两同向，此即 <code>kYawTorqueSign=-1</code> 适配的出厂布局，见 5.3 节）。若位置错了查 <code>config.h</code> 引脚映射；若某颗转向不符，对调该电机两根输出线即可反转。<b>注意：四个电机必须呈「对角两两同向」布局——相邻同向的非法布局偏航控制力矩恒为零，任何软件都无法补救，必须先改硬件。</b></span></div></div>
 
-<div class="step"><div class="no">5</div><div class="tx"><b>装桨，检查桨向</b><span>确认四个电机旋向两两相反（X 型混控的前提）后装桨。同一个电机的桨必须是"推力方向一致"，这是最基础也最容易装反的地方。</span></div></div>
+<div class="step"><div class="no">5</div><div class="tx"><b>装桨，检查桨向</b><span>确认四个电机旋向与上表一致（对角两两相反）后装桨。桨型必须与电机旋向配套：顺时针电机装顺时针桨（推力向上），逆时针同理——同一个电机的桨必须是"推力方向一致"，这是最基础也最容易装反的地方。</span></div></div>
 
 <div class="step"><div class="no">6</div><div class="tx"><b>低高度试飞</b><span>回到「遥控」页 → 油门摇杆缓缓上推一点点到 20~30% 让它离地 → <b>立刻</b>打「ARM」开关，<b>保持不动 1 秒</b>等解锁成功长鸣 → 微调油门保持高度 → 轻推右摇杆测试横滚 / 俯仰方向是否正确（推右飞机应右倾）。方向反了立刻上锁，修正后重试。</span></div></div>
 

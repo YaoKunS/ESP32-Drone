@@ -51,6 +51,8 @@
 
 The goal was never "a toy that flies", but **an open-source flight controller that a single person can fully read, and safely modify** — a teaching and prototyping platform. Every constant in the code is annotated with where it came from, and every non-obvious design explains *why it is written that way* and *what breaks otherwise*. It doubles as a runnable flight-control textbook.
 
+> 📌 **Current firmware version: v1.1 (2026-10-23)** — three changes since v1.0, all driven by real flight-test findings (details in the referenced sections): ① chip brownout reset disabled — fixes the guaranteed reboot at ground-level critical throttle, see Chapter 7; ② yaw loop gained an integral term Ki=0.005 — eliminates the constant spin caused by motor/prop torque asymmetry, see 5.5; ③ yaw torque sign adaptation (`kYawTorqueSign`) — matches the as-built motor layout, fixes the accelerating spin after takeoff, see 5.3.
+
 ### 1.1 Hardware at a Glance
 
 The aircraft is a **free-to-fabricate PCB frame** plus an ESP32-S3 dev board, an MPU6050/6500 module and four 8520 coreless motors. The flight controller's hotspot is `YaoKun_Drone`. Photos below come from the open-source repository [github.com/YaoKunS/ESP32-Drone](https://github.com/YaoKunS/ESP32-Drone):
@@ -250,20 +252,23 @@ Cascading splits the two demands into loops with different units:
 
 ### 5.2 Why Yaw Uses a Single Loop
 
-There is no outer angle loop for yaw. The aircraft **has no magnetometer and no absolute heading reference**, so yaw angle is a pure gyro integral that drifts without bound. Putting an outer loop on a drifting quantity means integrating an integral, which makes steady-state error worse. Yaw therefore uses a pure rate loop (`g_yaw_rate_pid`): get "how fast to rotate" right and ignore which heading you end up at. The output clamp is ±0.3, more conservative than ±0.5 for roll/pitch, because yaw only has authority over two motors.
+There is no outer angle loop for yaw. The aircraft **has no magnetometer and no absolute heading reference**, so yaw angle is a pure gyro integral that drifts without bound. Putting an outer loop on a drifting quantity means integrating an integral, which makes steady-state error worse. Yaw therefore uses a pure rate loop (`g_yaw_rate_pid`): get "how fast to rotate" right and ignore which heading you end up at. The output clamp is ±0.3, more conservative than ±0.5 for roll/pitch, because yaw only has authority over two motors. Since v1.1 the yaw loop carries a small integral (Ki=0.005) that automatically cancels the net torque of motor/prop asymmetry, eliminating the constant slow spin (see 5.5).
 
 ### 5.3 X-Frame Mixing Matrix
 
 ```bash
-M0 front-left  FL = throttle + roll_torque + pitch_torque - yaw_torque
-M1 front-right FR = throttle - roll_torque + pitch_torque + yaw_torque
-M2 rear-right  RR = throttle - roll_torque - pitch_torque - yaw_torque
-M3 rear-left   RL = throttle + roll_torque - pitch_torque + yaw_torque
+yaw_t = yaw_torque * kYawTorqueSign   // yaw sign adaptation factor (see below)
+M0 front-left  FL = throttle + roll_torque + pitch_torque - yaw_t
+M1 front-right FR = throttle - roll_torque + pitch_torque + yaw_t
+M2 rear-right  RR = throttle - roll_torque - pitch_torque - yaw_t
+M3 rear-left   RL = throttle + roll_torque - pitch_torque + yaw_t
 ```
 
 Where the signs come from: roll uses differential thrust across diagonals (FL+RL up, FR+RR down rolls right), pitch uses front/rear differential, and yaw uses counter-rotation on each side. The sum is then clamped to `[0, 1]`.
 
-> ⚠️ **Mixing signs must match the physical motor orientation, otherwise you create positive feedback — push right and the aircraft rolls left, and it gets worse the harder you correct.** This project defines the layout as "X-frame, nose between M4 (rear-left) and M1 (front-right)". On a first build, always verify each motor with the Test page before applying throttle. See step 3 of [Chapter 12](#12-usage).
+**Why yaw torque is multiplied by a factor**: the mixer assumes the motor rotation layout "front-left = CCW, front-right = CW, rear-right = CCW, rear-left = CW" (diagonal pairs share rotation). The v1.1 as-built aircraft turned out to have **every motor reversed** (front-left GPIO16 = CW, front-right GPIO6 = CCW, rear-right GPIO5 = CW, rear-left GPIO15 = CCW — diagonals still matching). That layout is legal on its own, but it flips the yaw reaction-torque direction: without flipping the sign the yaw loop becomes **positive feedback** — the nose spins faster and faster after takeoff, and once the aircraft tilts the thrust vector starts circling, i.e. the observed "accelerating spin → spiral climb". The fix is to multiply by `kYawTorqueSign = -1` (`config.h`) after the PID output and before the mixer: at this single point, stick directions, transmitter channel directions and the attitude ball all stay untouched; roll/pitch torque depends only on motor **position**, which did not change, so they are unaffected.
+
+> ⚠️ **Mixing signs must match the physical motor orientation, otherwise the yaw loop goes dead or into positive feedback — the symptom is a constant slow spin (legal diagonal layout, signs globally flipped) or an accelerating spiral climb (the illegal adjacent-same-rotation layout, which no software can fix).** On a first build, always verify each motor's rotation prop-off via the Test page (see Chapter 12 step 4) before deciding whether to swap motor wires or change `kYawTorqueSign`.
 
 ### 5.4 Low-Throttle Torque Scaling
 
@@ -283,9 +288,11 @@ The cost is that at high throttle the scale exceeds 1 and is clamped to 1, i.e. 
 |---|---|---|---|
 | Angle loop (shared roll/pitch) | 2.0 / 0.001 / 0 | ±250 °/s | Output is a desired angular rate in °/s |
 | Rate loop (shared roll/pitch) | 0.025 / 0 / 0.0002 | ±0.5 | Output is normalized, dimensionless torque |
-| Yaw rate loop | 0.030 / 0 / 0 | ±0.3 | More conservative: only two motors affected |
+| Yaw rate loop | 0.030 / 0.005 / 0 | ±0.3 | More conservative: only two motors affected |
 
-Note the outer loop's Ki = 0.001 is **very small**, deliberately. Attitude steady-state error is naturally compensated by gravity (a tilted body produces a restoring torque), and a large integral would wind up during sustained tilt and overshoot badly on exit. The rate loop uses no integral at all (Ki = 0) because gyro bias is already removed during calibration.
+Note the outer loop's Ki = 0.001 is **very small**, deliberately. Attitude steady-state error is naturally compensated by gravity (a tilted body produces a restoring torque), and a large integral would wind up during sustained tilt and overshoot badly on exit. The roll/pitch rate loops use no integral at all (Ki = 0) because gyro bias is already removed during calibration.
+
+**The yaw loop's Ki = 0.005 is new in v1.1** (previously 0). Yaw is a single-layer rate loop with no outer loop to fall back on, and the combined torque of four motors and props can **never be perfectly symmetric** — that residual needs a constant counter-torque. A pure P controller can only balance a steady disturbance by leaving a residual rate: the aircraft rotates, the error appears, and the P term holds an opposing torque — i.e. a **constant slow spin** (ground effect near the floor amplifies the asymmetry). With the small integral, the I term builds the required counter-torque within about a second and the spin disappears; the PID class's anti-windup (integral ×0.99 decay while saturated) prevents windup. ⚠️ Upgrading from v1.0 with saved parameters: set yaw Ki to 0.005 manually in the web UI (or tap "Restore defaults"); a full-chip flash erases NVS so the new default applies automatically.
 
 ## 6. Attitude Estimation
 
@@ -352,6 +359,8 @@ Whatever path detects a fault, it ends in the same function, `disarmNow(reason)`
 7. Stop any looping alarm tone
 
 > 💡 **Why insist on a single exit?** If every fault branch wrote its own motor-off logic, sooner or later one would forget to clear the integrals or stop the alarm. The symptom would be "motors stopped but the buzzer is still screaming" or "the aircraft lurches the moment it re-arms" — bugs that are extremely hard to trace. With one function, adding a fault type is a single enum value and zero duplicated logic.
+
+> 📌 **Since v1.1 the chip's brownout reset is disabled** (first statement of `setup()` clears `RTC_CNTL_BROWN_OUT_ENA`, same approach as the Flix firmware). Reason: with a 1S Li-ion behind an LDO the dropout margin is thin, and the surge of four motors at full load can pull the 3.3 V rail below the chip's brownout threshold (~2.43 V), causing a hard chip reset — observed as "reboot every time throttle approaches liftoff on the ground, but fine when held in the hand" (critical throttle = peak current). After disabling, the software `FS_` fault codes are unaffected, but **on a genuine undervoltage the chip no longer self-protects by resetting**; only the three-stage buzzer voltage alarm remains (<3.70 V slow / <3.50 V fast / <3.30 V urgent), so mind the voltage and land in time. Real fixes: thicker power wires, an electrolytic cap on the supply, or a dedicated BEC for the flight controller.
 
 ### 7.2 The Arming State Machine
 
@@ -656,8 +665,8 @@ For high-rate attitude debugging, set `kEnableSerialAttDebug` in `config.h` to `
 
 1. **Place it level and still, then power up**　Put the aircraft on a level table and **keep it absolutely still** for about 2 seconds. If it rotates during gyro bias calibration, the bias is recorded as angular rate and the aircraft powers up believing it is spinning — the first throttle input will throw it. The ready beep means calibration finished.
 2. **Confirm the serial output**　The monitor should print the detected IMU type and `Ready. Open http://192.168.4.1/`. If it stops at `IMU init FAILED`, no sensor was detected — check the I²C wiring (SDA=9 / SCL=8) or whether the module is actually an MPU6500.
-3. **Connect to the hotspot, open the page, run level calibration**　Phone Wi-Fi → `YaoKun_Drone` (password `12345678`) → browser → `http://192.168.4.1` → Settings → check the attitude ball is level (it should not be tilted) → tap "Level calibration" and listen for the triple beep. If the ball is tilted, switch to the complementary filter and compare readings to decide whether the IMU axis mapping is wrong (see 10.2).
-4. **Check every motor's direction (props off)**　Test page → tap M0 / M1 / M2 / M3 in turn, each at 0.12 throttle for 600 ms. Verify M0 is the **front-left** motor, M1 **front-right**, M2 **rear-right**, M3 **rear-left**. If a motor is in the wrong place or spins the wrong way (viewed from the nose), **do not fit props yet** — fix the motor wiring order or the pin mapping in `config.h`.
+3. **Connect to the hotspot, open the page, run level calibration**　Phone Wi-Fi → `YaoKun_Drone` (password `48539491`) → browser → `http://192.168.4.1` → Settings → check the attitude ball is level (it should not be tilted) → tap "Level calibration" and listen for the triple beep. If the ball is tilted, switch to the complementary filter and compare readings to decide whether the IMU axis mapping is wrong (see 10.2).
+4. **Check every motor's direction (props off)**　Test page → tap M0 / M1 / M2 / M3 in turn, each at 0.12 throttle for 600 ms. Verify position: M0 is **front-left**, M1 **front-right**, M2 **rear-right**, M3 **rear-left**; then verify rotation seen from above: **M0 front-left = clockwise, M1 front-right = counter-clockwise, M2 rear-right = clockwise, M3 rear-left = counter-clockwise** (diagonal pairs share rotation — this is the factory layout that `kYawTorqueSign=-1` adapts to, see 5.3). If a position is wrong, check the pin mapping in `config.h`; if a motor spins the wrong way, swap its two output wires to reverse it. **Note: the four motors must form a "diagonal pairs share rotation" layout — in the illegal adjacent-same-rotation layout the yaw control torque is identically zero and no software can fix it; the hardware must be changed first.**
 5. **Fit the props and check their orientation**　Confirm the four motors alternate rotation direction (a prerequisite for X-frame mixing) before fitting props. Each motor's prop must produce thrust in the same direction — the most basic and most commonly botched step.
 6. **Low-altitude test flight**　Back to the Remote page → raise the throttle slowly to 20–30 % until it lifts off → **immediately** flip the ARM switch and **hold it for 1 s** until the arming beep → trim throttle to hold altitude → gently push the right stick to check roll/pitch direction (pushing right should roll it right). If a direction is reversed, disarm at once, fix it and retry.
 
@@ -706,7 +715,7 @@ Only touch the outer loop once the inner one is stable:
 
 #### Step 3: Yaw (YAW group)
 
-Yaw usually needs no tuning; the default works. If rotation feels slightly delayed, raise Kp from 0.030 to 0.040. **Do not add Ki to yaw** — heading already drifts, and integral would turn that drift into continuous rotation.
+Yaw usually needs no tuning; the default works. If rotation feels slightly delayed, raise Kp from 0.030 to 0.040. Yaw Ki ships at 0.005 (added in v1.1) to cancel the constant spin from motor/prop torque asymmetry: still spinning slowly with the sticks centered on the ground → try 0.008–0.010; nose oscillating left-right around center → the integral is too large, drop back to 0.003–0.005. Keep in mind Ki compensates the *steady* torque asymmetry and should not exceed 0.01 — yaw angle has no absolute reference (pure gyro integral), and a larger integral merely accumulates that drift into continuous rotation.
 
 ### 13.2 Tuning the Safety Limits
 

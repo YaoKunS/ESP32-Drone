@@ -12,7 +12,7 @@
 - **界面**：Android 风格 Web UI，12 套主题，姿态球（ADI 民航姿态仪风格）
 - **不含**：MAVLink / CRTP / SBUS / 光流 / 气压计（本版本为纯姿态自稳 + 手动油门）
 
-> ★ 默认热点：**SSID = `YaoKun_Drone`，密码 = `12345678`**
+> ★ 默认热点：**SSID = `YaoKun_Drone`，密码 = `48539491`**
 > 刷完后手机连该热点，浏览器访问 <http://192.168.4.1/> 即可。
 >
 > ★ 本固件只适配「立创 ESP32-S3 R8N8 全功能板」这一种板型。
@@ -23,14 +23,14 @@
 
 | 项目 | 内容 |
 |---|---|
-| 固件版本 | **1.0**（源码 `YaoKunDrone.ino` 头部 @version 1.0 / 20260613） |
+| 固件版本 | **1.1**（源码 `YaoKunDrone.ino` 头部 @version 1.0 / 20260613） |
 | 品牌 | YaoKunS / 耀坤智联 / 耀坤无人机 |
-| 编译时间 | Oct 18 2026 02:29:50 (GMT+8) |
+| 编译时间 | Oct 23 2026 13:45:34 (GMT+8) |
 | 源码目录 | `D:\YaoKunS\YaoKunDrone` |
 | 工具链 | arduino-cli 1.5.1 + esp32 core 3.3.8（内含 ESP-IDF v5.5.4） |
 | 编译参数 | `esp32:esp32:esp32s3` + `FlashSize=8M, PSRAM=opi, PartitionScheme=no_ota, FlashMode=qio, CPUFreq=240, USBMode=hwcdc, CDCOnBoot=cdc` |
 | 第三方库 | ESP Async WebServer 3.12.1 (ESP32Async) ／ Async TCP 3.5.0 (ESP32Async) |
-| 资源占用 | 应用 1127904 B / 2MB（54%）；静态变量 47792 B / 320KB（14%） |
+| 资源占用 | 应用 1127936 B / 2MB（54%）；静态变量 47792 B / 320KB（14%） |
 
 > ⚠️ **关于「读版本号」的说明**（与 ESPDrone 固件不同，别照那套读）：
 > Arduino 构建的镜像里，`0x10020` 处的 `esp_app_desc_t` 是由 ESP32 核心预编译库写入的，`version` 字段读出的是核心库标识（`14a0af9`），`project_name` 读出的是 `arduino-lib-builder`，都不代表本工程版本。
@@ -40,7 +40,7 @@
 
 1. 打开 Flash Download Tool，芯片选 **ESP32-S3**，工作模式 **Develop**。
 2. 只添加这一个文件，地址填 **`0x0`**：
-   `YaoKunS_耀坤S3自研飞控_v1.0_耀坤智联_20261018_merged.bin`
+   `YaoKunS_耀坤S3自研飞控_v1.1_耀坤智联_20261023_merged.bin`
 3. 设置：**SPI SPEED = 80MHz，SPI MODE = DIO，FLASH SIZE = 8MB**（16MB 的板子也选 8MB），COM 口选你的板子，BAUD 选 921600（不稳就降到 115200）。
 4. ⚠️ **务必勾选 DoNotChgBin**。
    原因：镜像头里已写好 SPI 模式/频率/容量（DIO 80MHz 8MB）与镜像尾部 SHA-256，工具若按所选参数改写头部，会破坏校验和导致无法开机。勾上就按原样写入。
@@ -49,7 +49,7 @@
 用 esptool 一条命令也行（等价）：
 
 ```bash
-esptool --chip esp32s3 --port COMx --baud 921600 write_flash 0x0 YaoKunS_耀坤S3自研飞控_v1.0_耀坤智联_20261018_merged.bin
+esptool --chip esp32s3 --port COMx --baud 921600 write_flash 0x0 YaoKunS_耀坤S3自研飞控_v1.1_耀坤智联_20261023_merged.bin
 ```
 
 烧完若「不跑、停在下载模式」（日志出现 `waiting for download`）：说明 GPIO0 被拉低没放开。
@@ -60,19 +60,19 @@ esptool --chip esp32s3 --port COMx --baud 921600 write_flash 0x0 YaoKunS_耀坤S
 **① 直接比文件哈希**（最可靠，不用上电）：
 
 ```bat
-certutil -hashfile "YaoKunS_耀坤S3自研飞控_v1.0_耀坤智联_20261018_merged.bin" SHA256
+certutil -hashfile "YaoKunS_耀坤S3自研飞控_v1.1_耀坤智联_20261023_merged.bin" SHA256
 ```
 
-→ 应为 `955513412023888db3ccef09e62e52750227f72b01aca62d9df90ff8e865682a`
+→ 应为 `91ce0d56d75d091acb60ef41900d4f60b49dccd4e5baa3b54ced3c77c4a1668c`
 
 **② 串口开机 IDENTITY 横幅**（115200，走原生 USB-CDC 口），开机第一屏就是：
 
 ```
 IDENTITY: ============================================
 IDENTITY:   YaoKunS   耀坤S3自研飞控 / YaoKunDrone
-IDENTITY:   Version : v1.0
+IDENTITY:   Version : v1.1
 IDENTITY:   Source  : 20260613
-IDENTITY:   Built   : Oct 18 2026 02:29:50   ← 本次编译时刻，写在固件里
+IDENTITY:   Built   : Oct 23 2026 13:45:34   ← 本次编译时刻，写在固件里
 IDENTITY:   Author  : 耀坤 <espnow@163.com>
 IDENTITY:   BiliBili : 耀坤智联  https://space.bilibili.com/3707011699050767/
 IDENTITY:   OSHWHub  : 耀坤无人机  https://oshwhub.com/lindahe/
@@ -84,7 +84,7 @@ IDENTITY: ============================================
 横幅后面接着应出现：`Calibrating gyro... keep still` → `Gyro calibration done` → `Ready. Open http://192.168.4.1/`（收尾标志行）。
 
 **③ 连上热点验证界面**（最直观）：
-WiFi 搜到 `YaoKun_Drone` → 密码 `12345678` → 浏览器 <http://192.168.4.1/>。
+WiFi 搜到 `YaoKun_Drone` → 密码 `48539491` → 浏览器 <http://192.168.4.1/>。
 网页标题应为「耀坤无人机Web遥控」，界面右下角有 12 套主题切换，姿态页为蓝天地平的民航姿态仪（ADI）样式。
 
 **④ 在 bin 文件里搜明文**（不用设备也能确认是本工程）：
@@ -106,17 +106,25 @@ esptool --chip esp32s3 --port COMx read_flash 0x10000 0x200 app_hdr.bin
 
 | 产物 | 烧写地址 | SHA-256 | 大小 |
 |---|---|---|---|
-| **merged 单文件固件** | `0x0` 整体刷 | `955513412023888db3ccef09e62e52750227f72b01aca62d9df90ff8e865682a` | 1193440 B (0x1235E0) |
+| **merged 单文件固件** | `0x0` 整体刷 | `91ce0d56d75d091acb60ef41900d4f60b49dccd4e5baa3b54ced3c77c4a1668c` | 1193472 B (0x123600) |
 | bootloader | `0x0` | `6f232c4aafe7d21239a1c59404723ca2cfdca063ef73501a21126a8cef39f432` | 19984 B (0x4E10) |
 | 分区表 | `0x8000` | `6a88d59601a83a16a19a08114b59d338324b8dec267d8b43e5d61ad56ec92102` | 3072 B (0xC00) |
 | boot_app0 | `0xE000` | esp32 core 3.3.8 自带（把 otadata 选到 app0，缺它不启动） | 8192 B |
-| 应用程序 | `0x10000` | `07012652fa7c4c4215e45db859dfa4cc4056b0d70ce3f2723ccfb67ab7889c6c` | 1127904 B (0x1135E0) |
+| 应用程序 | `0x10000` | `f97c3ec99d2c5ec1a45df8b53870115e44db175cdf75eb11b513752827bd71a9` | 1127936 B (0x113600) |
 
 - 合并段布局：`0x0 bootloader + 0x8000 分区表 + 0xE000 boot_app0 + 0x10000 应用程序`（段间空隙由 esptool 填 0xFF，文件在应用程序末尾即止）
 - 分区表：nvs 0x9000(20K) / otadata 0xE000(8K) / app0 0x10000(2M) / spiffs 0x210000(1.875M) / coredump 0x3F0000(64K)
 - 镜像头：`E9 xx 02 3F` → SPI 模式 DIO、80MHz、8MB
 
-## 六、六点须知
+## 六、v1.1 相对 v1.0 的变更（均为真机实测问题驱动）
+
+1. **关闭芯片欠压复位（brownout）**：v1.0 实测「放地上推油即将离地必重启」——根因是电机满载浪涌把 3.3V 拉到欠压阈值以下，芯片硬复位。本版按 Flix 同款机制关闭 brownout 检测。⚠️ 代价：真欠压时芯片不再自保护复位，只剩蜂鸣器三级告警（<3.70V 慢鸣 / <3.50V 快鸣 / <3.30V 急促），请飞手留意电压，及时返航更换电池。
+2. **偏航 PID 加积分：Ki 0 → 0.005**。消除电机/桨扭矩不对称带来的匀速自旋（v1.0 的 yaw 环是纯 P，只能「残余转速换反扭矩」）。注意：整片刷写会清 NVS、新默认自动生效；若你的板子保存过参数，请到网页把偏航 Ki 手动改为 0.005（或点恢复默认）。
+3. **偏航扭矩符号适配（`kYawTorqueSign = -1`）**：适配装机实测电机布局：左前(GPIO16)=顺时针、右前(GPIO6)=逆时针、左后(GPIO15)=逆时针、右后(GPIO5)=顺时针（对角两两同向）。与混控默认约定整体相反，不翻转符号时 yaw 环正反馈 → 起飞后加速自旋、「螺旋升天」。翻转点在 PID 输出之后：网页摇杆 / 遥控器杆向均不变。⚠️ 换机架/换电机方向布局的板子请改 `config.h` 的 `kYawTorqueSign`。
+4. **出厂提示**：装机后请务必「不装桨」逐个点测试页 M0~M3 验证转向，四颗转向需与本条布局一致（转向错误的电机对调两根线即可修正）。
+5. **试飞提示**：首次试飞前，把飞机放在确认水平的台面上，在网页里做一次「水平校准」（未解锁状态点，三短鸣为成功）。纯姿态自稳无法消除的水平缓漂属正常现象，飞行中需飞手打杆修正；固定方向的明显偏飘多为重心偏移，左右挪动电池位置即可改善。
+
+## 七、六点须知
 
 1. **单文件从 0x0 整片刷写，会把 0x9000~0x10000（nvs：WiFi 校准数据 + 已保存参数）一并写成 0xFF，等于清空。** 刷新板/空板无影响；刷自己已经调好 PID 的机器要留意，这种场合请改用分片写（只写 `0x0 / 0x8000 / 0xE000 / 0x10000` 四段，跳过 0x9000）。
 2. 本版分区方案为 no_ota（单 app 2MB），没有 OTA 分区 —— 升级只能重新插线刷写。
@@ -125,7 +133,7 @@ esptool --chip esp32s3 --port COMx read_flash 0x10000 0x200 app_hdr.bin
 5. 本机是「纯姿态自稳 + 手动油门」，没有 GPS / 气压计 / 测距 / 光流，**松杆不会悬停**（保持既有水平速度继续飘），松油门就会掉高度；首次试飞请在空旷场地、低空、有保护圈的前提下进行，并先确认网页里「解锁」与「上锁」正常。
 6. 网页里改了 PID / 校准参数会自动存 NVS，下次上电仍在；要恢复出厂用网页的「恢复默认」按钮（不要用整片刷写来"恢复"，那会连带清掉 WiFi 校准）。
 
-## 七、找到我们
+## 八、找到我们
 
 - B站（哔哩哔哩）：[耀坤智联](https://space.bilibili.com/3707011699050767)
 - 立创开源硬件平台：[耀坤无人机](https://oshwhub.com/lindahe)

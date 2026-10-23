@@ -35,6 +35,18 @@
 #include <Wire.h>
 #include <math.h>
 #include <string.h>
+
+// 【欠压复位(brownout)禁用】—— 参考耀坤整理版 flix 的 power.ino 同款机制：
+//   1S 锂电 + LDO 的压差余量很小，"即将离地"时四颗电机同时满载，浪涌电流会把
+//   3.3V 轨拉塌；ESP32-S3 内部欠压检测（阈值约 2.43V，寄存器硬件层）一旦触发
+//   就强制芯片复位 = 飞机在空中重启 = 必炸机。固件软件层拦不住它，只能在上电
+//   早期把 RTC 控制器里的 brownout 使能位清掉。
+//   ⚠️ 副作用：真欠压时芯片不再复位，可能跑到电压低于电池安全线——
+//   三级蜂鸣告警（updateVoltageAlert）仍在，落不落地由飞手判断。
+//   踩坑记录（2026-10-23）：地面推油即将离地必重启、手上推大油门不重启，
+//   即此 brownout 触发的典型症状；关掉后复测通过。
+#include <soc/soc.h>             // ESP32-S3 寄存器底层定义
+#include <soc/rtc_cntl_reg.h>    // RTC 控制器寄存器（brownout 使能位在这里）
 #include <esp32-hal-ledc.h>
 #include "drone_types.h"
 #include "config.h"
@@ -463,10 +475,16 @@ static void controlStep(float dt) {
   }
 
   // X 型混控（油门 + 横滚 + 俯仰 + 偏航）
-  float m0 = throttle + roll_torque + pitch_torque - yaw_torque;   // 左前
-  float m1 = throttle - roll_torque + pitch_torque + yaw_torque;   // 右前
-  float m2 = throttle - roll_torque - pitch_torque - yaw_torque;   // 右后
-  float m3 = throttle + roll_torque - pitch_torque + yaw_torque;   // 左后
+  // ⚠️ 偏航项必须先乘 kYawTorqueSign 再进混控（详见 config.h 该常量处的说明）：
+  //    本机电机实测布局（左前CW/右前CCW/左后CCW/右后CW）与混控默认约定
+  //    （左前CCW/右前CW/右后CCW/左后CW）整体相反，不翻转符号 yaw 环即正反馈，
+  //    表现为"起飞后加速自旋 → 螺旋升天"（2026-10-23 实测踩坑）。
+  //    翻转点选在 PID 输出之后：杆向语义不变，网页摇杆/SBUS/gz 反馈零改动。
+  float yaw_t = yaw_torque * kYawTorqueSign;
+  float m0 = throttle + roll_torque + pitch_torque - yaw_t;   // 左前
+  float m1 = throttle - roll_torque + pitch_torque + yaw_t;   // 右前
+  float m2 = throttle - roll_torque - pitch_torque - yaw_t;   // 右后
+  float m3 = throttle + roll_torque - pitch_torque + yaw_t;   // 左后
 
   // 限幅并输出
   m0 = clampf(m0,0,1); m1 = clampf(m1,0,1); m2 = clampf(m2,0,1); m3 = clampf(m3,0,1);
@@ -514,6 +532,10 @@ static void printIdentity() {
 }
 
 void setup() {
+  // 第一件事先关 brownout（参考 flix power.ino）：必须在 WiFi/电机等大电流
+  // 外设启动之前生效，晚了就可能错过浪涌窗口。寄存器写不依赖串口，放最前面。
+  REG_CLR_BIT(RTC_CNTL_BROWN_OUT_REG, RTC_CNTL_BROWN_OUT_ENA);
+
   Serial.begin(115200);
   delay(200);
   Serial.println("Boot...");

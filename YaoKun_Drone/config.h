@@ -18,7 +18,7 @@
 // 因此每台机器固件里的 Built 字段都精确对应它真实的那一次编译。
 // ============================================================================
 #define FK_ID_NAME     "YaoKunS   耀坤S3自研飞控 / YaoKunDrone"  // 产品名（IDENTITY 首行）
-#define FK_ID_VERSION  "v1.0"                                     // 固件版本（发版时同步改！）
+#define FK_ID_VERSION  "v1.1"                                     // 固件版本（发版时同步改！）
 #define FK_ID_SOURCE   "Source  : 20260613"                       // 源码基线日期（对应 .ino 头部 @version）
 #define FK_ID_AUTHOR   "Author  : 耀坤 <espnow@163.com>"
 #define FK_ID_BILI     "BiliBili : 耀坤智联  https://space.bilibili.com/3707011699050767/"
@@ -57,7 +57,7 @@
     
     // WiFi AP 热点信息
     #define kApSsid "YaoKun_Drone"
-    #define kApPass "12345678"
+    #define kApPass "48539491"
     
     // 第1组 I2C (MPU6050/MPU6500 惯性测量单元)
     #define kI2cSda 9   // I2C 数据线
@@ -144,7 +144,7 @@
     
     // WiFi AP 热点信息
     #define kApSsid "YaoKun_Drone"
-    #define kApPass "12345678"
+    #define kApPass "48539491"
 
     // 第1组 I2C (MPU6050)
     #define kI2cSda 6    // I2C 数据线
@@ -196,7 +196,7 @@
     
     // WiFi AP 热点信息
     #define kApSsid "YaoKun_Drone"
-    #define kApPass "12345678"
+    #define kApPass "48539491"
 
     // 第1组 I2C (MPU6050)
     #define kI2cSda 8    // I2C 数据线
@@ -245,7 +245,7 @@
     
     // WiFi AP 热点信息
     #define kApSsid "YaoKun_Drone"
-    #define kApPass "12345678"
+    #define kApPass "48539491"
 
     // 第1组 I2C (MPU6050)
     #define kI2cSda 6
@@ -294,6 +294,26 @@
 // ============================================================================
 // 第二部分：飞控系统常量（原主文件中的 static const 参数）
 // ============================================================================
+
+// ------------------------ 偏航扭矩符号（装机方向约定）------------------------
+// 作用：混控前对 yaw_torque 乘以本系数，适配实际装机时四颗电机的旋转方向。
+// 为什么需要它：
+//   混控公式默认约定（俯视）：M0左前=CCW、M1右前=CW、M2右后=CCW、M3左后=CW
+//   （对角线两两同向，"前桨向外"布局）。在此约定下 yaw_torque>0 产生
+//   逆时针（CCW）净反扭矩，与 gz（CCW 为正）构成负反馈。
+//   2026-10-23 实测 1 号机装机方向（不可改动，电机线序/桨叶均已固定）：
+//     左前(GPIO16)=CW、右前(GPIO6)=CCW、左后(GPIO15)=CCW、右后(GPIO5)=CW
+//   —— 与默认约定每颗都恰好相反（对角线仍两两同向，布局本身合法）。
+//   若不改此符号，yaw 环会变成正反馈：表现为起飞后机头越转越快、
+//   配合倾斜后推力矢量绕圈 = "螺旋升天"。
+//   乘 -1 后扭矩方向整体翻转，yaw 环恢复负反馈；roll/pitch 扭矩只与电机
+//   位置有关（位置没变），不受影响，无需改动。
+// 为什么放在混控处翻转而不是改 kImuFlipZ：
+//   kImuFlipZ 会把陀螺仪 az（垂直加速度）一起翻转，姿态球会整体翻 180°，
+//   绝不能用；而且改 gz 符号会让"输入语义→期望角速度"的约定全部连锁变动。
+//   在 PID 输出之后、混控之前翻转，杆向/网页摇杆/SBUS 全部不用动。
+// 取值：+1.0f = 默认布局（前桨向外）；-1.0f = 全反布局（本机实测）。
+static const float kYawTorqueSign = -1.0f;
 
 // ------------------------ 电机测试安全限制 ------------------------
 static const float kMotorTestMaxThrottle = 0.20f;   // 最大测试油门 (20%)
