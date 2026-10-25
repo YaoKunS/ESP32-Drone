@@ -126,7 +126,7 @@ The aircraft is a **free-to-fabricate PCB frame** plus an ESP32-S3 dev board, an
 
 ### 2.4 Human-Machine Interface
 
-- **Self-hosted Wi-Fi hotspot** (default `YaoKun_Drone` / `12345678`, IP `192.168.4.1`) — works in the field with no network at all.
+- **Self-hosted Wi-Fi hotspot** (default `YaoKun_Drone` / `48539491`, IP `192.168.4.1`) — works in the field with no network at all.
 - **Zero-dependency single-page UI** — HTML/CSS/JS are all compiled into the firmware (1,651 lines) with no CDN or image assets, so it works offline.
 - **Dual virtual sticks** — left stick throttle/yaw, right stick pitch/roll. Pointer Events cover both mouse and touch, and **releasing a stick re-centres the three axes while throttle holds**.
 - **Fixed 20 Hz command cadence** — fully decoupled from render frame rate, so a stuttering phone or a throttled background tab cannot cause the firmware to time out the command link.
