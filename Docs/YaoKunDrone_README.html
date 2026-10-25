@@ -251,7 +251,7 @@
 
 <h3>2.4 人机交互</h3>
 <ul>
-  <li><b>飞控自建 WiFi 热点</b>（默认 <code>YaoKun_Drone</code> / <code>48539491</code>，IP <code>192.168.4.1</code>），野外无网环境照样能飞。</li>
+  <li><b>飞控自建 WiFi 热点</b>（默认 <code>YaoKun_Drone</code> / <code>12345678</code>，IP <code>192.168.4.1</code>），野外无网环境照样能飞。</li>
   <li><b>零依赖单页界面</b>：HTML / CSS / JS 全部编译进固件（1651 行），不引用任何 CDN 或图片资源，断网可用。</li>
   <li><b>双虚拟摇杆</b>：左杆油门 / 偏航，右杆俯仰 / 横滚，Pointer Events 同时支持鼠标与触摸，<strong>摇杆释放时三轴自动回中而油门保持</strong>。</li>
   <li><b>20 Hz 固定节拍发包</b>：与界面渲染帧率彻底解耦，手机掉帧或浏览器后台节流都不会导致飞控侧判定指令超时。</li>
@@ -921,7 +921,7 @@ PSRAM：ESP32-S3 R8N8 开发板自带 PSRAM，工具里按板卡实际情况设�
 
 <div class="step"><div class="no">2</div><div class="tx"><b>确认串口输出正常</b><span>串口监视器应打印出 IMU 型号识别结果与 <code>Ready. Open http://192.168.4.1/</code>。若停在 <code>IMU init FAILED</code>，说明没识别到传感器——检查 I2C 接线（SDA=9 / SCL=8）或确认模块是否为 MPU6500。</span></div></div>
 
-<div class="step"><div class="no">3</div><div class="tx"><b>连接热点，打开网页，做水平校准</b><span>手机连 WiFi <code>YaoKun_Drone</code>（密码 <code>48539491</code>）→ 浏览器打开 <code>http://192.168.4.1</code> → 进「设置」页 → 看姿态球是否水平（不应歪）→ 点「水平校准」听三短鸣 → 若姿态球歪了，切换到互补滤波模式对照看读数，判断是不是 IMU 轴映射错了（见 10.2 节）。</span></div></div>
+<div class="step"><div class="no">3</div><div class="tx"><b>连接热点，打开网页，做水平校准</b><span>手机连 WiFi <code>YaoKun_Drone</code>（密码 <code>12345678</code>）→ 浏览器打开 <code>http://192.168.4.1</code> → 进「设置」页 → 看姿态球是否水平（不应歪）→ 点「水平校准」听三短鸣 → 若姿态球歪了，切换到互补滤波模式对照看读数，判断是不是 IMU 轴映射错了（见 10.2 节）。</span></div></div>
 
 <div class="step"><div class="no">4</div><div class="tx"><b>逐个测试电机方向（拆桨状态下）</b><span>进「测试」页 → 依次点 M0 / M1 / M2 / M3，每个给 0.12 油门、600 ms。核对位置：M0 转时是<strong>左前</strong>、M1 是<strong>右前</strong>、M2 是<strong>右后</strong>、M3 是<strong>左后</strong>；再核对旋向（俯视）：<b>M0 左前=顺时针、M1 右前=逆时针、M2 右后=顺时针、M3 左后=逆时针</b>（对角两两同向，此即 <code>kYawTorqueSign=-1</code> 适配的出厂布局，见 5.3 节）。若位置错了查 <code>config.h</code> 引脚映射；若某颗转向不符，对调该电机两根输出线即可反转。<b>注意：四个电机必须呈「对角两两同向」布局——相邻同向的非法布局偏航控制力矩恒为零，任何软件都无法补救，必须先改硬件。</b></span></div></div>
 

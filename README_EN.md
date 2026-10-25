@@ -4,11 +4,15 @@
 
 **A fully attitude-stabilized ESP32-S3 quadcopter firmware — driven straight from a browser, every parameter tunable live**
 
-[![Platform](https://img.shields.io/badge/Platform-Arduino-blue)](https://www.arduino.cc/)
-[![MCU](https://img.shields.io/badge/MCU-ESP32--S3-purple)](https://www.espressif.com/)
-[![License](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
-[![Bilibili](https://img.shields.io/badge/Bilibili-%E8%80%80%E5%9D%A4%E6%99%BA%E8%81%94-ff69b4)](https://space.bilibili.com/3707011699050767)
-[![OSHWHub](https://img.shields.io/badge/OSHWHub-oshwhub.com%2Flindahe-orange)](https://oshwhub.com/lindahe)
+![Platform](https://img.shields.io/badge/Platform-Arduino-blue)
+
+![MCU](https://img.shields.io/badge/MCU-ESP32--S3-purple)
+
+![License](https://img.shields.io/badge/License-GPLv3-blue.svg)
+
+![Bilibili](https://img.shields.io/badge/Bilibili-%E8%80%80%E5%9D%A4%E6%99%BA%E8%81%94-ff69b4)
+
+![OSHWHub](https://img.shields.io/badge/OSHWHub-oshwhub.com%2Flindahe-orange)
 
 [**简体中文**](README.md) · **English**
 
@@ -16,8 +20,8 @@
 
 ---
 
-> 📖 **This is the complete technical document** (18 chapters), not a README summary. It matches
-> `Docs/YaoKunDrone_README.html` / `.pdf` / `.docx` one-to-one. The web version adds typography and a
+> 📖 **This is the complete technical document** (18 chapters), not a README summary. It matches>   
+> `Docs/YaoKunDrone_README.html` / `.pdf` / `.docx` one-to-one. The web version adds typography and a>   
 > highlighted table of contents; this Markdown version is meant for searching and citing inside the repo.
 
 ---
@@ -75,28 +79,30 @@ The aircraft is a **free-to-fabricate PCB frame** plus an ESP32-S3 dev board, an
 
 ### 1.2 Flight Envelope — Read This First
 
-> ⚠️ **This is a pure attitude-stabilization controller with manual throttle. It has no position or velocity sensor of any kind.**<br><br>The board carries a single 6-axis IMU — no GPS, no barometer, no rangefinder, no optical flow, no magnetometer. Therefore:
+> ⚠️ **This is a pure attitude-stabilization controller with manual throttle. It has no position or velocity sensor of any kind.**  
+>   
+> The board carries a single 6-axis IMU — no GPS, no barometer, no rangefinder, no optical flow, no magnetometer. Therefore:
 
-| Capability | Explanation |
-|---|---|
-| **It can** | Hold attitude: when you release the sticks the airframe levels itself. Roll, pitch and yaw are all controllable; throttle is manual. |
-| **It cannot** | Hover in place. Release the sticks and attitude is levelled, but **the aircraft keeps drifting at whatever horizontal velocity it had**; release the throttle and **it descends**. |
-| **Consequence** | Continuous small corrections are required — an "action-cam style" manual flight experience, not the GPS-hold feel of a consumer brushless quad. |
+| Capability      | Explanation                                                                                                                                                                        |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **It can**      | Hold attitude: when you release the sticks the airframe levels itself. Roll, pitch and yaw are all controllable; throttle is manual.                                               |
+| **It cannot**   | Hover in place. Release the sticks and attitude is levelled, but **the aircraft keeps drifting at whatever horizontal velocity it had**; release the throttle and **it descends**. |
+| **Consequence** | Continuous small corrections are required — an "action-cam style" manual flight experience, not the GPS-hold feel of a consumer brushless quad.                                    |
 
 > 💡 Real position hold requires a laser rangefinder (VL53L1X) plus optical flow (PMW3901). The board already reserves SPI and a second I²C bus for exactly this — see [Chapter 16, Roadmap](#16-roadmap).
 
 ### 1.3 Target Platform & Open-Source Info
 
-| Item | Details |
-|---|---|
-| MCU | ESP32-S3 (defaults to the LCKFB ESP32-S3 R8N8 dev board; ESP32-S3 Supermini series also supported) |
-| Attitude sensor | MPU6050 (I²C) or MPU6500 (SPI), auto-detected at boot — no manual configuration |
-| Motor output | Four LEDC hardware PWM channels, 20 kHz / 10-bit |
-| Connectivity | Wi-Fi SoftAP + WebSocket (the aircraft is its own hotspot; no router needed) |
-| Repository | [github.com/YaoKunS/ESP32-Drone](https://github.com/YaoKunS/ESP32-Drone) (GPL v3, full source and photos) |
-| Open hardware | [OSHWHub — YaoKun's profile (oshwhub.com/lindahe)](https://oshwhub.com/lindahe) — the YaoKun Drone series (Spark Plan 2026 open-source project); schematics and PCB files are free to download |
-| Component kit | Taobao store "耀坤智联" [shop35432590.taobao.com](https://shop35432590.taobao.com/) — basic parts from ¥9.9 |
-| Video tutorials | Bilibili channel "耀坤智联" [space.bilibili.com/3707011699050767](https://space.bilibili.com/3707011699050767) |
+| Item            | Details                                                                                                                                                                                        |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| MCU             | ESP32-S3 (defaults to the LCKFB ESP32-S3 R8N8 dev board; ESP32-S3 Supermini series also supported)                                                                                             |
+| Attitude sensor | MPU6050 (I²C) or MPU6500 (SPI), auto-detected at boot — no manual configuration                                                                                                                |
+| Motor output    | Four LEDC hardware PWM channels, 20 kHz / 10-bit                                                                                                                                               |
+| Connectivity    | Wi-Fi SoftAP + WebSocket (the aircraft is its own hotspot; no router needed)                                                                                                                   |
+| Repository      | [github.com/YaoKunS/ESP32-Drone](https://github.com/YaoKunS/ESP32-Drone) (GPL v3, full source and photos)                                                                                      |
+| Open hardware   | [OSHWHub — YaoKun's profile (oshwhub.com/lindahe)](https://oshwhub.com/lindahe) — the YaoKun Drone series (Spark Plan 2026 open-source project); schematics and PCB files are free to download |
+| Component kit   | Taobao store "耀坤智联" [shop35432590.taobao.com](https://shop35432590.taobao.com/) — basic parts from ¥9.9                                                                                        |
+| Video tutorials | Bilibili channel "耀坤智联" [space.bilibili.com/3707011699050767](https://space.bilibili.com/3707011699050767)                                                                                     |
 
 ## 2. Features
 
@@ -126,7 +132,8 @@ The aircraft is a **free-to-fabricate PCB frame** plus an ESP32-S3 dev board, an
 
 ### 2.4 Human-Machine Interface
 
-- **Self-hosted Wi-Fi hotspot** (default `YaoKun_Drone` / `48539491`, IP `192.168.4.1`) — works in the field with no network at all.
+
+- **Self-hosted Wi-Fi hotspot** (default `YaoKun_Drone` / `12345678`, IP `192.168.4.1`) — works in the field with no network at all.
 - **Zero-dependency single-page UI** — HTML/CSS/JS are all compiled into the firmware (1,651 lines) with no CDN or image assets, so it works offline.
 - **Dual virtual sticks** — left stick throttle/yaw, right stick pitch/roll. Pointer Events cover both mouse and touch, and **releasing a stick re-centres the three axes while throttle holds**.
 - **Fixed 20 Hz command cadence** — fully decoupled from render frame rate, so a stuttering phone or a throttled background tab cannot cause the firmware to time out the command link.
@@ -159,21 +166,21 @@ The firmware is divided into five layers by responsibility. Layers only talk thr
 
 *Fig. 3-2　Module dependencies: the header contract layer, six `.ino` implementation files, and the concurrency model across two FreeRTOS contexts*
 
-| File | Lines | Responsibility |
-|---|---|---|
-| `YaoKunDrone.ino` | 598 | Entry point: `setup()` / `loop()`, the control pipeline `controlStep()`, Wi-Fi/Web start-up, voltage alarm and calibration helpers |
-| `drone_types.h` | 312 | Shared contract: 5 structs, 4 enums, inline helpers, all cross-module `extern` declarations |
-| `config.h` | 376 | Multi-board conditional compilation + every system constant (pins / PWM / PID limits / thresholds) |
-| `hardware.ino` | 885 | Four hardware drivers plus the methods of Madgwick / Mahony / Mpu6050 / Mpu6500 / ImuDriver |
-| `drone_imu.h` | 199 | Declarations for those five classes + `accelToRollPitchDeg` / `isImuStationary` helpers |
-| `drone_pid.h` | 183 | Generic positional PID with anti-windup and output clamping (heavily commented as a tutorial) |
-| `rc.ino` | 291 | Critical-section wrappers for RC commands, WebSocket event callbacks, 14 downlink command parsers |
-| `control.ino` | 80 | Five PID instances, gain application, dirty-flag hot update |
-| `failsafe.ino` | 113 | Safety core: arming conditions, state machine, disarm and kill — fully independent of control math |
-| `storage.ino` | 145 | Load/save for the NVS namespace `"drone"`, with second-pass clamping |
-| `telemetry.ino` | 114 | Telemetry JSON framing and rate gating, three enum-label translators |
-| `drone_led.h` / `drone_buzzer.h` | 147 / 79 | LED mode enum and breathing algorithm / buzzer pattern enum and state-machine interface |
-| `drone_web_ui.h` | 1651 | The complete single-page front end, fully embedded, no external assets |
+| File                             | Lines    | Responsibility                                                                                                                     |
+| -------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `YaoKunDrone.ino`                | 598      | Entry point: `setup()` / `loop()`, the control pipeline `controlStep()`, Wi-Fi/Web start-up, voltage alarm and calibration helpers |
+| `drone_types.h`                  | 312      | Shared contract: 5 structs, 4 enums, inline helpers, all cross-module `extern` declarations                                        |
+| `config.h`                       | 376      | Multi-board conditional compilation + every system constant (pins / PWM / PID limits / thresholds)                                 |
+| `hardware.ino`                   | 885      | Four hardware drivers plus the methods of Madgwick / Mahony / Mpu6050 / Mpu6500 / ImuDriver                                        |
+| `drone_imu.h`                    | 199      | Declarations for those five classes + `accelToRollPitchDeg` / `isImuStationary` helpers                                            |
+| `drone_pid.h`                    | 183      | Generic positional PID with anti-windup and output clamping (heavily commented as a tutorial)                                      |
+| `rc.ino`                         | 291      | Critical-section wrappers for RC commands, WebSocket event callbacks, 14 downlink command parsers                                  |
+| `control.ino`                    | 80       | Five PID instances, gain application, dirty-flag hot update                                                                        |
+| `failsafe.ino`                   | 113      | Safety core: arming conditions, state machine, disarm and kill — fully independent of control math                                 |
+| `storage.ino`                    | 145      | Load/save for the NVS namespace `"drone"`, with second-pass clamping                                                               |
+| `telemetry.ino`                  | 114      | Telemetry JSON framing and rate gating, three enum-label translators                                                               |
+| `drone_led.h` / `drone_buzzer.h` | 147 / 79 | LED mode enum and breathing algorithm / buzzer pattern enum and state-machine interface                                            |
+| `drone_web_ui.h`                 | 1651     | The complete single-page front end, fully embedded, no external assets                                                             |
 
 > 💡 **Two Arduino conventions you must know:** ① `.ino` files get auto-generated prototypes and are force-included by the IDE, while `.h` files are not — hence all cross-module declarations live in `drone_types.h`, and each `.ino` only needs to include it. ② `drone_pid.h` uses `clampf()`, which is defined in `drone_types.h`, so that header must be included *after* the utility functions — the usual "dependencies first" rule.
 
@@ -208,15 +215,15 @@ if ((int32_t)(now_us - next_us) >= 0) {
 
 The order is not arbitrary. Each step exists to guarantee that "if something already went wrong earlier, nothing later should run":
 
-| # | Stage | Why it sits here |
-|---|---|---|
-| **①** | KILL request | Highest priority. When the user hits emergency disarm, the motors must stop **immediately** even if they are spinning and the IMU has already failed — nothing downstream may block it. |
-| **②** | Motor test mode | Once a test starts it must run its full duration; letting flight logic cut in mid-way makes the motor stutter. It therefore pre-empts the control path and returns as soon as it finishes. |
-| **③** | dt validity | A bad dt means the scheduler was blocked for a long time, so any control output computed now is untrustworthy — stop and report why. |
-| **④** | IMU read | No attitude data means no control. **Note it returns if the read fails** — it never reuses last cycle's attitude, because that would let the aircraft fly "from memory". |
-| **⑤⑥** | Attitude NaN check<br>Tilt protection | Both are evaluated right after the solve and before the arming state machine. Practical reason: if the aircraft has already flipped or the attitude has diverged, entering the arming path is meaningless. |
-| **⑦** | RC timeout | A stale command means the operator has lost control authority — a clear "must not keep flying" signal, evaluated before arming. |
-| **⑧** | Arming state machine | Only after confirming "we should be flying" does the code enter PID and mixing. Telemetry is still sent while disarmed so the UI always shows state. |
+| #      | Stage                                   | Why it sits here                                                                                                                                                                                           |
+| ------ | --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **①**  | KILL request                            | Highest priority. When the user hits emergency disarm, the motors must stop **immediately** even if they are spinning and the IMU has already failed — nothing downstream may block it.                    |
+| **②**  | Motor test mode                         | Once a test starts it must run its full duration; letting flight logic cut in mid-way makes the motor stutter. It therefore pre-empts the control path and returns as soon as it finishes.                 |
+| **③**  | dt validity                             | A bad dt means the scheduler was blocked for a long time, so any control output computed now is untrustworthy — stop and report why.                                                                       |
+| **④**  | IMU read                                | No attitude data means no control. **Note it returns if the read fails** — it never reuses last cycle's attitude, because that would let the aircraft fly "from memory".                                   |
+| **⑤⑥** | Attitude NaN check<br />Tilt protection | Both are evaluated right after the solve and before the arming state machine. Practical reason: if the aircraft has already flipped or the attitude has diverged, entering the arming path is meaningless. |
+| **⑦**  | RC timeout                              | A stale command means the operator has lost control authority — a clear "must not keep flying" signal, evaluated before arming.                                                                            |
+| **⑧**  | Arming state machine                    | Only after confirming "we should be flying" does the code enter PID and mixing. Telemetry is still sent while disarmed so the UI always shows state.                                                       |
 
 > ✅ **An easily overlooked correct design:** every disarm on a safety path calls `sendTelemetry()` before returning. That means **even while the aircraft is faulted, the web UI still shows the reason in real time.** Many flight controllers go silent in protection mode, leaving the user to guess what happened.
 
@@ -226,7 +233,11 @@ The order is not arbitrary. Each step exists to guarantee that "if something alr
 
 *Fig. 4-2　`setup()` sequence: serial → motor LEDC → IMU auto-detect → gyro calibration → parameter load → disarm → hotspot start-up*
 
-> ⛔ **Two waits you cannot skip:**<br><br>① **Gyro bias calibration takes about 1–2 s** (500 samples × 2 ms). The airframe must be absolutely still — if it is rotating, the bias is recorded as angular rate, and the aircraft powers up believing it is spinning, so the first throttle input throws it.<br><br>② **A failed IMU probe halts the system**: `begin()` returning false drops `setup()` into `while(true) delay(1000)`. This is deliberate — without attitude data the controller can never be safe, so it refuses to let the user believe "it can fly".
+> ⛔ **Two waits you cannot skip:**  
+>   
+> ① **Gyro bias calibration takes about 1–2 s** (500 samples × 2 ms). The airframe must be absolutely still — if it is rotating, the bias is recorded as angular rate, and the aircraft powers up believing it is spinning, so the first throttle input throws it.  
+>   
+> ② **A failed IMU probe halts the system**: `begin()` returning false drops `setup()` into `while(true) delay(1000)`. This is deliberate — without attitude data the controller can never be safe, so it refuses to let the user believe "it can fly".
 
 Motor LEDC binding failure is different: it only sets `FS_MOTOR_FAIL` and inhibits arming, **and the system keeps running**. The IMU, estimator and web UI are all fine, so the user can still open the page and read the log to diagnose. A hard halt would destroy that.
 
@@ -242,6 +253,7 @@ The fundamental problem with single-loop control: **angle error and angular-rate
 
 - Want fast response → raise Kp → motors saturate → a tiny angle error commands full throttle with no headroom;
 - Want smooth motion → lower Kp → sluggish response, and any slightly quicker input turns into large oscillation.
+
 
 Cascading splits the two demands into loops with different units:
 
@@ -284,11 +296,11 @@ The cost is that at high throttle the scale exceeds 1 and is clamped to 1, i.e. 
 
 ### 5.5 Default PID Values
 
-| Controller | Default Kp / Ki / Kd | Output clamp | Physical meaning |
-|---|---|---|---|
-| Angle loop (shared roll/pitch) | 2.0 / 0.001 / 0 | ±250 °/s | Output is a desired angular rate in °/s |
-| Rate loop (shared roll/pitch) | 0.025 / 0 / 0.0002 | ±0.5 | Output is normalized, dimensionless torque |
-| Yaw rate loop | 0.030 / 0.005 / 0 | ±0.3 | More conservative: only two motors affected |
+| Controller                     | Default Kp / Ki / Kd | Output clamp | Physical meaning                            |
+| ------------------------------ | -------------------- | ------------ | ------------------------------------------- |
+| Angle loop (shared roll/pitch) | 2.0 / 0.001 / 0      | ±250 °/s     | Output is a desired angular rate in °/s     |
+| Rate loop (shared roll/pitch)  | 0.025 / 0 / 0.0002   | ±0.5         | Output is normalized, dimensionless torque  |
+| Yaw rate loop                  | 0.030 / 0.005 / 0    | ±0.3         | More conservative: only two motors affected |
 
 Note the outer loop's Ki = 0.001 is **very small**, deliberately. Attitude steady-state error is naturally compensated by gravity (a tilted body produces a restoring torque), and a large integral would wind up during sustained tilt and overshoot badly on exit. The roll/pitch rate loops use no integral at all (Ki = 0) because gyro bias is already removed during calibration.
 
@@ -312,31 +324,32 @@ if (kAccTrustLo > kAccTrustHi)
 acc_trust = clampf(acc_trust, 0.0f, 1.0f);
 ```
 
-| Parameter | Value | Meaning |
-|---|---|---|
-| `kAccTrustHi` | 0.08 | Deviation below 0.08 g is fully trusted, trust = 1 |
-| `kAccTrustLo` | 0.35 | Deviation above 0.35 g is fully distrusted, trust = 0 (pure gyro integration) |
+| Parameter     | Value | Meaning                                                                       |
+| ------------- | ----- | ----------------------------------------------------------------------------- |
+| `kAccTrustHi` | 0.08  | Deviation below 0.08 g is fully trusted, trust = 1                            |
+| `kAccTrustLo` | 0.35  | Deviation above 0.35 g is fully distrusted, trust = 0 (pure gyro integration) |
 
 The trust value then feeds three places: Madgwick's β interpolation (`β = 0.02 + trust × 0.12`), the complementary filter's α reduction, and Mahony's PI correction term. All three estimators therefore **share one judgement of "whom to believe"** and behave consistently.
 
 ### 6.2 Comparing the Three Estimators
 
-| Estimator | Status | Key idea | Best for |
-|---|---|---|---|
-| **Mahony** | **Default** | Cross product between estimated and measured gravity gives error `e`; correct the rate with `g' = g + Kp·e + ∫Ki·e dt`, then integrate the quaternion. Integral clamped to ±0.35 rad/s and frozen above 180 °/s rotation to prevent divergence. | The default. Moderate cost, few parameters, insensitive to bias, same lineage as Betaflight, plenty of reference material. |
-| Madgwick | Optional | Gradient descent: formulate gravity alignment as an objective and step down the gradient with β, adaptively interpolated 0.02–0.14. Falls back to pure gyro when the acceleration magnitude is too small. | When you want to feel the trust factor yourself; for readers learning gradient descent. |
-| Complementary | Optional | The simplest: gyro integration blended with accelerometer `atan2` angles via a first-order α = 0.98. α rises with trust (trusting the gyro more). | Best for teaching — the most intuitive formula, and a control group for validating the other two. |
+| Estimator     | Status      | Key idea                                                                                                                                                                                                                                        | Best for                                                                                                                   |
+| ------------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| **Mahony**    | **Default** | Cross product between estimated and measured gravity gives error `e`; correct the rate with `g' = g + Kp·e + ∫Ki·e dt`, then integrate the quaternion. Integral clamped to ±0.35 rad/s and frozen above 180 °/s rotation to prevent divergence. | The default. Moderate cost, few parameters, insensitive to bias, same lineage as Betaflight, plenty of reference material. |
+| Madgwick      | Optional    | Gradient descent: formulate gravity alignment as an objective and step down the gradient with β, adaptively interpolated 0.02–0.14. Falls back to pure gyro when the acceleration magnitude is too small.                                       | When you want to feel the trust factor yourself; for readers learning gradient descent.                                    |
+| Complementary | Optional    | The simplest: gyro integration blended with accelerometer `atan2` angles via a first-order α = 0.98. α rises with trust (trusting the gyro more).                                                                                               | Best for teaching — the most intuitive formula, and a control group for validating the other two.                          |
 
 > 💡 **How is attitude continuity preserved when switching?** Swap the estimator naively and the new one starts from an identity quaternion (level) while the aircraft is already tilted tens of degrees — attitude would "snap back to zero" and the control loop would slam full torque. So the code first reads **the old estimator's current Euler angles** and injects them via `setEulerDeg()`; the complementary filter takes over its internal state directly. All three are aligned before continuing. An easily missed but critical detail.
 
 ### 6.3 Two Paths to Level Calibration
 
-| Method | Trigger | Behaviour |
-|---|---|---|
-| **Manual** | Button on the Settings page (disarmed only, sends `CAL,LEVEL`) | Reads the current accelerometer-derived level angles into `g_level_roll_offset_deg` / `g_level_pitch_offset_deg`, saves to NVS immediately, confirms with a triple beep |
-| **Automatic** | Disarmed + 400 ms of stillness (accel deviation < 0.10 g and all axes < 1.5 °/s) | Overwrites the estimated attitude with the accelerometer reading and resets the internal state of all three estimators |
+| Method        | Trigger                                                                          | Behaviour                                                                                                                                                               |
+| ------------- | -------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Manual**    | Button on the Settings page (disarmed only, sends `CAL,LEVEL`)                   | Reads the current accelerometer-derived level angles into `g_level_roll_offset_deg` / `g_level_pitch_offset_deg`, saves to NVS immediately, confirms with a triple beep |
+| **Automatic** | Disarmed + 400 ms of stillness (accel deviation < 0.10 g and all axes < 1.5 °/s) | Overwrites the estimated attitude with the accelerometer reading and resets the internal state of all three estimators                                                  |
 
 The reported attitude is always "estimate − offset", so the offset is stored once and applies forever. A yaw offset variable exists (`g_level_yaw_offset_deg`) but has no UI entry point and stays 0.
+
 
 > ⛔ **After changing the IMU module you must redo level calibration.** Mounting orientation and bias differ per module, and the offset is bound to "this board + this module". Without clearing it the attitude ball stays tilted and automatic calibration keeps resetting to a wrong reference.
 
@@ -370,26 +383,28 @@ Whatever path detects a fault, it ends in the same function, `disarmNow(reason)`
 
 #### The Four Arming Conditions (all required)
 
-| Condition | Requirement | What it prevents |
-|---|---|---|
-| ① Throttle | ≤ 0.05 (`kArmThrottleMax`) | Arming with throttle applied, which spins the motors instantly |
-| ② Sticks | \|roll / pitch / yaw\| ≤ 0.15 (`kStickCenterMax`) | Arming with a command held, which yaws the aircraft at takeoff |
-| ③ Attitude | \|roll\| and \|pitch\| ≤ 45° | Arming while inverted or heavily tilted |
-| ④ State | No motor hardware fault, not in fault inhibit | Repeated arming attempts after a motor fault |
+| Condition  | Requirement                                     | What it prevents                                               |
+| ---------- | ----------------------------------------------- | -------------------------------------------------------------- |
+| ① Throttle | ≤ 0.05 (`kArmThrottleMax`)                      | Arming with throttle applied, which spins the motors instantly |
+| ② Sticks   | |roll / pitch / yaw| ≤ 0.15 (`kStickCenterMax`) | Arming with a command held, which yaws the aircraft at takeoff |
+| ③ Attitude | |roll| and |pitch| ≤ 45°                        | Arming while inverted or heavily tilted                        |
+| ④ State    | No motor hardware fault, not in fault inhibit   | Repeated arming attempts after a motor fault                   |
 
 All four must hold **continuously for 800 ms** (`kArmHoldMs`) before arming actually happens. Breaking any one resets the timer. This targets the most common consumer-drone accident: brushing a switch and taking off.
 
 ### 7.3 Recovery After a Fault
 
-> ⚠️ **Note: a fault does not automatically restore the ability to arm.**<br><br>You must first **close the ARM switch** (`arm_request = false`) **and return throttle to zero**; only then is the inhibit flag cleared. Requiring an explicit reset is intentional: right after a fault the airframe and motors are rarely settled, and making the operator perform a deliberate "I have confirmed it is safe" action is far safer than the system deciding on its own to re-enable arming.
+> ⚠️ **Note: a fault does not automatically restore the ability to arm.**  
+>   
+> You must first **close the ARM switch** (`arm_request = false`) **and return throttle to zero**; only then is the inhibit flag cleared. Requiring an explicit reset is intentional: right after a fault the airframe and motors are rarely settled, and making the operator perform a deliberate "I have confirmed it is safe" action is far safer than the system deciding on its own to re-enable arming.
 
 ### 7.4 Three Protections Outside the Fault Enum
 
-| Protection | Rule |
-|---|---|
-| **Forced stop at low throttle** | At `throttle ≤ 0.05`, write 0 and reset every PID. The hover threshold is where integral accumulates fastest, so it must be cleared. |
-| **Triple-gated motor test** | Output ≤ 20 %; duration clamped to 100–2000 ms with auto-stop; commands are refused with an ack while armed, on motor fault, or with stick input. |
-| **Double parameter clamping** | Clamp on write, clamp again after reading from NVS, so stale values from older firmware cannot go out of range. |
+| Protection                      | Rule                                                                                                                                              |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Forced stop at low throttle** | At `throttle ≤ 0.05`, write 0 and reset every PID. The hover threshold is where integral accumulates fastest, so it must be cleared.              |
+| **Triple-gated motor test**     | Output ≤ 20 %; duration clamped to 100–2000 ms with auto-stop; commands are refused with an ack while armed, on motor fault, or with stick input. |
+| **Double parameter clamping**   | Clamp on write, clamp again after reading from NVS, so stale values from older firmware cannot go out of range.                                   |
 
 ## 8. Communication & Web Remote
 
@@ -415,17 +430,17 @@ The front end sends on a fixed `setInterval(…, 20)` cadence, independent of ho
 
 #### Other Uplink Commands
 
-| Command | Purpose |
-|---|---|
-| `K` | Emergency stop, maps to `FS_KILL`, highest priority in firmware |
-| `GET` | Pull the full configuration (page refresh or "Fetch parameters") |
-| `SAVE` | Persist current in-memory parameters to NVS ("Save parameters" in the UI) |
-| `PID,ANGLE\|RATE\|YAW,kp,ki,kd` | Hot-update one PID group's gains; sets a dirty flag, applied and PID reset on the next control cycle |
-| `CFG,KEY,VALUE` | Change one of the 7 flight limits or switch filter mode; all clamped to kMin/kMax |
-| `CAL,LEVEL\|GYRO` | Request level calibration / gyro calibration, disarmed only |
-| `MTEST,idx,thr,ms` / `MTEST,STOP` | Start / stop a single-motor test |
-| `BUZZER_MUTE,0\|1` | Global buzzer mute (written to NVS immediately) |
-| `TAKEOFF_REPEAT,1~10` | Number of takeoff cue repetitions |
+| Command                           | Purpose                                                                                              |
+| --------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `K`                               | Emergency stop, maps to `FS_KILL`, highest priority in firmware                                      |
+| `GET`                             | Pull the full configuration (page refresh or "Fetch parameters")                                     |
+| `SAVE`                            | Persist current in-memory parameters to NVS ("Save parameters" in the UI)                            |
+| `PID,ANGLE\|RATE\|YAW,kp,ki,kd`   | Hot-update one PID group's gains; sets a dirty flag, applied and PID reset on the next control cycle |
+| `CFG,KEY,VALUE`                   | Change one of the 7 flight limits or switch filter mode; all clamped to kMin/kMax                    |
+| `CAL,LEVEL\|GYRO`                 | Request level calibration / gyro calibration, disarmed only                                          |
+| `MTEST,idx,thr,ms` / `MTEST,STOP` | Start / stop a single-motor test                                                                     |
+| `BUZZER_MUTE,0\|1`                | Global buzzer mute (written to NVS immediately)                                                      |
+| `TAKEOFF_REPEAT,1~10`             | Number of takeoff cue repetitions                                                                    |
 
 ### 8.3 Downlink: Telemetry (20 Hz)
 
@@ -435,16 +450,16 @@ The front end sends on a fixed `setInterval(…, 20)` cadence, independent of ho
  "m2":0.295,"m3":0.305,"vbatt":3.842,"fs":0,"cal":"IDLE","msg":"ARMED"}
 ```
 
-| Field | Meaning |
-|---|---|
-| `armed` | Whether the aircraft is armed |
-| `roll/pitch/yaw` | Attitude in degrees, level offset already subtracted |
+| Field               | Meaning                                                                                                     |
+| ------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `armed`             | Whether the aircraft is armed                                                                               |
+| `roll/pitch/yaw`    | Attitude in degrees, level offset already subtracted                                                        |
 | `dt_ms` / `loop_hz` | Actual control period and loop frequency — the key indicators of whether the MCU is running out of headroom |
-| `cmd_age` | Age of the last RC command in ms; approaching 300 means stop and investigate |
-| `m0~m3` | Actual motor outputs (0–1); use them to verify mixing and detect saturation |
-| `vbatt` | Battery voltage; `null` rather than 0 when the read fails |
-| `fs` | Fault reason code, see 7.1 |
-| `cal` / `msg` | Calibration state and a human-readable status message |
+| `cmd_age`           | Age of the last RC command in ms; approaching 300 means stop and investigate                                |
+| `m0~m3`             | Actual motor outputs (0–1); use them to verify mixing and detect saturation                                 |
+| `vbatt`             | Battery voltage; `null` rather than 0 when the read fails                                                   |
+| `fs`                | Fault reason code, see 7.1                                                                                  |
+| `cal` / `msg`       | Calibration state and a human-readable status message                                                       |
 
 #### Ack Replies
 
@@ -458,18 +473,19 @@ Every control command answers with `{"type":"ack","op":"…","tag":"…","ok":0|
 
 > 💡 **Zero external dependencies is not laziness, it is a requirement.** All 1,651 lines are compiled into the firmware with no CDN, font file or image. Flying in the field there is no internet, and under RF interference a CDN request can hang for minutes — exactly when the aircraft is most likely to have a problem. So the deliberate choice is "one HTML file is the whole app", usable the moment the page arrives.
 
-| View | Contents |
-|---|---|
-| **Remote** | Left stick (vertical throttle / horizontal yaw), right stick (vertical pitch / horizontal roll), ARM switch, emergency disarm button, throttle and link state, status message, 8 telemetry readouts |
+| View         | Contents                                                                                                                                                                                                              |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Remote**   | Left stick (vertical throttle / horizontal yaw), right stick (vertical pitch / horizontal roll), ARM switch, emergency disarm button, throttle and link state, status message, 8 telemetry readouts                   |
 | **Settings** | Canvas attitude ball (with horizon), three-axis readouts, level and gyro calibration buttons with status, buzzer mute and takeoff repeat count, filter dropdown, fetch/save parameters, 9 PID inputs, 7 flight limits |
-| **Test** | Motor index selection, throttle and duration, single-motor start/stop |
-| **Themes** | A 12-scheme grid (light / dark + 海棠 / 朱红 / 藕荷 / 湖蓝 / 晴蓝 / 藏青 / 葱绿 / 甘青 / 翡翠 / 松花), click to re-skin, stored in `localStorage` |
+| **Test**     | Motor index selection, throttle and duration, single-motor start/stop                                                                                                                                                 |
+| **Themes**   | A 12-scheme grid (light / dark + 海棠 / 朱红 / 藕荷 / 湖蓝 / 晴蓝 / 藏青 / 葱绿 / 甘青 / 翡翠 / 松花), click to re-skin, stored in `localStorage`                                                                                         |
 
 #### Why the Two Sticks Behave Differently
 
 Releasing the right stick (pitch/roll) immediately zeroes all three axes, returning to "attitude hold". Releasing the left stick does **not** zero the throttle — if it did, the aircraft would drop instantly. Making the two sticks behave differently keeps the meaning of "letting go" unambiguous: attitude re-levels, altitude decays, and the pilot knows exactly what to expect.
 
 ## 9. Buzzer & LED System
+
 
 This flight controller has no screen, so **the buzzer and the tri-color LED are its instrument panel**. The 14 tones and the three-color LED language form a complete feedback vocabulary: without opening the web page or watching a serial console, listening and looking is enough to know what state the aircraft is in and what just went wrong. The implementation principle throughout is **strictly non-blocking** — every sound and light effect is a `millis()`-timestamp state machine polled from the main loop (`buzzerUpdate()` / `ledUpdate()`), with no `delay()` anywhere, so the 500 Hz control loop is never stalled by a beep.
 
@@ -579,6 +595,7 @@ Different IMU modules are mounted in different orientations, so four software sw
 | Domestic MPU6050 (3×3 mm) | true | false | false | false |
 | MPU6500 module | true | **true** | **true** | false |
 
+
 In the `SwapXY` branch both axis rates are also negated — not a typo: swapping the coordinate system flips handedness, so both must invert to preserve a right-handed frame.
 
 > 💡 **Verification (also written in `config.h`):** rebuild and flash, open the page → Settings → watch the attitude ball. Tilt the aircraft **about 30° to the left**: Roll should read **negative** with the horizon low-left/high-right. **Nose up**: the ball should show sky (pitch positive). **Nose down**: the ball should show ground (pitch negative). Two or three combinations are usually enough to find the right one.
@@ -665,7 +682,7 @@ For high-rate attitude debugging, set `kEnableSerialAttDebug` in `config.h` to `
 
 1. **Place it level and still, then power up**　Put the aircraft on a level table and **keep it absolutely still** for about 2 seconds. If it rotates during gyro bias calibration, the bias is recorded as angular rate and the aircraft powers up believing it is spinning — the first throttle input will throw it. The ready beep means calibration finished.
 2. **Confirm the serial output**　The monitor should print the detected IMU type and `Ready. Open http://192.168.4.1/`. If it stops at `IMU init FAILED`, no sensor was detected — check the I²C wiring (SDA=9 / SCL=8) or whether the module is actually an MPU6500.
-3. **Connect to the hotspot, open the page, run level calibration**　Phone Wi-Fi → `YaoKun_Drone` (password `48539491`) → browser → `http://192.168.4.1` → Settings → check the attitude ball is level (it should not be tilted) → tap "Level calibration" and listen for the triple beep. If the ball is tilted, switch to the complementary filter and compare readings to decide whether the IMU axis mapping is wrong (see 10.2).
+3. **Connect to the hotspot, open the page, run level calibration**　Phone Wi-Fi → `YaoKun_Drone` (password `12345678`) → browser → `http://192.168.4.1` → Settings → check the attitude ball is level (it should not be tilted) → tap "Level calibration" and listen for the triple beep. If the ball is tilted, switch to the complementary filter and compare readings to decide whether the IMU axis mapping is wrong (see 10.2).
 4. **Check every motor's direction (props off)**　Test page → tap M0 / M1 / M2 / M3 in turn, each at 0.12 throttle for 600 ms. Verify position: M0 is **front-left**, M1 **front-right**, M2 **rear-right**, M3 **rear-left**; then verify rotation seen from above: **M0 front-left = clockwise, M1 front-right = counter-clockwise, M2 rear-right = clockwise, M3 rear-left = counter-clockwise** (diagonal pairs share rotation — this is the factory layout that `kYawTorqueSign=-1` adapts to, see 5.3). If a position is wrong, check the pin mapping in `config.h`; if a motor spins the wrong way, swap its two output wires to reverse it. **Note: the four motors must form a "diagonal pairs share rotation" layout — in the illegal adjacent-same-rotation layout the yaw control torque is identically zero and no software can fix it; the hardware must be changed first.**
 5. **Fit the props and check their orientation**　Confirm the four motors alternate rotation direction (a prerequisite for X-frame mixing) before fitting props. Each motor's prop must produce thrust in the same direction — the most basic and most commonly botched step.
 6. **Low-altitude test flight**　Back to the Remote page → raise the throttle slowly to 20–30 % until it lifts off → **immediately** flip the ARM switch and **hold it for 1 s** until the arming beep → trim throttle to hold altitude → gently push the right stick to check roll/pitch direction (pushing right should roll it right). If a direction is reversed, disarm at once, fix it and retry.
@@ -695,6 +712,7 @@ For high-rate attitude debugging, set `kEnableSerialAttDebug` in `config.h` to `
 ### 13.1 Order Matters: Inner Loop First
 
 > ⛔ **Never tune both loops at once.** With the outer loop moving you cannot judge the inner one, and you will not be able to tell whether "slow response" comes from a small outer Kp or an inner loop that cannot keep up. Stabilize the inner loop first, then the outer — the only correct order for cascaded control.
+
 
 #### Step 1: Tune the Rate Loop (RATE group)
 
@@ -741,6 +759,7 @@ Yaw usually needs no tuning; the default works. If rotation feels slightly delay
 | `fs` | 0 | Non-zero: read the fault code, see 7.1 |
 
 ## 14. Troubleshooting
+
 
 | Symptom | Likely cause | Fix |
 |---|---|---|

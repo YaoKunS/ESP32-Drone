@@ -57,7 +57,7 @@
     
     // WiFi AP 热点信息
     #define kApSsid "YaoKun_Drone"
-    #define kApPass "48539491"
+    #define kApPass "12345678"
     
     // 第1组 I2C (MPU6050/MPU6500 惯性测量单元)
     #define kI2cSda 9   // I2C 数据线
@@ -144,7 +144,7 @@
     
     // WiFi AP 热点信息
     #define kApSsid "YaoKun_Drone"
-    #define kApPass "48539491"
+    #define kApPass "12345678"
 
     // 第1组 I2C (MPU6050)
     #define kI2cSda 6    // I2C 数据线
@@ -196,7 +196,7 @@
     
     // WiFi AP 热点信息
     #define kApSsid "YaoKun_Drone"
-    #define kApPass "48539491"
+    #define kApPass "12345678"
 
     // 第1组 I2C (MPU6050)
     #define kI2cSda 8    // I2C 数据线
@@ -245,7 +245,7 @@
     
     // WiFi AP 热点信息
     #define kApSsid "YaoKun_Drone"
-    #define kApPass "48539491"
+    #define kApPass "12345678"
 
     // 第1组 I2C (MPU6050)
     #define kI2cSda 6
