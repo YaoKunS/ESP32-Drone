@@ -14,6 +14,8 @@
 
 ![立创开源](https://img.shields.io/badge/%E7%AB%8B%E5%88%9B%E5%BC%80%E6%BA%90-oshwhub.com%2Flindahe-orange)
 
+[**🛠 硬件开源工程页（PCB / BOM / 固件下载）→**](https://oshwhub.com/lindahe/project_sulkgarf)
+
 **简体中文** · [**English**](README_EN.md)
 
 </div>
