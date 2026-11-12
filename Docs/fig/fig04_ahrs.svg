@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 700" width="1000" height="700" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+  <defs>
+    <marker id="c" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#334155"/>
+    </marker>
+    <marker id="cb" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#2563eb"/>
+    </marker>
+  </defs>
+  <rect width="1000" height="700" fill="#ffffff"/>
+
+  <text x="20" y="28" font-size="15" font-weight="bold" fill="#0f172a">姿态解算链路与自适应信任度机制</text>
+
+  <!-- IMU 读取 -->
+  <rect x="30" y="56" width="250" height="96" rx="9" fill="#f8fafc" stroke="#334155" stroke-width="1.6"/>
+  <text x="155" y="80" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="middle">① IMU 采样</text>
+  <text x="155" y="100" font-size="11" fill="#334155" text-anchor="middle">MPU6050 (I2C 400 kHz)</text>
+  <text x="155" y="118" font-size="11" fill="#334155" text-anchor="middle">MPU6500 (SPI)</text>
+  <text x="155" y="140" font-size="10.5" fill="#64748b" text-anchor="middle">量程 ±8 g / ±2000 °/s</text>
+
+  <path d="M280,104 L322,104" stroke="#334155" stroke-width="2" fill="none" marker-end="url(#c)"/>
+
+  <!-- 轴映射 -->
+  <rect x="324" y="56" width="216" height="96" rx="9" fill="#f8fafc" stroke="#334155" stroke-width="1.6"/>
+  <text x="432" y="80" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="middle">② 软件轴重映射</text>
+  <text x="432" y="100" font-size="10.5" fill="#334155" text-anchor="middle">SwapXY　FlipX/Y/Z</text>
+  <text x="432" y="118" font-size="10.5" fill="#334155" text-anchor="middle">减陀螺零偏（标定得到）</text>
+  <text x="432" y="140" font-size="10.5" fill="#7c3aed">由 config.h 按模块类型配置</text>
+
+  <path d="M540,104 L582,104" stroke="#334155" stroke-width="2" fill="none" marker-end="url(#c)"/>
+
+  <!-- 信任度 -->
+  <rect x="584" y="46" width="386" height="120" rx="9" fill="#fffbeb" stroke="#ca8a04" stroke-width="1.8"/>
+  <text x="777" y="70" font-size="13" font-weight="bold" fill="#a16207">③ 加速度计信任度 acc_trust 计算</text>
+  <text x="600" y="94" font-size="11" fill="#334155" font-family="monospace">norm = |a| = √(ax² + ay² + az²)</text>
+  <text x="600" y="114" font-size="11" fill="#334155" font-family="monospace">dev = |norm − 1.0|　　// 偏离 1g 越多，越不可信</text>
+  <text x="600" y="134" font-size="11" fill="#334155" font-family="monospace">trust = (kAccTrustLo − dev) / (Lo − Hi)　　// Lo=0.35, Hi=0.08</text>
+  <text x="600" y="156" font-size="10.5" fill="#64748b">自由落体/剧烈机动时 trust→0，滤波器自动退化为纯陀螺积分，避免错误修正</text>
+
+  <path d="M777,166 L777,200" stroke="#334155" stroke-width="2" fill="none" marker-end="url(#c)"/>
+
+  <!-- 三种滤波器 -->
+  <text x="20" y="216" font-size="13" font-weight="bold" fill="#0f172a">④ 三选一姿态解算器（可在「设置」页运行时切换，切换时继承当前欧拉角保证姿态连续）</text>
+
+  <rect x="30" y="228" width="300" height="150" rx="9" fill="#f0f9ff" stroke="#0284c7" stroke-width="1.6"/>
+  <text x="180" y="252" font-size="12.5" font-weight="bold" fill="#075985" text-anchor="middle">Madgwick　（梯度下降）</text>
+  <text x="48" y="274" font-size="10.5" fill="#334155">四元数 + 加速度计约束的梯度下降</text>
+  <text x="48" y="292" font-size="10.5" fill="#334155">beta 自适应：</text>
+  <text x="48" y="309" font-size="10" fill="#7c3aed" font-family="monospace">beta = 0.02 + trust × (0.14 − 0.02)</text>
+  <text x="48" y="330" font-size="10.5" fill="#475569">beta 越大越信任加速度计</text>
+  <text x="48" y="350" font-size="10.5" fill="#475569">加速度模长过小 → 自动纯陀螺积分</text>
+
+  <rect x="350" y="228" width="300" height="150" rx="9" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.8"/>
+  <text x="500" y="252" font-size="12.5" font-weight="bold" fill="#15803d" text-anchor="middle">Mahony　（Betaflight 式 DCM）★默认</text>
+  <text x="368" y="274" font-size="10.5" fill="#334155">PI 反馈修正陀螺角速度</text>
+  <text x="368" y="292" font-size="10.5" fill="#334155">Kp = 2.2　Ki = 0（预留）</text>
+  <text x="368" y="309" font-size="10" fill="#7c3aed" font-family="monospace">g' = g + Kp·e + ∫Ki·e dt</text>
+  <text x="368" y="330" font-size="10.5" fill="#475569">积分限幅 ±0.35 rad/s</text>
+  <text x="368" y="350" font-size="10.5" fill="#475569">自旋超 180 °/s 时冻结积分</text>
+
+  <rect x="670" y="228" width="300" height="150" rx="9" fill="#faf5ff" stroke="#7c3aed" stroke-width="1.6"/>
+  <text x="820" y="252" font-size="12.5" font-weight="bold" fill="#6d28d9" text-anchor="middle">互补滤波　（最简方案）</text>
+  <text x="688" y="274" font-size="10.5" fill="#334155">陀螺积分 + 加速度 atan2 直接求角</text>
+  <text x="688" y="292" font-size="10.5" fill="#334155">α = 0.98（陀螺）/ 0.02（加计）</text>
+  <text x="688" y="309" font-size="10" fill="#7c3aed" font-family="monospace">α = clamp(1 − (1−α₀)·trust, α₀, 1)</text>
+  <text x="688" y="330" font-size="10.5" fill="#475569">α 随 trust 动态下调，抖动时更信陀螺</text>
+  <text x="688" y="350" font-size="10.5" fill="#475569">偏航仅陀螺积分，无绝对航向参考</text>
+
+  <path d="M180,378 L180,406 L500,406 L500,432" stroke="#0284c7" stroke-width="1.8" fill="none" marker-end="url(#cb)"/>
+  <path d="M500,378 L500,432" stroke="#16a34a" stroke-width="1.8" fill="none" marker-end="url(#cb)"/>
+  <path d="M820,378 L820,406 L500,406" stroke="#7c3aed" stroke-width="1.8" fill="none" marker-end="url(#cb)"/>
+
+  <!-- 四元数转欧拉角 -->
+  <rect x="330" y="434" width="340" height="72" rx="9" fill="#f8fafc" stroke="#334155" stroke-width="1.6"/>
+  <text x="500" y="458" font-size="12.5" font-weight="bold" fill="#0f172a" text-anchor="middle">⑤ 四元数 → 欧拉角（度）</text>
+  <text x="500" y="478" font-size="10.5" fill="#475569" text-anchor="middle">roll = atan2(2(q0q1+q2q3), 1−2(q1²+q2²))</text>
+  <text x="500" y="496" font-size="10.5" fill="#475569" text-anchor="middle">pitch 用 asin 并做 ±90° 钳位　　yaw = atan2(2(q0q3+q1q2), …)</text>
+
+  <path d="M500,506 L500,534" stroke="#334155" stroke-width="2" fill="none" marker-end="url(#c)"/>
+
+  <!-- 校准偏置 -->
+  <rect x="250" y="536" width="500" height="66" rx="9" fill="#fef2f2" stroke="#dc2626" stroke-width="1.6"/>
+  <text x="500" y="560" font-size="12.5" font-weight="bold" fill="#b91c1c" text-anchor="middle">⑥ 减去水平校准偏置 → 输出最终姿态</text>
+  <text x="500" y="580" font-size="10.5" fill="#475569" text-anchor="middle">g_roll_deg = roll − lvl_roll　　g_pitch_deg = pitch − lvl_pitch</text>
+  <text x="500" y="596" font-size="10.5" fill="#475569" text-anchor="middle">g_yaw_deg = yaw − lvl_yaw（偏置目前不提供 UI 写入入口，恒为 0）</text>
+
+  <!-- 校准来源 -->
+  <rect x="30" y="620" width="180" height="60" rx="8" fill="#fffbeb" stroke="#ca8a04" stroke-width="1.4"/>
+  <text x="120" y="642" font-size="11.5" font-weight="bold" fill="#854d0e" text-anchor="middle">手动水平校准</text>
+  <text x="120" y="660" font-size="10.5" fill="#475569" text-anchor="middle">设置页按钮（须上锁）</text>
+  <path d="M210,650 L248,650 L248,580 L248,569" stroke="#ca8a04" stroke-width="1.5" fill="none" marker-end="url(#cb)"/>
+
+  <rect x="240" y="620" width="180" height="60" rx="8" fill="#fffbeb" stroke="#ca8a04" stroke-width="1.4"/>
+  <text x="330" y="642" font-size="11.5" font-weight="bold" fill="#854d0e" text-anchor="middle">自动水平校准</text>
+  <text x="330" y="660" font-size="10.5" fill="#475569" text-anchor="middle">静止 400 ms 自动触发</text>
+  <path d="M420,650 L458,650 L458,582" stroke="#ca8a04" stroke-width="1.5" fill="none" marker-end="url(#cb)"/>
+
+  <rect x="450" y="620" width="180" height="60" rx="8" fill="#fffbeb" stroke="#ca8a04" stroke-width="1.4"/>
+  <text x="540" y="642" font-size="11.5" font-weight="bold" fill="#854d0e" text-anchor="middle">陀螺零偏标定</text>
+  <text x="540" y="660" font-size="10.5" fill="#475569" text-anchor="middle">上电 500 次采样均值</text>
+  <path d="M540,620 L540,536 L432,536" stroke="#ca8a04" stroke-width="1.5" fill="none" marker-end="url(#cb)"/>
+
+  <rect x="660" y="620" width="310" height="60" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="1.4"/>
+  <text x="815" y="642" font-size="11.5" font-weight="bold" fill="#b91c1c" text-anchor="middle">校验：结果非有限值（NaN / Inf）立即上锁</text>
+  <text x="815" y="660" font-size="10.5" fill="#7f1d1d">防止 NaN 传播进 PID 与电机输出</text>
+</svg>

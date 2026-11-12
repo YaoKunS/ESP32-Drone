@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600" width="1000" height="600" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+  <defs>
+    <marker id="g" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#334155"/>
+    </marker>
+    <marker id="gg" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#16a34a"/>
+    </marker>
+  </defs>
+  <rect width="1000" height="600" fill="#ffffff"/>
+
+  <text x="20" y="26" font-size="15" font-weight="bold" fill="#0f172a">模块依赖与文件职责（5200 行固件的构成）</text>
+
+  <!-- 中心 ino -->
+  <rect x="370" y="52" width="260" height="52" rx="8" fill="#1e293b"/>
+  <text x="500" y="74" font-size="12.5" font-weight="bold" fill="#ffffff" text-anchor="middle">YaoKunDrone.ino　主入口</text>
+  <text x="500" y="92" font-size="10.5" fill="#cbd5e1" text-anchor="middle">setup() / loop() / controlStep()</text>
+
+  <!-- 依赖箭头 -->
+  <path d="M500,104 L500,140" stroke="#334155" stroke-width="2" fill="none" marker-end="url(#g)"/>
+
+  <rect x="352" y="142" width="296" height="46" rx="8" fill="#f8fafc" stroke="#334155" stroke-width="1.6"/>
+  <text x="500" y="162" font-size="12" font-weight="bold" fill="#0f172a" text-anchor="middle">drone_types.h　公共契约（312 行）</text>
+  <text x="500" y="180" font-size="10.5" fill="#475569" text-anchor="middle">5 个结构体 + 4 个枚举 + 全部跨模块 extern 声明</text>
+
+  <!-- 头文件层 -->
+  <rect x="30" y="212" width="182" height="60" rx="8" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="121" y="234" font-size="11.5" font-weight="bold" fill="#6d28d9" text-anchor="middle">config.h　376 行</text>
+  <text x="121" y="252" font-size="10" fill="#475569" text-anchor="middle">5 种板型条件编译</text>
+  <text x="121" y="266" font-size="10" fill="#475569" text-anchor="middle">引脚 / PWM / 阈值</text>
+
+  <rect x="226" y="212" width="182" height="60" rx="8" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="317" y="234" font-size="11.5" font-weight="bold" fill="#6d28d9" text-anchor="middle">drone_pid.h　183 行</text>
+  <text x="317" y="252" font-size="10" fill="#475569" text-anchor="middle">位置式 PID 类</text>
+  <text x="317" y="266" font-size="10" fill="#475569" text-anchor="middle">积分抗饱和</text>
+
+  <rect x="422" y="212" width="182" height="60" rx="8" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="513" y="234" font-size="11.5" font-weight="bold" fill="#6d28d9" text-anchor="middle">drone_imu.h　199 行</text>
+  <text x="513" y="252" font-size="10" fill="#475569" text-anchor="middle">5 个类声明</text>
+  <text x="513" y="266" font-size="10" fill="#475569" text-anchor="middle">+ inline 辅助函数</text>
+
+  <rect x="618" y="212" width="164" height="60" rx="8" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="700" y="234" font-size="11.5" font-weight="bold" fill="#6d28d9" text-anchor="middle">drone_led.h　147 行</text>
+  <text x="700" y="252" font-size="10" fill="#475569" text-anchor="middle">LedMode 状态机</text>
+
+  <rect x="796" y="212" width="174" height="60" rx="8" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="883" y="234" font-size="11.5" font-weight="bold" fill="#6d28d9" text-anchor="middle">drone_buzzer.h　79 行</text>
+  <text x="883" y="252" font-size="10" fill="#475569" text-anchor="middle">音效枚举与波形</text>
+
+  <rect x="370" y="212" width="182" height="60" rx="8" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="461" y="234" font-size="11.5" font-weight="bold" fill="#6d28d9" text-anchor="middle">drone_web_ui.h　1651 行</text>
+  <text x="461" y="252" font-size="10" fill="#475569" text-anchor="middle">完整单页应用</text>
+  <text x="461" y="266" font-size="10" fill="#475569" text-anchor="middle">HTML+CSS+JS 全内嵌</text>
+
+  <!-- 依赖连线 -->
+  <path d="M500,188 L121,212" stroke="#94a3b8" stroke-width="1.3" marker-end="url(#g)"/>
+  <path d="M500,188 L317,212" stroke="#94a3b8" stroke-width="1.3" marker-end="url(#g)"/>
+  <path d="M500,188 L513,212" stroke="#94a3b8" stroke-width="1.3" marker-end="url(#g)"/>
+  <path d="M500,188 L700,212" stroke="#94a3b8" stroke-width="1.3" marker-end="url(#g)"/>
+  <path d="M500,188 L883,212" stroke="#94a3b8" stroke-width="1.3" marker-end="url(#g)"/>
+  <path d="M500,188 L461,212" stroke="#94a3b8" stroke-width="1.3" marker-end="url(#g)"/>
+
+  <!-- 实现层 -->
+  <text x="30" y="308" font-size="12.5" font-weight="bold" fill="#0f172a">.ino 实现文件（Arduino IDE 编译单元）</text>
+
+  <rect x="30" y="320" width="230" height="96" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.6"/>
+  <text x="145" y="342" font-size="12" font-weight="bold" fill="#15803d" text-anchor="middle">hardware.ino　885 行</text>
+  <text x="46" y="362" font-size="10.5" fill="#166534">最厚的文件，四大驱动集中实现：</text>
+  <text x="46" y="380" font-size="10.5" fill="#166534">· LED 模式渲染（5 种状态）</text>
+  <text x="46" y="396" font-size="10.5" fill="#166534">· 蜂鸣器状态机（14 种音效）</text>
+  <text x="46" y="412" font-size="10.5" fill="#166534">· 电机 LEDC PWM 驱动 + 测试</text>
+
+  <rect x="278" y="320" width="212" height="96" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.6"/>
+  <text x="384" y="342" font-size="12" font-weight="bold" fill="#15803d" text-anchor="middle">rc.ino　291 行</text>
+  <text x="294" y="362" font-size="10.5" fill="#166534">· g_rc 临界区读写封装</text>
+  <text x="294" y="380" font-size="10.5" fill="#166534">· onWsEvent 回调分发</text>
+  <text x="294" y="396" font-size="10.5" fill="#166534">· 14 类下行命令解析</text>
+  <text x="294" y="412" font-size="10.5" fill="#166534">· 192 B 定长缓冲防越界</text>
+
+  <rect x="508" y="320" width="200" height="96" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.6"/>
+  <text x="608" y="342" font-size="12" font-weight="bold" fill="#15803d" text-anchor="middle">control.ino　80 行</text>
+  <text x="524" y="362" font-size="10.5" fill="#166534">· 5 个 PID 实例定义</text>
+  <text x="524" y="380" font-size="10.5" fill="#166534">· applyTunings 应用增益</text>
+  <text x="524" y="396" font-size="10.5" fill="#166534">· 脏标志热更新机制</text>
+  <text x="524" y="412" font-size="10.5" fill="#166534">（主循环仍在主文件）</text>
+
+  <rect x="726" y="320" width="244" height="96" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.6"/>
+  <text x="848" y="342" font-size="12" font-weight="bold" fill="#15803d" text-anchor="middle">failsafe.ino　113 行</text>
+  <text x="742" y="362" font-size="10.5" fill="#166534">· canArm 解锁四条件</text>
+  <text x="742" y="380" font-size="10.5" fill="#166534">· updateArmingState 状态机</text>
+  <text x="742" y="396" font-size="10.5" fill="#166534">· disarmNow / requestKill</text>
+  <text x="742" y="412" font-size="10.5" fill="#166534">安全逻辑完全独立于控制逻辑</text>
+
+  <rect x="30" y="428" width="230" height="82" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.6"/>
+  <text x="145" y="450" font-size="12" font-weight="bold" fill="#15803d" text-anchor="middle">storage.ino　145 行</text>
+  <text x="46" y="470" font-size="10.5" fill="#166534">NVS 命名空间 "drone"</text>
+  <text x="46" y="488" font-size="10.5" fill="#166534">loadTunings / saveTunings</text>
+  <text x="46" y="504" font-size="10.5" fill="#166534">读取后再钳位一次</text>
+
+  <rect x="278" y="428" width="212" height="82" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.6"/>
+  <text x="384" y="450" font-size="12" font-weight="bold" fill="#15803d" text-anchor="middle">telemetry.ino　114 行</text>
+  <text x="294" y="470" font-size="10.5" fill="#166534">sendTelemetry 周期门控</text>
+  <text x="294" y="488" font-size="10.5" fill="#166534">480 B JSON 缓冲</text>
+  <text x="294" y="504" font-size="10.5" fill="#166534">3 个标签翻译函数</text>
+
+  <!-- 设计要点 -->
+  <rect x="508" y="428" width="462" height="82" rx="8" fill="#eff6ff" stroke="#2563eb" stroke-width="1.6"/>
+  <text x="524" y="450" font-size="12" font-weight="bold" fill="#1e40af">模块化的两个关键约定</text>
+  <text x="524" y="470" font-size="10.5" fill="#1e3a8a">① .ino 文件在 Arduino IDE 中自动生成函数原型并强制包含顺序；.h 文件不会。</text>
+  <text x="524" y="488" font-size="10.5" fill="#1e3a8a">    故所有跨模块声明集中在 drone_types.h，各 .ino 只需 #include 它即可获得全部接口。</text>
+  <text x="524" y="504" font-size="10.5" fill="#1e3a8a">② drone_pid.h 必须在 clampf 等 inline 工具之后被包含，头文件依赖「被依赖者在前」。</text>
+
+  <!-- 并发模型 -->
+  <text x="30" y="546" font-size="12.5" font-weight="bold" fill="#b91c1c">并发模型：FreeRTOS 双上下文下的线程安全设计</text>
+
+  <rect x="30" y="558" width="300" height="34" rx="7" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.2"/>
+  <text x="44" y="579" font-size="10.5" fill="#475569">Loop 任务：控制循环 500 Hz（controlStep）</text>
+
+  <rect x="348" y="558" width="300" height="34" rx="7" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.2"/>
+  <text x="362" y="579" font-size="10.5" fill="#475569">Async TCP 任务：WS 事件回调与 HTTP 处理</text>
+
+  <path d="M500,592 L500,600" stroke="#dc2626" stroke-width="1.6"/>
+  <text x="30" y="600" font-size="10" fill="#b91c1c">共享状态用 4 组临界区保护：g_rcMux（遥控）、g_cfgMux（配置/PID）、g_killMux（KILL）、g_motorTestMux（电机测试）、g_calMux（校准请求）</text>
+</svg>

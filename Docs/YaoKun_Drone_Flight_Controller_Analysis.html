@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>耀坤无人机飞控代码深度分析</title>
+    <style>
+        :root {
+            --bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --text: #212529;
+            --text-secondary: #6c757d;
+            --border: #dee2e6;
+            --accent: #0d6efd;
+            --accent-light: #e7f1ff;
+            --success: #198754;
+            --success-light: #d1e7dd;
+            --warning: #ffc107;
+            --warning-light: #fff3cd;
+            --danger: #dc3545;
+            --danger-light: #f8d7da;
+            --code-bg: #f6f8fa;
+            --code-border: #d0d7de;
+            --shadow: 0 2px 8px rgba(0,0,0,0.08);
+            --radius: 10px;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #0d1117;
+                --card-bg: #161b22;
+                --text: #c9d1d9;
+                --text-secondary: #8b949e;
+                --border: #30363d;
+                --accent: #58a6ff;
+                --accent-light: #0d1117;
+                --success: #3fb950;
+                --success-light: #0d1117;
+                --warning: #d29922;
+                --warning-light: #0d1117;
+                --danger: #f85149;
+                --danger-light: #0d1117;
+                --code-bg: #161b22;
+                --code-border: #30363d;
+                --shadow: 0 2px 8px rgba(0,0,0,0.3);
+            }
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+            line-height: 1.7;
+            color: var(--text);
+            background: var(--bg);
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        header {
+            text-align: center;
+            padding: 40px 0 30px;
+            border-bottom: 2px solid var(--border);
+            margin-bottom: 40px;
+        }
+        header h1 {
+            font-size: 2.2rem;
+            margin: 0 0 10px;
+            color: var(--accent);
+            letter-spacing: -0.5px;
+        }
+        header .subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+        header .meta {
+            margin-top: 15px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        .toc {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px 28px;
+            margin-bottom: 40px;
+            box-shadow: var(--shadow);
+        }
+        .toc h2 {
+            margin: 0 0 16px;
+            font-size: 1.1rem;
+            color: var(--accent);
+        }
+        .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            columns: 2;
+            column-gap: 30px;
+        }
+        .toc li {
+            margin-bottom: 8px;
+            break-inside: avoid;
+        }
+        .toc a {
+            color: var(--text);
+            text-decoration: none;
+            font-size: 0.95rem;
+            display: block;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+        .toc a:hover {
+            background: var(--accent-light);
+            color: var(--accent);
+        }
+        @media (max-width: 600px) {
+            .toc ul { columns: 1; }
+        }
+        section {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 32px;
+            margin-bottom: 32px;
+            box-shadow: var(--shadow);
+        }
+        section h2 {
+            font-size: 1.5rem;
+            margin: 0 0 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--accent);
+            color: var(--accent);
+        }
+        section h3 {
+            font-size: 1.2rem;
+            margin: 28px 0 14px;
+            color: var(--text);
+        }
+        section h4 {
+            font-size: 1.05rem;
+            margin: 22px 0 10px;
+            color: var(--text-secondary);
+        }
+        p { margin: 0 0 14px; }
+        ul, ol { margin: 0 0 16px; padding-left: 24px; }
+        li { margin-bottom: 6px; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0 24px;
+            font-size: 0.92rem;
+        }
+        th, td {
+            border: 1px solid var(--border);
+            padding: 10px 12px;
+            text-align: left;
+        }
+        th {
+            background: var(--accent-light);
+            color: var(--accent);
+            font-weight: 600;
+        }
+        tr:nth-child(even) { background: rgba(0,0,0,0.02); }
+        code {
+            font-family: "SF Mono", Monaco, "Cascadia Code", "Fira Code", Consolas, monospace;
+            background: var(--code-bg);
+            border: 1px solid var(--code-border);
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-size: 0.9em;
+            color: var(--danger);
+        }
+        pre {
+            background: var(--code-bg);
+            border: 1px solid var(--code-border);
+            border-radius: 8px;
+            padding: 16px;
+            overflow-x: auto;
+            font-size: 0.88rem;
+            line-height: 1.5;
+            margin: 16px 0;
+        }
+        pre code {
+            background: none;
+            border: none;
+            padding: 0;
+            color: var(--text);
+        }
+        .highlight {
+            background: var(--accent-light);
+            border-left: 4px solid var(--accent);
+            padding: 16px 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 16px 0;
+        }
+        .highlight-success {
+            background: var(--success-light);
+            border-left-color: var(--success);
+        }
+        .highlight-warning {
+            background: var(--warning-light);
+            border-left-color: var(--warning);
+        }
+        .highlight-danger {
+            background: var(--danger-light);
+            border-left-color: var(--danger);
+        }
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            margin-right: 6px;
+        }
+        .badge-accent { background: var(--accent-light); color: var(--accent); }
+        .badge-success { background: var(--success-light); color: var(--success); }
+        .badge-warning { background: var(--warning-light); color: #856404; }
+        .badge-danger { background: var(--danger-light); color: var(--danger); }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 600px) {
+            .grid-2 { grid-template-columns: 1fr; }
+            section { padding: 20px; }
+            header h1 { font-size: 1.6rem; }
+        }
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border);
+            margin-top: 20px;
+        }
+        a { color: var(--accent); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>耀坤无人机飞控代码深度分析</h1>
+            <div class="subtitle">YaoKun Drone Flight Controller — 架构、算法与安全机制详解</div>
+            <div class="meta">基于 ESP32/ESP32-S3 | Arduino 模块化架构 | 版本 2026.06</div>
+        </header>
+
+        <nav class="toc">
+            <h2>📑 目录</h2>
+            <ul>
+                <li><a href="#sec-overview">一、项目概述</a></li>
+                <li><a href="#sec-arch">二、架构设计与文件组织</a></li>
+                <li><a href="#sec-hal">三、硬件抽象层 (config.h)</a></li>
+                <li><a href="#sec-algo">四、核心控制算法详解</a></li>
+                <li><a href="#sec-safety">五、安全机制与故障保护</a></li>
+                <li><a href="#sec-comm">六、通信协议与 Web 遥控</a></li>
+                <li><a href="#sec-hw">七、硬件驱动层</a></li>
+                <li><a href="#sec-storage">八、参数存储 (NVS)</a></li>
+                <li><a href="#sec-quality">九、代码质量评估</a></li>
+                <li><a href="#sec-summary">十、总结</a></li>
+            </ul>
+        </nav>
+
+        <section id="sec-overview">
+            <h2>一、项目概述</h2>
+            <p>这是一套基于 <strong>ESP32/ESP32-S3</strong> 的微型四旋翼飞控代码，项目名为「耀坤无人机」（YaoKun Drone）。代码采用 <strong>Arduino + 模块化拆分</strong> 架构，通过 WiFi AP + WebSocket 提供无线遥控与调参界面，无需额外 App，浏览器即可完成全部操作。</p>
+            <div class="highlight highlight-success">
+                <strong>核心特性：</strong>500Hz 控制频率、串级 PID、三种姿态解算算法（Madgwick / Mahony / 互补滤波）、完整的故障保护体系、12 色 Web 主题、单电机测试、NVS 掉电保存参数。
+            </div>
+        </section>
+
+        <section id="sec-arch">
+            <h2>二、架构设计与文件组织</h2>
+            <p>代码采用 <strong>"头文件声明 + .ino 实现"</strong> 的混合模块化方案，在 Arduino 单项目限制下做了合理的职责拆分：</p>
+            <table>
+                <thead>
+                    <tr><th>文件</th><th>职责</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>YaoKun_Drone21.ino</code></td><td>主入口：setup()/loop()、控制主循环 controlStep()、WiFi/Web 服务器</td></tr>
+                    <tr><td><code>config.h</code></td><td>硬件抽象层（HAL）：多板型条件编译、引脚定义、全部系统常量</td></tr>
+                    <tr><td><code>drone_types.h</code></td><td>项目"公共头文件"：数据结构、枚举、跨模块 extern 声明、工具函数</td></tr>
+                    <tr><td><code>drone_pid.h</code></td><td>通用 PID 控制器类（头文件内联实现）</td></tr>
+                    <tr><td><code>control.ino</code></td><td>PID 对象实例化、参数热更新、增益应用</td></tr>
+                    <tr><td><code>drone_imu.h</code></td><td>IMU 驱动接口与姿态解算类声明（Madgwick/Mahony/互补滤波）</td></tr>
+                    <tr><td><code>hardware.ino</code></td><td>底层硬件实现：LED、蜂鸣器、电机 PWM、IMU 读写</td></tr>
+                    <tr><td><code>failsafe.ino</code></td><td>安全核心：解锁状态机、紧急停止、故障保护</td></tr>
+                    <tr><td><code>rc.ino</code></td><td>通信核心：WebSocket 命令解析、遥控指令存储、PID/配置热修改</td></tr>
+                    <tr><td><code>telemetry.ino</code></td><td>遥测数据打包（JSON via WebSocket）</td></tr>
+                    <tr><td><code>storage.ino</code></td><td>NVS 非易失性存储：参数掉电保存</td></tr>
+                    <tr><td><code>drone_web_ui.h</code></td><td>完整的 Web 遥控界面（单 HTML 文件，内嵌 CSS/JS）</td></tr>
+                    <tr><td><code>drone_led.h</code> / <code>drone_buzzer.h</code></td><td>LED/蜂鸣器模块头文件与接口定义</td></tr>
+                </tbody>
+            </table>
+            <div class="highlight">
+                <strong>设计亮点：</strong>在 Arduino 不支持传统 <code>.c/.cpp</code> 分离编译的约束下，通过 <code>extern</code> 声明 + 单一 <code>.ino</code> 实现文件的方式，实现了接近专业飞控的模块化结构。
+            </div>
+        </section>
+
+        <section id="sec-hal">
+            <h2>三、硬件抽象层（config.h）</h2>
+            <h3>3.1 多板型支持</h3>
+            <p>通过条件编译支持多种 PCB 板型，默认使用 <code>PCB_YaoKun_S3mini_B</code>：</p>
+            <ul>
+                <li><span class="badge badge-accent">全功能版</span> <code>PCB_YaoKun_LCKFB_ESP32S3</code>：立创 ESP32-S3 R8N8，预留 VL53L1x 激光、PMW3901 光流插座</li>
+                <li><span class="badge badge-warning">精简版</span> <code>PCB_YaoKun_S3mini</code> 系列：Supermini 开发板，引脚紧张，无光流插座</li>
+                <li><span class="badge badge-success">计划中</span> ESP32Dev、ESP32C3、ESP32S3-CAM 等板型预留接口</li>
+            </ul>
+
+            <h3>3.2 关键硬件参数</h3>
+            <table>
+                <thead>
+                    <tr><th>参数</th><th>值</th><th>说明</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>PWM 频率</td><td>20 kHz</td><td>10-bit 分辨率 (0~1023)，超出人耳范围，静音</td></tr>
+                    <tr><td>控制频率</td><td>500 Hz</td><td>周期 2ms，通过 micros() 定时触发</td></tr>
+                    <tr><td>电机通道</td><td>LEDC 0~3</td><td>与 LED 通道 4~5 完全隔离</td></tr>
+                    <tr><td>IMU 支持</td><td>自动检测</td><td>MPU6050 (I2C) 或 MPU6500 (SPI)</td></tr>
+                    <tr><td>IMU 轴映射</td><td>4 个宏</td><td><code>kImuSwapXY</code> / <code>kImuFlipX/Y/Z</code> 适配不同安装方向</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="sec-algo">
+            <h2>四、核心控制算法详解</h2>
+
+            <h3>4.1 控制架构：串级 PID（角度环 + 角速率环）</h3>
+            <pre><code>遥控输入 → 角度环 PID → 期望角速度 → 角速率环 PID → 电机扭矩 → 混控 → PWM</code></pre>
+            <p><strong>具体实现</strong>（<code>controlStep()</code> 中）：</p>
+            <pre><code>// 外环：角度误差 → 期望角速度
+float roll_rate_sp  = g_roll_angle_pid.update(roll_sp_deg - g_roll_deg, dt);
+float pitch_rate_sp = g_pitch_angle_pid.update(pitch_sp_deg - g_pitch_deg, dt);
+
+// 内环：角速度误差 → 归一化扭矩（-0.5~0.5）
+float roll_torque  = g_roll_rate_pid.update(roll_rate_sp - s.gx_dps, dt) * torque_scale;
+float pitch_torque = g_pitch_rate_pid.update(pitch_rate_sp - s.gy_dps, dt) * torque_scale;
+float yaw_torque   = g_yaw_rate_pid.update(yaw_rate_sp_dps - s.gz_dps, dt) * torque_scale;</code></pre>
+
+            <h4>PID 实现特点（drone_pid.h）</h4>
+            <ul>
+                <li><strong>标准位置式 PID</strong>：输出 <code>out = P + I + D</code></li>
+                <li><strong>积分抗饱和</strong>：当输出触及限幅时，积分项乘以 0.99 缓慢衰减，避免失控后积分仍累积</li>
+                <li><strong>独立输出限幅</strong>：角度环 ±250，角速率环 ±0.5，偏航 ±0.3</li>
+            </ul>
+
+            <h3>4.2 姿态解算：三滤波器自适应切换</h3>
+            <p>支持三种算法，通过 Web 界面实时切换（仅在上锁时允许）：</p>
+            <table>
+                <thead>
+                    <tr><th>滤波器</th><th>特点</th><th>适用场景</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>Madgwick</strong></td><td>梯度下降法，自适应 beta（0.02~0.14 动态调整）</td><td>通用，对噪声有一定鲁棒性</td></tr>
+                    <tr><td><strong>Mahony</strong></td><td>比例-积分修正 DCM 法，支持加速度信任度和自旋限制</td><td><strong>默认方案</strong>，计算量小，效果稳定</td></tr>
+                    <tr><td><strong>互补滤波</strong></td><td>简单加权融合（陀螺仪 98% + 加速度计 2%）</td><td>最轻量，适合资源极度受限场景</td></tr>
+                </tbody>
+            </table>
+
+            <div class="highlight">
+                <strong>切换连续性保障：</strong>切换时从旧滤波器读取当前姿态，写入新滤波器，避免姿态跳变。
+            </div>
+
+            <h3>4.3 X 型混控逻辑</h3>
+            <p>机头位于 M4(左前) 和 M1(右前) 之间，标准 X 配置：</p>
+            <pre><code>m0(左前) = throttle + roll  + pitch - yaw;
+m1(右前) = throttle - roll  + pitch + yaw;
+m2(右后) = throttle - roll  - pitch - yaw;
+m3(左后) = throttle + roll  - pitch + yaw;</code></pre>
+
+            <h3>4.4 扭矩缩放（低油门操控性补偿）</h3>
+            <pre><code>float torque_scale = clampf(torque_scale_min + throttle * torque_scale_slope, 0, 1);</code></pre>
+            <p>解决低油门时 PID 输出相对油门占比过大的问题。默认 <code>min=0.20, slope=2.0</code>，即油门 0% 时扭矩系数 0.2，油门 40% 时达到 1.0。</p>
+        </section>
+
+        <section id="sec-safety">
+            <h2>五、安全机制与故障保护（failsafe.ino）</h2>
+
+            <h3>5.1 多层安全架构</h3>
+            <ol>
+                <li><strong>硬件初始化检查</strong> → 电机/IMU 故障则禁止启动</li>
+                <li><strong>解锁条件检查</strong> → 油门低位、摇杆回中、姿态水平（&lt;45°）</li>
+                <li><strong>解锁保持机制</strong> → ARM 开关需保持 800ms 才正式解锁</li>
+                <li><strong>运行中实时监控</strong> → 倾斜/超时/IMU失效/dt超限 → 强制上锁</li>
+                <li><strong>紧急停止（Kill）</strong> → 任意时刻收到 'K' 指令或 WebSocket 断开 → 立即停转</li>
+            </ol>
+
+            <h3>5.2 故障保护触发源（FailSafeReason）</h3>
+            <table>
+                <thead>
+                    <tr><th>代码</th><th>触发条件</th><th>行为</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>FS_CMD_TIMEOUT</code></td><td>遥控指令超过 timeout（默认 300ms）未更新</td><td>上锁 + 蜂鸣器急促报警</td></tr>
+                    <tr><td><code>FS_WS_DISCONNECT</code></td><td>WebSocket 客户端断开</td><td>上锁</td></tr>
+                    <tr><td><code>FS_IMU_FAIL</code></td><td>IMU 读取失败或姿态解算出 NaN/Inf</td><td>上锁 + 报警</td></tr>
+                    <tr><td><code>FS_TILT_LIMIT</code></td><td>横滚/俯仰超过 <code>tilt_disarm_deg</code>（默认 80°）</td><td>上锁 + 报警</td></tr>
+                    <tr><td><code>FS_DT_LIMIT</code></td><td>控制循环间隔超过 20ms（500Hz 失速）</td><td>上锁 + 报警</td></tr>
+                    <tr><td><code>FS_KILL</code></td><td>收到紧急停止指令</td><td>上锁 + 专用音效</td></tr>
+                    <tr><td><code>FS_MOTOR_FAIL</code></td><td>LEDC 初始化失败</td><td>永久禁止解锁</td></tr>
+                </tbody>
+            </table>
+
+            <h3>5.3 解锁状态机（updateArmingState）</h3>
+            <pre><code>if (!g_armed) {
+    // 检查 canArm()：油门低、摇杆中、姿态平
+    if (rc.arm_request && canArm(rc)) {
+        if (保持时间 >= 800ms) {
+            g_armed = true;  // 正式解锁
+            resetAllPid();   // 清零历史积分
+            buzzerPlay(BUZ_LONG_BEEP);
+        } else {
+            buzzerPlay(BUZ_QUICK_TICK); // 解锁等待滴答声
+            g_led_mode = LED_ARMING;    // 红绿灯慢闪
+        }
+    }
+} else {
+    if (!rc.arm_request) disarmNow(FS_MANUAL); // 关 ARM 立即上锁
+}</code></pre>
+        </section>
+
+        <section id="sec-comm">
+            <h2>六、通信协议与 Web 遥控</h2>
+
+            <h3>6.1 双通道通信</h3>
+            <ul>
+                <li><strong>HTTP</strong>：提供静态网页（<code>kIndexHtml</code> 存储在 PROGMEM 中）</li>
+                <li><strong>WebSocket</strong> (<code>/ws</code>)：双向实时通信，50ms 周期（20Hz）发送遥测</li>
+            </ul>
+
+            <h3>6.2 上行指令协议（App → 飞控）</h3>
+            <p>基于逗号分隔的文本协议，便于 JavaScript 生成和 Arduino 解析：</p>
+            <table>
+                <thead>
+                    <tr><th>指令格式</th><th>功能</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>C,throttle,roll,pitch,yaw,arm</code></td><td>遥控指令（50Hz 发送）</td></tr>
+                    <tr><td><code>PID,ANGLE/RATE/YAW,kp,ki,kd</code></td><td>热更新 PID 参数</td></tr>
+                    <tr><td><code>CFG,KEY,VALUE</code></td><td>修改配置项（最大角度、超时等）</td></tr>
+                    <tr><td><code>CFG,IMU_FILTER,0/1/2</code></td><td>切换姿态滤波器</td></tr>
+                    <tr><td><code>CAL,LEVEL/GYRO</code></td><td>请求校准</td></tr>
+                    <tr><td><code>MTEST,index,throttle,duration</code></td><td>单电机测试</td></tr>
+                    <tr><td><code>K</code></td><td>紧急停止</td></tr>
+                    <tr><td><code>GET</code> / <code>SAVE</code></td><td>获取/保存参数</td></tr>
+                    <tr><td><code>BUZZER_MUTE,0/1</code></td><td>蜂鸣器静音</td></tr>
+                    <tr><td><code>TAKEOFF_REPEAT,1~10</code></td><td>起飞音效重复次数</td></tr>
+                </tbody>
+            </table>
+
+            <h3>6.3 下行遥测协议（飞控 → App）</h3>
+            <p>JSON 格式，20Hz 发送：</p>
+            <pre><code>{
+  "type": "tel",
+  "armed": 1,
+  "roll": 2.5, "pitch": -1.2, "yaw": 45.0,
+  "dt_ms": 2.01, "loop_hz": 498,
+  "cmd_age": 12,
+  "m0": 0.35, "m1": 0.35, "m2": 0.35, "m3": 0.35,
+  "vbatt": 3.85,
+  "fs": 0,
+  "cal": "IDLE",
+  "msg": "ARMED"
+}</code></pre>
+
+            <h3>6.4 Web 界面特性</h3>
+            <div class="grid-2">
+                <div>
+                    <h4>交互功能</h4>
+                    <ul>
+                        <li>虚拟双摇杆（触摸/鼠标）</li>
+                        <li>左摇杆：油门不回中，偏航回中</li>
+                        <li>右摇杆：横滚/俯仰均回中</li>
+                        <li>ARM 解锁开关 + 紧急上锁按钮</li>
+                        <li>实时遥测面板</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>视觉与设置</h4>
+                    <ul>
+                        <li>Canvas ADI 姿态仪表（民航风格）</li>
+                        <li>12 色主题切换（暗黑/海棠/朱红/藕荷/湖蓝/晴蓝/藏青/葱绿/甘青/翡翠/松花）</li>
+                        <li>全屏模式支持</li>
+                        <li>PID 调参与限制参数设置</li>
+                        <li>单电机测试界面</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec-hw">
+            <h2>七、硬件驱动层（hardware.ino）</h2>
+
+            <h3>7.1 电机驱动</h3>
+            <ul>
+                <li>使用 ESP32 <code>ledcAttachChannel</code> 将电机绑定到通道 0~3</li>
+                <li><code>motorWriteNorm()</code> 将 0.0~1.0 浮点油门映射到 0~1023 duty</li>
+                <li>电机测试状态受互斥锁 <code>g_motorTestMux</code> 保护</li>
+            </ul>
+
+            <h3>7.2 IMU 驱动</h3>
+            <p><strong>统一接口设计</strong>（<code>ImuDriver</code> 类）：</p>
+            <pre><code>bool begin();      // 自动探测：先尝试 I2C(MPU6050)，失败则尝试 SPI(MPU6500)
+bool read(ImuSample *out);  // 统一输出 g 和 dps
+void calibrateGyro();       // 上电自动零偏校准</code></pre>
+
+            <p><strong>数据后处理</strong>（适配不同安装方向）：</p>
+            <pre><code>if (kImuSwapXY) { swap(ax, ay); swap(gx, gy); gx=-gx; gy=-gy; }
+if (kImuFlipX)  { ax=-ax; gx=-gx; }
+// ...</code></pre>
+
+            <h3>7.3 LED 与蜂鸣器</h3>
+            <table>
+                <thead>
+                    <tr><th>组件</th><th>驱动方式</th><th>状态含义</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>红色 LED</td><td>LEDC PWM 通道 4</td><td rowspan="2">同步显示飞控状态（呼吸/闪烁/常亮）</td></tr>
+                    <tr><td>绿色 LED</td><td>LEDC PWM 通道 5</td></tr>
+                    <tr><td>蓝色 LED</td><td>GPIO 数字输出</td><td>慢闪=待机，常亮=WebSocket 连接，快闪=飞行中</td></tr>
+                    <tr><td>蜂鸣器</td><td>非阻塞状态机</td><td>14 种音效，支持循环报警和电压分级告警</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="sec-storage">
+            <h2>八、参数存储（storage.ino）</h2>
+            <p>使用 ESP32 <code>Preferences</code>（基于 NVS）：</p>
+            <ul>
+                <li><strong>存储内容</strong>：PID 三组 9 个参数、运行限制 7 项、水平校准偏置 3 轴、滤波器模式、蜂鸣器设置</li>
+                <li><strong>掉电保持</strong>：<code>saveTunings()</code> 在修改后调用，<code>loadTunings()</code> 在 <code>setup()</code> 时调用</li>
+                <li><strong>热更新</strong>：Web 修改 PID 时只改内存并置 <code>g_tunings_dirty</code> 标志，控制循环在 <code>applyTuningsIfDirty()</code> 中安全切换，避免临界区问题</li>
+            </ul>
+        </section>
+
+        <section id="sec-quality">
+            <h2>九、代码质量评估</h2>
+
+            <h3>9.1 优点</h3>
+            <div class="grid-2">
+                <div>
+                    <ul>
+                        <li><strong>模块化清晰</strong>：在 Arduino 限制下做到了较好的职责分离</li>
+                        <li><strong>线程安全</strong>：关键全局变量均使用 <code>portMUX_TYPE</code> 临界区保护</li>
+                        <li><strong>安全设计完善</strong>：多层故障保护、解锁条件严格、积分抗饱和、输出限幅</li>
+                    </ul>
+                </div>
+                <div>
+                    <ul>
+                        <li><strong>硬件兼容性好</strong>：条件编译支持多板型，IMU 自动探测</li>
+                        <li><strong>Web 交互完整</strong>：无需额外 App，浏览器即遥控器和调参助手</li>
+                        <li><strong>注释详尽</strong>：关键算法都有中文注释，适合教学</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>9.2 可改进点</h3>
+            <table>
+                <thead>
+                    <tr><th>问题</th><th>说明</th><th>建议</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>浮点精度</td>
+                        <td>部分比较使用 <code>==</code> 判断浮点（如 PID 输出限幅抗饱和）</td>
+                        <td>引入容差 <code>EPSILON</code> 进行比较</td>
+                    </tr>
+                    <tr>
+                        <td>内存管理</td>
+                        <td>WebSocket 接收缓冲区固定 192 字节；JSON 遥测使用栈缓冲区</td>
+                        <td>增加长度校验，考虑使用静态大缓冲区</td>
+                    </tr>
+                    <tr>
+                        <td>错误恢复</td>
+                        <td>IMU 初始化失败进入 <code>while(true)</code> 死循环</td>
+                        <td>增加看门狗或降级策略（如 LED 报错循环）</td>
+                    </tr>
+                    <tr>
+                        <td>调度抖动</td>
+                        <td><code>loop()</code> 使用 <code>delayMicroseconds(50)</code> 忙等待</td>
+                        <td>改用 FreeRTOS 任务或硬件定时器进一步降低抖动</td>
+                    </tr>
+                    <tr>
+                        <td>扩展性</td>
+                        <td>预留了光流/激光引脚，但代码中未实现位置/速度环</td>
+                        <td>后续可加入光流定点、激光定高功能</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="sec-summary">
+            <h2>十、总结</h2>
+            <p>这是一套<strong>教育级/入门级</strong>的开源飞控，代码量精简但功能完整，涵盖了四旋翼飞行的核心要素：</p>
+            <div class="grid-2">
+                <div class="highlight highlight-success">
+                    <strong>已实现</strong>
+                    <ul style="margin-bottom:0">
+                        <li>✅ 500Hz 串级 PID 控制</li>
+                        <li>✅ 三种姿态解算算法</li>
+                        <li>✅ 完整的故障保护与解锁逻辑</li>
+                        <li>✅ 基于 WebSocket 的无线遥控与实时调参</li>
+                        <li>✅ 多硬件板型支持</li>
+                    </ul>
+                </div>
+                <div class="highlight highlight-warning">
+                    <strong>扩展方向</strong>
+                    <ul style="margin-bottom:0">
+                        <li>🔧 加入光流/激光测距模块</li>
+                        <li>🔧 实现定高/定点悬停功能</li>
+                        <li>🔧 增加黑匣子日志记录</li>
+                        <li>🔧 支持 SBUS/ELRS 硬件接收机</li>
+                        <li>🔧 电池电量百分比估算</li>
+                    </ul>
+                </div>
+            </div>
+            <p style="margin-top:20px">其代码组织方式和详尽的注释使其非常适合作为 <strong>ESP32 飞控的学习模板</strong> 或 <strong>小型四轴的二次开发基础</strong>。如果后续加入光流/激光测距模块，可以在此基础上扩展为具有定高/悬停功能的进阶版本。</p>
+        </section>
+
+        <footer>
+            <p>耀坤无人机（星火计划 2026 开源项目）| 分析生成时间：2026-08-02</p>
+            <p>淘宝店：耀坤智联 | 哔哩哔哩：耀坤智联 | 嘉立创开源硬件平台：耀坤无人机</p>
+        </footer>
+    </div>
+</body>
+</html>

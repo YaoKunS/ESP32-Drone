@@ -1,0 +1,123 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 660" width="1000" height="660" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+  <defs>
+    <marker id="f" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#334155"/>
+    </marker>
+    <marker id="fb" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#2563eb"/>
+    </marker>
+    <marker id="fg" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#16a34a"/>
+    </marker>
+    <marker id="fr" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#dc2626"/>
+    </marker>
+  </defs>
+  <rect width="1000" height="660" fill="#ffffff"/>
+
+  <text x="20" y="26" font-size="15" font-weight="bold" fill="#0f172a">通信架构与 WebSocket 协议时序</text>
+
+  <!-- 参与方 -->
+  <rect x="30" y="46" width="150" height="52" rx="8" fill="#eff6ff" stroke="#2563eb" stroke-width="1.6"/>
+  <text x="105" y="68" font-size="12" font-weight="bold" fill="#1e40af" text-anchor="middle">手机 / PC 浏览器</text>
+  <text x="105" y="86" font-size="10.5" fill="#475569" text-anchor="middle">drone_web_ui</text>
+
+  <rect x="270" y="46" width="180" height="52" rx="8" fill="#f8fafc" stroke="#334155" stroke-width="1.6"/>
+  <text x="360" y="68" font-size="12" font-weight="bold" fill="#0f172a" text-anchor="middle">WiFi SoftAP</text>
+  <text x="360" y="86" font-size="10.5" fill="#475569" text-anchor="middle">YaoKun_Drone / 12345678</text>
+
+  <rect x="530" y="46" width="200" height="52" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.6"/>
+  <text x="630" y="68" font-size="12" font-weight="bold" fill="#15803d" text-anchor="middle">AsyncTCP / WebSocket</text>
+  <text x="630" y="86" font-size="10.5" fill="#475569" text-anchor="middle">onWsEvent（rc.ino）</text>
+
+  <rect x="810" y="46" width="160" height="52" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="1.6"/>
+  <text x="890" y="68" font-size="12" font-weight="bold" fill="#b91c1c" text-anchor="middle">飞控主循环</text>
+  <text x="890" y="86" font-size="10.5" fill="#475569" text-anchor="middle">controlStep 500 Hz</text>
+
+  <!-- 生命线 -->
+  <line x1="105" y1="98" x2="105" y2="600" stroke="#cbd5e1" stroke-width="1.4" stroke-dasharray="5 4"/>
+  <line x1="360" y1="98" x2="360" y2="600" stroke="#cbd5e1" stroke-width="1.4" stroke-dasharray="5 4"/>
+  <line x1="630" y1="98" x2="630" y2="600" stroke="#cbd5e1" stroke-width="1.4" stroke-dasharray="5 4"/>
+  <line x1="890" y1="98" x2="890" y2="600" stroke="#cbd5e1" stroke-width="1.4" stroke-dasharray="5 4"/>
+
+  <!-- HTTP GET / -->
+  <path d="M105,124 L352,124" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#fb)"/>
+  <text x="140" y="118" font-size="10.5" fill="#1e40af">① HTTP GET /　（内嵌 HTML 整页下发，无外部资源依赖）</text>
+
+  <path d="M360,152 L112,152" stroke="#334155" stroke-width="2" fill="none" marker-end="url(#f)"/>
+  <text x="150" y="146" font-size="10.5" fill="#334155">② 返回内嵌页面（drone_web_ui.h 中的 kIndexHtml）</text>
+
+  <!-- WS 握手 -->
+  <path d="M105,180 L622,180" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#fb)"/>
+  <text x="230" y="174" font-size="10.5" fill="#1e40af">③ WebSocket 握手　GET /ws</text>
+
+  <path d="M630,208 L112,208" stroke="#16a34a" stroke-width="2" fill="none" marker-end="url(#fg)"/>
+  <text x="180" y="202" font-size="10.5" font-weight="bold" fill="#15803d">④ 连接建立 → 立即下发全量配置 {"type":"cfg", …}</text>
+
+  <text x="112" y="226" font-size="10" fill="#64748b">（含 9 个 PID、7 项限值、滤波模式、静音、起飞音效次数）</text>
+
+  <!-- GET -->
+  <path d="M105,256 L622,256" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#fb)"/>
+  <text x="200" y="250" font-size="10.5" fill="#1e40af">⑤ "GET"　　浏览器刷新时主动拉取参数</text>
+
+  <path d="M630,282 L112,282" stroke="#16a34a" stroke-width="2" fill="none" marker-end="url(#fg)"/>
+  <text x="180" y="276" font-size="10.5" fill="#15803d">⑥ 返回 cfg JSON + ack</text>
+
+  <!-- 摇杆循环 -->
+  <rect x="30" y="300" width="700" height="76" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.3"/>
+  <path d="M105,326 L622,326" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#fb)"/>
+  <text x="130" y="320" font-size="10.5" fill="#1e40af">⑦ 摇杆上行　20 Hz（setInterval 20 ms 固定节拍，与拖动频率解耦）</text>
+  <text x="130" y="344" font-size="11" font-family="monospace" fill="#334155">C,throttle,roll,pitch,yaw,arm_request</text>
+  <text x="130" y="366" font-size="10.5" fill="#475569">固定节拍而非事件驱动：即使摇杆不动也持续发送，保证飞控侧 last_ms 不断刷新（否则 300 ms 即判超时上锁）</text>
+
+  <path d="M630,398 L112,398" stroke="#16a34a" stroke-width="2" fill="none" marker-end="url(#fg)"/>
+  <text x="180" y="392" font-size="10.5" font-weight="bold" fill="#15803d">⑧ 遥测下行　20 Hz（telem_period_ms 可调 20~500）</text>
+  <text x="112" y="420" font-size="11" font-family="monospace" fill="#334155">{"type":"tel","t","armed","roll","pitch","yaw","dt_ms","loop_hz",</text>
+  <text x="112" y="436" font-size="11" font-family="monospace" fill="#334155"> "cmd_age","m0"…"m3","vbatt","fs","cal","msg"}</text>
+
+  <!-- 控制消费 -->
+  <path d="M630,462 L882,462" stroke="#334155" stroke-width="1.8" fill="none" marker-end="url(#f)"/>
+  <text x="700" y="456" font-size="10.5" fill="#334155">⑨ 临界区写入 g_rc（线程安全）</text>
+
+  <path d="M890,490 L638,490" stroke="#334155" stroke-width="1.8" fill="none" marker-end="url(#f)"/>
+  <text x="700" y="484" font-size="10.5" fill="#334155">⑩ getRcCommand() 读取快照参与混控</text>
+
+  <!-- 命令行 -->
+  <text x="30" y="524" font-size="12" font-weight="bold" fill="#0f172a">控制与配置下行命令（全部为逗号分隔文本，逐条独立解析）</text>
+
+  <rect x="30" y="534" width="228" height="66" rx="7" fill="#fffbeb" stroke="#ca8a04" stroke-width="1.3"/>
+  <text x="44" y="552" font-size="10.5" font-weight="bold" fill="#854d0e" font-family="monospace">K</text>
+  <text x="44" y="570" font-size="10" fill="#475569">紧急停止（对应 FS_KILL）</text>
+  <text x="44" y="588" font-size="10" fill="#475569">固件侧最高优先级，绕过一切判定</text>
+
+  <rect x="268" y="534" width="228" height="66" rx="7" fill="#fffbeb" stroke="#ca8a04" stroke-width="1.3"/>
+  <text x="282" y="552" font-size="10.5" font-weight="bold" fill="#854d0e" font-family="monospace">SAVE</text>
+  <text x="282" y="570" font-size="10" fill="#475569">参数落盘 NVS（命名空间 drone）</text>
+  <text x="282" y="588" font-size="10" fill="#475569">先改内存后落盘，避免频繁擦写 Flash</text>
+
+  <rect x="506" y="534" width="228" height="66" rx="7" fill="#fffbeb" stroke="#ca8a04" stroke-width="1.3"/>
+  <text x="520" y="552" font-size="10.5" font-weight="bold" fill="#854d0e" font-family="monospace">PID,ANGLE|RATE|YAW,kp,ki,kd</text>
+  <text x="520" y="570" font-size="10" fill="#475569">热更新增益，置脏标志</text>
+  <text x="520" y="588" font-size="10" fill="#475569">下一控制周期统一应用并复位 PID</text>
+
+  <rect x="744" y="534" width="226" height="66" rx="7" fill="#fffbeb" stroke="#ca8a04" stroke-width="1.3"/>
+  <text x="758" y="552" font-size="10.5" font-weight="bold" fill="#854d0e" font-family="monospace">CFG,KEY,VALUE</text>
+  <text x="758" y="570" font-size="10" fill="#475569">7 项限值 + 滤波器切换</text>
+  <text x="758" y="588" font-size="10" fill="#475569">全部按 kMin/kMax 钳位</text>
+
+  <rect x="30" y="608" width="228" height="44" rx="7" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.3"/>
+  <text x="44" y="626" font-size="10.5" font-weight="bold" fill="#15803d" font-family="monospace">CAL,LEVEL|GYRO</text>
+  <text x="44" y="644" font-size="10" fill="#166534">仅上锁态允许，否则回 ack ARMED</text>
+
+  <rect x="268" y="608" width="228" height="44" rx="7" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.3"/>
+  <text x="282" y="626" font-size="10.5" font-weight="bold" fill="#15803d" font-family="monospace">MTEST,idx,thr,ms | STOP</text>
+  <text x="282" y="644" font-size="10" fill="#166534">单电机测试（0~3 索引，20% 上限）</text>
+
+  <rect x="506" y="608" width="228" height="44" rx="7" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.3"/>
+  <text x="520" y="626" font-size="10.5" font-weight="bold" fill="#15803d" font-family="monospace">BUZZER_MUTE,0|1</text>
+  <text x="520" y="644" font-size="10" fill="#166534">全局静音（全局开关，非单次）</text>
+
+  <rect x="744" y="608" width="226" height="44" rx="7" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.3"/>
+  <text x="758" y="626" font-size="10.5" font-weight="bold" fill="#15803d" font-family="monospace">TAKEOFF_REPEAT,1~10</text>
+  <text x="758" y="644" font-size="10" fill="#166534">起飞音效重复轮数</text>
+</svg>

@@ -1,0 +1,150 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1060 1000" width="1060" height="1000" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+  <defs>
+    <marker id="a" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#334155"/>
+    </marker>
+    <marker id="ar" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#dc2626"/>
+    </marker>
+    <marker id="ab" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#0284c7"/>
+    </marker>
+  </defs>
+  <rect width="1060" height="1000" fill="#ffffff"/>
+
+  <!-- 起点 -->
+  <rect x="80" y="16" width="240" height="42" rx="21" fill="#1e293b"/>
+  <text x="200" y="43" font-size="14" font-weight="bold" fill="#ffffff" text-anchor="middle">上电 / loop() 进入</text>
+
+  <path d="M200,58 L200,84" stroke="#334155" stroke-width="1.8" fill="none" marker-end="url(#a)"/>
+
+  <rect x="80" y="86" width="240" height="44" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.4"/>
+  <text x="200" y="106" font-size="12" font-weight="bold" fill="#0f172a" text-anchor="middle">ledUpdate() / buzzerUpdate()</text>
+  <text x="200" y="122" font-size="10.5" fill="#64748b" text-anchor="middle">纯显示层，不参与控制决策</text>
+
+  <path d="M200,130 L200,156" stroke="#334155" stroke-width="1.8" fill="none" marker-end="url(#a)"/>
+
+  <!-- 周期判定 -->
+  <polygon points="200,158 300,192 200,226 100,192" fill="#fffbeb" stroke="#ca8a04" stroke-width="1.5"/>
+  <text x="200" y="190" font-size="11.5" font-weight="bold" fill="#854d0e" text-anchor="middle">micros() 累加器到 2000 µs?</text>
+  <text x="200" y="206" font-size="10.5" fill="#854d0e" text-anchor="middle">（到点则补齐滞后时间槽）</text>
+
+  <!-- 否分支 -->
+  <path d="M100,192 L46,192 L46,238" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#a)"/>
+  <text x="52" y="186" font-size="10.5" fill="#64748b">否</text>
+  <rect x="6" y="240" width="120" height="36" rx="7" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1.2"/>
+  <text x="66" y="262" font-size="10.5" fill="#475569" text-anchor="middle">空转 50 µs 让出 CPU</text>
+  <path d="M66,276 L66,300 L200,300 L200,322" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#a)"/>
+
+  <text x="312" y="188" font-size="10.5" fill="#475569">是 ↓</text>
+  <path d="M300,192 L330,192 L330,322 L200,322" stroke="#334155" stroke-width="1.8" fill="none" marker-end="url(#a)"/>
+
+  <!-- container -->
+  <rect x="24" y="326" width="700" height="640" rx="12" fill="#f8fafc" stroke="#334155" stroke-width="1.8" stroke-dasharray="7 5"/>
+  <text x="40" y="350" font-size="13.5" font-weight="bold" fill="#0f172a">controlStep(dt)　控制流水线</text>
+  <text x="40" y="368" font-size="10.5" fill="#64748b">6 道安全闸门串行前置：任一命中立即上锁并退出本周期</text>
+
+  <!-- 闸门 1 -->
+  <polygon points="200,376 316,412 200,448 84,412" fill="#fef2f2" stroke="#dc2626" stroke-width="1.6"/>
+  <text x="200" y="400" font-size="11.5" font-weight="bold" fill="#b91c1c" text-anchor="middle">① KILL 请求？</text>
+  <text x="200" y="416" font-size="10.5" fill="#b91c1c" text-anchor="middle">Web 紧急上锁 / WS 断连</text>
+  <text x="200" y="431" font-size="10" fill="#991b1b" text-anchor="middle">优先级最高，绕过一切后续判定</text>
+  <path d="M200,448 L200,474" stroke="#334155" stroke-width="1.8" fill="none" marker-end="url(#a)"/>
+
+  <!-- 闸门 2 -->
+  <polygon points="200,476 316,512 200,548 84,512" fill="#f0f9ff" stroke="#0284c7" stroke-width="1.6"/>
+  <text x="200" y="500" font-size="11.5" font-weight="bold" fill="#075985" text-anchor="middle">② 电机测试模式？</text>
+  <text x="200" y="516" font-size="10.5" fill="#075985" text-anchor="middle">抢在飞行逻辑之前，避免电机</text>
+  <text x="200" y="531" font-size="10" fill="#0369a1" text-anchor="middle">忽转忽停；结束后直接 return</text>
+  <path d="M200,548 L200,574" stroke="#334155" stroke-width="1.8" fill="none" marker-end="url(#a)"/>
+
+  <!-- 闸门 3 -->
+  <polygon points="200,576 306,612 200,648 94,612" fill="#fef2f2" stroke="#dc2626" stroke-width="1.6"/>
+  <text x="200" y="600" font-size="11.5" font-weight="bold" fill="#b91c1c" text-anchor="middle">③ dt 异常？</text>
+  <text x="200" y="616" font-size="10.5" fill="#b91c1c" text-anchor="middle">dt ≤ 0 或 &gt; 20 ms（调度被阻塞）</text>
+  <text x="200" y="631" font-size="10" fill="#991b1b" text-anchor="middle">此刻算出的任何控制量都不可信</text>
+  <path d="M200,648 L200,674" stroke="#334155" stroke-width="1.8" fill="none" marker-end="url(#a)"/>
+
+  <!-- 闸门 4 -->
+  <polygon points="200,676 306,712 200,748 94,712" fill="#fef2f2" stroke="#dc2626" stroke-width="1.6"/>
+  <text x="200" y="700" font-size="11.5" font-weight="bold" fill="#b91c1c" text-anchor="middle">④ IMU 读取失败？</text>
+  <text x="200" y="716" font-size="10.5" fill="#b91c1c" text-anchor="middle">I2C / SPI 通信异常</text>
+  <text x="200" y="731" font-size="10" fill="#991b1b" text-anchor="middle">读不到就 return，绝不沿用上一周期姿态</text>
+  <path d="M200,748 L200,774" stroke="#334155" stroke-width="1.8" fill="none" marker-end="url(#a)"/>
+
+  <!-- 姿态解算块 -->
+  <rect x="46" y="776" width="308" height="92" rx="8" fill="#fffbeb" stroke="#ca8a04" stroke-width="1.6"/>
+  <text x="200" y="798" font-size="12" font-weight="bold" fill="#854d0e" text-anchor="middle">姿态解算</text>
+  <text x="200" y="816" font-size="10.5" fill="#475569" text-anchor="middle">读 IMU → 算 acc_trust</text>
+  <text x="200" y="832" font-size="10.5" fill="#475569" text-anchor="middle">→ Mahony / Madgwick / 互补滤波</text>
+  <text x="200" y="848" font-size="10.5" fill="#475569" text-anchor="middle">→ 欧拉角 → 扣水平校准偏置</text>
+  <text x="200" y="863" font-size="10" fill="#7c3aed" text-anchor="middle">静止 400 ms 自动重置水平参考</text>
+
+  <!-- 闸门 5/6 放在右侧一列 -->
+  <rect x="392" y="776" width="316" height="92" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="1.6"/>
+  <text x="550" y="798" font-size="12" font-weight="bold" fill="#b91c1c" text-anchor="middle">⑤⑥ 解算结果校验与倾斜保护</text>
+  <text x="404" y="818" font-size="10.5" fill="#7f1d1d">⑤ roll/pitch/yaw 非有限值（NaN / Inf）→ 上锁</text>
+  <text x="404" y="836" font-size="10.5" fill="#7f1d1d">⑥ |roll| 或 |pitch| &gt; tilt_disarm（默认 80°）→ 上锁</text>
+  <text x="404" y="856" font-size="10" fill="#991b1b">两者都早于解锁判定：机身已翻倒时进入解锁毫无意义</text>
+
+  <path d="M200,868 L200,890 L550,890 L550,868" stroke="#334155" stroke-width="1.8" fill="none" marker-end="url(#a)"/>
+
+  <!-- 闸门 7 -->
+  <polygon points="550,890 660,926 550,962 440,926" fill="#fef2f2" stroke="#dc2626" stroke-width="1.6"/>
+  <text x="550" y="914" font-size="11.5" font-weight="bold" fill="#b91c1c" text-anchor="middle">⑦ 遥控指令超时？</text>
+  <text x="550" y="930" font-size="10.5" fill="#b91c1c" text-anchor="middle">cmd_age &gt; 300 ms（可调 100~2000）</text>
+  <text x="550" y="945" font-size="10" fill="#991b1b" text-anchor="middle">指令龄期超限 = 已失去控制能力</text>
+
+  <!-- 右侧竖直汇聚总线 -->
+  <path d="M316,412 L760,412 L760,926 L660,926" stroke="#dc2626" stroke-width="2" fill="none" marker-end="url(#ar)"/>
+  <path d="M306,612 L760,612" stroke="#dc2626" stroke-width="2" fill="none"/>
+  <path d="M306,712 L760,712" stroke="#dc2626" stroke-width="2" fill="none"/>
+  <text x="772" y="700" font-size="11" font-weight="bold" fill="#b91c1c">任一命中 →</text>
+  <text x="772" y="716" font-size="11" font-weight="bold" fill="#b91c1c">统一上锁</text>
+
+  <!-- 上锁出口框 -->
+  <rect x="772" y="424" width="266" height="252" rx="9" fill="#fee2e2" stroke="#dc2626" stroke-width="2.2"/>
+  <text x="905" y="448" font-size="13" font-weight="bold" fill="#7f1d1d" text-anchor="middle">disarmNow(reason)</text>
+  <text x="905" y="466" font-size="10.5" fill="#7f1d1d" text-anchor="middle">唯一的关电机出口</text>
+  <line x1="786" y1="476" x2="1024" y2="476" stroke="#fca5a5" stroke-width="1.2"/>
+  <text x="788" y="498" font-size="10.5" fill="#7f1d1d">1. g_armed = false</text>
+  <text x="788" y="518" font-size="10.5" fill="#7f1d1d">2. 四电机 PWM 全部写 0</text>
+  <text x="788" y="538" font-size="10.5" fill="#7f1d1d">3. 5 路 PID 全部复位</text>
+  <text x="788" y="558" font-size="10.5" fill="#7f1d1d">4. 置解锁禁止标志</text>
+  <text x="788" y="578" font-size="10.5" fill="#7f1d1d">5. 记录故障原因 g_last_fs</text>
+  <text x="788" y="598" font-size="10.5" fill="#7f1d1d">6. 蜂鸣短鸣（KILL 用专用音）</text>
+  <text x="788" y="618" font-size="10.5" fill="#7f1d1d">7. 停止循环报警音</text>
+  <text x="788" y="638" font-size="10.5" fill="#7f1d1d">8. LED 切故障快闪 120 ms</text>
+  <rect x="786" y="646" width="238" height="24" rx="5" fill="#fecaca"/>
+  <text x="905" y="663" font-size="10.5" font-weight="bold" fill="#7f1d1d" text-anchor="middle">随后仍发一次遥测再退出</text>
+
+  <!-- 电机测试分支 -->
+  <path d="M316,512 L744,512 L744,344" stroke="#0284c7" stroke-width="2" fill="none" marker-end="url(#ab)"/>
+  <text x="600" y="506" font-size="10.5" font-weight="bold" fill="#075985">是 → 单电机测试</text>
+  <rect x="770" y="300" width="268" height="76" rx="9" fill="#e0f2fe" stroke="#0284c7" stroke-width="1.6"/>
+  <text x="904" y="322" font-size="12" font-weight="bold" fill="#075985" text-anchor="middle">单电机测试分支</text>
+  <text x="786" y="342" font-size="10.5" fill="#075985">输出 ≤ 20% 油门上限</text>
+  <text x="786" y="360" font-size="10.5" fill="#075985">时长 100~2000 ms 钳位，到时自动停</text>
+
+  <!-- 未解锁分支 -->
+  <path d="M440,926 L330,926 L330,982" stroke="#16a34a" stroke-width="1.8" fill="none" marker-end="url(#a)"/>
+  <rect x="60" y="972" width="540" height="24" rx="6" fill="#ecfdf5" stroke="#16a34a" stroke-width="1.3"/>
+  <text x="330" y="989" font-size="10.5" fill="#15803d" text-anchor="middle">⑧ 未解锁 → 只发遥测，电机保持停转，退出本周期</text>
+
+  <!-- 混控出口说明 -->
+  <rect x="772" y="700" width="266" height="296" rx="9" fill="#ecfdf5" stroke="#16a34a" stroke-width="1.8"/>
+  <text x="905" y="724" font-size="12.5" font-weight="bold" fill="#15803d" text-anchor="middle">⑨ 已解锁 → 进入飞行控制</text>
+  <line x1="786" y1="734" x2="1024" y2="734" stroke="#86efac" stroke-width="1.2"/>
+  <text x="788" y="756" font-size="10.5" fill="#166534">角度环（外环）→ ±250 °/s</text>
+  <text x="788" y="776" font-size="10.5" fill="#166534">角速率环（内环）→ ±0.5</text>
+  <text x="788" y="796" font-size="10.5" fill="#166534">扭矩缩放（低油门补偿）</text>
+  <text x="788" y="816" font-size="10.5" fill="#166534">X 型混控 → 四电机限幅 0~1</text>
+  <text x="788" y="836" font-size="10.5" fill="#166534">油门 ≤ 0.05 → 强制停转</text>
+  <line x1="786" y1="850" x2="1024" y2="850" stroke="#86efac" stroke-width="1.2"/>
+  <text x="905" y="872" font-size="11" font-weight="bold" fill="#15803d" text-anchor="middle">本周期收尾</text>
+  <text x="788" y="892" font-size="10.5" fill="#166534">· 发送 20 Hz 遥测 JSON</text>
+  <text x="788" y="912" font-size="10.5" fill="#166534">· 电压告警 200 ms 检查</text>
+  <text x="788" y="932" font-size="10.5" fill="#166534">· 蓝灯 50 ms 三级态刷新</text>
+  <text x="788" y="952" font-size="10.5" fill="#166534">· 电压告警 LED 覆盖</text>
+  <text x="788" y="976" font-size="10" fill="#15803d">→ 回到 loop() 等待下一周期</text>
+</svg>

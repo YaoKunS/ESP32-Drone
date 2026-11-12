@@ -1,0 +1,18 @@
+# ═══ 耀坤自研飞控（YaoKunDrone）.gitignore ═══
+# 原则：仓库只收「源码 + 发布资产 + 文档」，编译产物与本地归档一律不入库
+
+# —— 本地归档 / 历史包（体积大、且是快照不是源头）——
+*.rar
+01_*/
+backup/
+
+# —— Arduino / arduino-cli 编译产物 ——
+build/
+YaoKun_Drone/build/
+**/build/esp32.*/
+sketch.yaml.bak
+
+# —— 系统杂项 ——
+Thumbs.db
+Desktop.ini
+*.log

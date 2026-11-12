@@ -1,0 +1,143 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 830" width="1000" height="830" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+<rect width="1000" height="830" fill="#ffffff"/>
+<text x="24" y="30" font-size="15" font-weight="bold" fill="#0f172a">蜂鸣器音效：14 种提示音的节奏谱（横轴为时间，单位 ms）</text>
+<text x="24" y="50" font-size="10.5" fill="#64748b">全部由 buzzerUpdate() 的非阻塞状态机产生，主循环零 delay；图中每一段响声都对应 hardware.ino 里的真实判定</text>
+<line x1="252.0" y1="70" x2="252.0" y2="728" stroke="#e2e8f0" stroke-width="1"/>
+<text x="252.0" y="66" font-size="9.5" fill="#64748b" text-anchor="middle">0</text>
+<line x1="352.7" y1="70" x2="352.7" y2="728" stroke="#e2e8f0" stroke-width="1"/>
+<text x="352.7" y="66" font-size="9.5" fill="#64748b" text-anchor="middle">200</text>
+<line x1="453.5" y1="70" x2="453.5" y2="728" stroke="#e2e8f0" stroke-width="1"/>
+<text x="453.5" y="66" font-size="9.5" fill="#64748b" text-anchor="middle">400</text>
+<line x1="554.2" y1="70" x2="554.2" y2="728" stroke="#e2e8f0" stroke-width="1"/>
+<text x="554.2" y="66" font-size="9.5" fill="#64748b" text-anchor="middle">600</text>
+<line x1="654.9" y1="70" x2="654.9" y2="728" stroke="#e2e8f0" stroke-width="1"/>
+<text x="654.9" y="66" font-size="9.5" fill="#64748b" text-anchor="middle">800</text>
+<line x1="755.6" y1="70" x2="755.6" y2="728" stroke="#e2e8f0" stroke-width="1"/>
+<text x="755.6" y="66" font-size="9.5" fill="#64748b" text-anchor="middle">1000</text>
+<text x="246" y="66" font-size="9.5" fill="#64748b" text-anchor="end">ms</text>
+<text x="24" y="66" font-size="10" font-weight="bold" fill="#64748b">音效 / 参数</text>
+<text x="256" y="66" font-size="10" font-weight="bold" fill="#64748b"></text>
+<text x="822" y="66" font-size="10" font-weight="bold" fill="#64748b">触发场景</text>
+<rect x="16" y="88" width="968" height="42" fill="#f8fafc"/>
+<text x="24" y="108" font-size="11.5" font-weight="bold" fill="#0f172a">上电提示</text>
+<text x="24" y="123" font-size="9" fill="#64748b">BUZ_POWER_ON　单声 200 ms</text>
+<line x1="252" y1="109" x2="806" y2="109" stroke="#e2e8f0" stroke-width="1"/>
+<rect x="252.0" y="101" width="100.7" height="16" rx="2" fill="#2563eb" fill-opacity="0.85" stroke="#2563eb" stroke-width="0.8"/>
+<text x="822" y="110" font-size="9.5" fill="#64748b">setup() 初始化硬件后</text>
+<text x="24" y="154" font-size="11.5" font-weight="bold" fill="#0f172a">系统就绪</text>
+<text x="24" y="169" font-size="9" fill="#64748b">BUZ_READY　单声 100 ms</text>
+<line x1="252" y1="155" x2="806" y2="155" stroke="#e2e8f0" stroke-width="1"/>
+<rect x="252.0" y="147" width="50.4" height="16" rx="2" fill="#2563eb" fill-opacity="0.85" stroke="#2563eb" stroke-width="0.8"/>
+<text x="822" y="156" font-size="9.5" fill="#64748b">WiFi 热点与 Web 服务已起</text>
+<rect x="16" y="180" width="968" height="42" fill="#f8fafc"/>
+<text x="24" y="200" font-size="11.5" font-weight="bold" fill="#0f172a">上锁短鸣</text>
+<text x="24" y="215" font-size="9" fill="#64748b">BUZ_SHORT_BEEP　单声 100 ms</text>
+<line x1="252" y1="201" x2="806" y2="201" stroke="#e2e8f0" stroke-width="1"/>
+<rect x="252.0" y="193" width="50.4" height="16" rx="2" fill="#2563eb" fill-opacity="0.85" stroke="#2563eb" stroke-width="0.8"/>
+<text x="822" y="202" font-size="9.5" fill="#64748b">关闭 ARM 后确认已上锁</text>
+<text x="24" y="246" font-size="11.5" font-weight="bold" fill="#0f172a">解锁长鸣</text>
+<text x="24" y="261" font-size="9" fill="#64748b">BUZ_LONG_BEEP　单声 400 ms</text>
+<line x1="252" y1="247" x2="806" y2="247" stroke="#e2e8f0" stroke-width="1"/>
+<rect x="252.0" y="239" width="201.5" height="16" rx="2" fill="#2563eb" fill-opacity="0.85" stroke="#2563eb" stroke-width="0.8"/>
+<text x="822" y="248" font-size="9.5" fill="#64748b">解锁开关保持 0.8 s 达成</text>
+<rect x="16" y="272" width="968" height="42" fill="#f8fafc"/>
+<text x="24" y="292" font-size="11.5" font-weight="bold" fill="#0f172a">电机测试提示</text>
+<text x="24" y="307" font-size="9" fill="#64748b">BUZ_MOTOR_TEST　单声 50 ms</text>
+<line x1="252" y1="293" x2="806" y2="293" stroke="#e2e8f0" stroke-width="1"/>
+<rect x="252.0" y="285" width="25.2" height="16" rx="2" fill="#2563eb" fill-opacity="0.85" stroke="#2563eb" stroke-width="0.8"/>
+<text x="822" y="294" font-size="9.5" fill="#64748b">每次启动单电机测试前</text>
+<text x="24" y="338" font-size="11.5" font-weight="bold" fill="#0f172a">双短鸣：陀螺校准完成</text>
+<text x="24" y="353" font-size="9" fill="#64748b">BUZ_DOUBLE_BEEP　100 / 停 100 / 100</text>
+<line x1="252" y1="339" x2="806" y2="339" stroke="#e2e8f0" stroke-width="1"/>
+<rect x="252.0" y="331" width="50.4" height="16" rx="2" fill="#16a34a" fill-opacity="0.85" stroke="#16a34a" stroke-width="0.8"/>
+<rect x="352.7" y="331" width="50.4" height="16" rx="2" fill="#16a34a" fill-opacity="0.85" stroke="#16a34a" stroke-width="0.8"/>
+<text x="822" y="340" font-size="9.5" fill="#64748b">Web 端「陀螺仪校准」成功</text>
+<rect x="16" y="364" width="968" height="42" fill="#f8fafc"/>
+<text x="24" y="384" font-size="11.5" font-weight="bold" fill="#0f172a">三短鸣：水平校准完成</text>
+<text x="24" y="399" font-size="9" fill="#64748b">BUZ_TRIPLE_BEEP　100 ×3，间隔 100</text>
+<line x1="252" y1="385" x2="806" y2="385" stroke="#e2e8f0" stroke-width="1"/>
+<rect x="252.0" y="377" width="50.4" height="16" rx="2" fill="#16a34a" fill-opacity="0.85" stroke="#16a34a" stroke-width="0.8"/>
+<rect x="352.7" y="377" width="50.4" height="16" rx="2" fill="#16a34a" fill-opacity="0.85" stroke="#16a34a" stroke-width="0.8"/>
+<rect x="453.5" y="377" width="50.4" height="16" rx="2" fill="#16a34a" fill-opacity="0.85" stroke="#16a34a" stroke-width="0.8"/>
+<text x="822" y="386" font-size="9.5" fill="#64748b">Web 端「水平校准」成功</text>
+<text x="24" y="430" font-size="11.5" font-weight="bold" fill="#0f172a">起飞音效（默认 3 轮）</text>
+<text x="24" y="445" font-size="9" fill="#64748b">BUZ_TAKEOFF　按 3 轮状态机，可设 1~10</text>
+<line x1="252" y1="431" x2="806" y2="431" stroke="#e2e8f0" stroke-width="1"/>
+<rect x="252.0" y="423" width="50.4" height="16" rx="2" fill="#7c3aed" fill-opacity="0.85" stroke="#7c3aed" stroke-width="0.8"/>
+<rect x="352.7" y="423" width="50.4" height="16" rx="2" fill="#7c3aed" fill-opacity="0.85" stroke="#7c3aed" stroke-width="0.8"/>
+<rect x="554.2" y="423" width="50.4" height="16" rx="2" fill="#7c3aed" fill-opacity="0.85" stroke="#7c3aed" stroke-width="0.8"/>
+<rect x="755.6" y="423" width="50.4" height="16" rx="2" fill="#7c3aed" fill-opacity="0.85" stroke="#7c3aed" stroke-width="0.8"/>
+<text x="822" y="432" font-size="9.5" fill="#64748b">解锁后首次推油门（仅一次）</text>
+<rect x="16" y="456" width="968" height="42" fill="#f8fafc"/>
+<text x="24" y="476" font-size="11.5" font-weight="bold" fill="#0f172a">解锁等待滴答</text>
+<text x="24" y="491" font-size="9" fill="#64748b">BUZ_QUICK_TICK　周期 200，响 50（循环）</text>
+<line x1="252" y1="477" x2="806" y2="477" stroke="#e2e8f0" stroke-width="1"/>
+<rect x="252.0" y="469" width="25.2" height="16" rx="2" fill="#d97706" fill-opacity="0.85" stroke="#d97706" stroke-width="0.8"/>
+<rect x="352.7" y="469" width="25.2" height="16" rx="2" fill="#d97706" fill-opacity="0.85" stroke="#d97706" stroke-width="0.8"/>
+<rect x="453.5" y="469" width="25.2" height="16" rx="2" fill="#d97706" fill-opacity="0.85" stroke="#d97706" stroke-width="0.8"/>
+<rect x="554.2" y="469" width="25.2" height="16" rx="2" fill="#d97706" fill-opacity="0.85" stroke="#d97706" stroke-width="0.8"/>
+<rect x="654.9" y="469" width="25.2" height="16" rx="2" fill="#d97706" fill-opacity="0.85" stroke="#d97706" stroke-width="0.8"/>
+<path d="M800,492 L806,492 L806,496" stroke="#d97706" stroke-width="1.2" fill="none" stroke-dasharray="3 2"/>
+<text x="762" y="502" font-size="9" fill="#d97706">循环播放</text>
+<text x="822" y="478" font-size="9.5" fill="#64748b">握住 ARM 开关的等待期</text>
+<text x="24" y="522" font-size="11.5" font-weight="bold" fill="#0f172a">故障急促报警</text>
+<text x="24" y="537" font-size="9" fill="#64748b">BUZ_FAST_ALARM　周期 160，响 80（循环）</text>
+<line x1="252" y1="523" x2="806" y2="523" stroke="#e2e8f0" stroke-width="1"/>
+<rect x="252.0" y="515" width="40.3" height="16" rx="2" fill="#dc2626" fill-opacity="0.85" stroke="#dc2626" stroke-width="0.8"/>
+<rect x="332.6" y="515" width="40.3" height="16" rx="2" fill="#dc2626" fill-opacity="0.85" stroke="#dc2626" stroke-width="0.8"/>
+<rect x="413.2" y="515" width="40.3" height="16" rx="2" fill="#dc2626" fill-opacity="0.85" stroke="#dc2626" stroke-width="0.8"/>
+<rect x="493.7" y="515" width="40.3" height="16" rx="2" fill="#dc2626" fill-opacity="0.85" stroke="#dc2626" stroke-width="0.8"/>
+<rect x="574.3" y="515" width="40.3" height="16" rx="2" fill="#dc2626" fill-opacity="0.85" stroke="#dc2626" stroke-width="0.8"/>
+<path d="M800,538 L806,538 L806,542" stroke="#dc2626" stroke-width="1.2" fill="none" stroke-dasharray="3 2"/>
+<text x="762" y="548" font-size="9" fill="#dc2626">循环播放</text>
+<text x="822" y="524" font-size="9.5" fill="#64748b">6 类故障任一触发</text>
+<rect x="16" y="548" width="968" height="42" fill="#f8fafc"/>
+<text x="24" y="568" font-size="11.5" font-weight="bold" fill="#0f172a">电压告警 Ⅰ</text>
+<text x="24" y="583" font-size="9" fill="#64748b">BUZ_VOLT_ALERT_SLOW　周期 1000，响 200（循环）</text>
+<line x1="252" y1="569" x2="806" y2="569" stroke="#e2e8f0" stroke-width="1"/>
+<rect x="252.0" y="561" width="100.7" height="16" rx="2" fill="#dc2626" fill-opacity="0.85" stroke="#dc2626" stroke-width="0.8"/>
+<rect x="755.6" y="561" width="50.4" height="16" rx="2" fill="#dc2626" fill-opacity="0.85" stroke="#dc2626" stroke-width="0.8"/>
+<path d="M800,584 L806,584 L806,588" stroke="#dc2626" stroke-width="1.2" fill="none" stroke-dasharray="3 2"/>
+<text x="762" y="594" font-size="9" fill="#dc2626">循环播放</text>
+<text x="822" y="570" font-size="9.5" fill="#64748b">单体电压 &lt; 3.70 V</text>
+<text x="24" y="614" font-size="11.5" font-weight="bold" fill="#0f172a">电压告警 Ⅱ</text>
+<text x="24" y="629" font-size="9" fill="#64748b">BUZ_VOLT_ALERT_MED　周期 500，响 100（循环）</text>
+<line x1="252" y1="615" x2="806" y2="615" stroke="#e2e8f0" stroke-width="1"/>
+<rect x="252.0" y="607" width="50.4" height="16" rx="2" fill="#dc2626" fill-opacity="0.85" stroke="#dc2626" stroke-width="0.8"/>
+<rect x="503.8" y="607" width="50.4" height="16" rx="2" fill="#dc2626" fill-opacity="0.85" stroke="#dc2626" stroke-width="0.8"/>
+<rect x="755.6" y="607" width="50.4" height="16" rx="2" fill="#dc2626" fill-opacity="0.85" stroke="#dc2626" stroke-width="0.8"/>
+<path d="M800,630 L806,630 L806,634" stroke="#dc2626" stroke-width="1.2" fill="none" stroke-dasharray="3 2"/>
+<text x="762" y="640" font-size="9" fill="#dc2626">循环播放</text>
+<text x="822" y="616" font-size="9.5" fill="#64748b">单体电压 &lt; 3.50 V</text>
+<rect x="16" y="640" width="968" height="42" fill="#f8fafc"/>
+<text x="24" y="660" font-size="11.5" font-weight="bold" fill="#0f172a">电压告警 Ⅲ</text>
+<text x="24" y="675" font-size="9" fill="#64748b">BUZ_VOLT_ALERT_FAST　周期 200，响 50（循环）</text>
+<line x1="252" y1="661" x2="806" y2="661" stroke="#e2e8f0" stroke-width="1"/>
+<rect x="252.0" y="653" width="25.2" height="16" rx="2" fill="#dc2626" fill-opacity="0.85" stroke="#dc2626" stroke-width="0.8"/>
+<rect x="352.7" y="653" width="25.2" height="16" rx="2" fill="#dc2626" fill-opacity="0.85" stroke="#dc2626" stroke-width="0.8"/>
+<rect x="453.5" y="653" width="25.2" height="16" rx="2" fill="#dc2626" fill-opacity="0.85" stroke="#dc2626" stroke-width="0.8"/>
+<rect x="554.2" y="653" width="25.2" height="16" rx="2" fill="#dc2626" fill-opacity="0.85" stroke="#dc2626" stroke-width="0.8"/>
+<rect x="654.9" y="653" width="25.2" height="16" rx="2" fill="#dc2626" fill-opacity="0.85" stroke="#dc2626" stroke-width="0.8"/>
+<rect x="755.6" y="653" width="25.2" height="16" rx="2" fill="#dc2626" fill-opacity="0.85" stroke="#dc2626" stroke-width="0.8"/>
+<path d="M800,676 L806,676 L806,680" stroke="#dc2626" stroke-width="1.2" fill="none" stroke-dasharray="3 2"/>
+<text x="762" y="686" font-size="9" fill="#dc2626">循环播放</text>
+<text x="822" y="662" font-size="9.5" fill="#64748b">单体电压 &lt; 3.30 V</text>
+<text x="24" y="706" font-size="11.5" font-weight="bold" fill="#0f172a">紧急停止（KILL）</text>
+<text x="24" y="721" font-size="9" fill="#64748b">BUZ_KILL　100 / 停 50 / 100</text>
+<line x1="252" y1="707" x2="806" y2="707" stroke="#e2e8f0" stroke-width="1"/>
+<rect x="252.0" y="699" width="50.4" height="16" rx="2" fill="#dc2626" fill-opacity="0.85" stroke="#dc2626" stroke-width="0.8"/>
+<rect x="327.5" y="699" width="50.4" height="16" rx="2" fill="#dc2626" fill-opacity="0.85" stroke="#dc2626" stroke-width="0.8"/>
+<text x="822" y="708" font-size="9.5" fill="#64748b">收到 kill 指令，立即断油门</text>
+<text x="24" y="750" font-size="10" font-weight="bold" fill="#0f172a">配色</text>
+<rect x="70" y="742" width="11" height="11" rx="2" fill="#2563eb" fill-opacity="0.85"/>
+<text x="86" y="751" font-size="9.5" fill="#64748b">状态播报（单次）</text>
+<rect x="170.0" y="742" width="11" height="11" rx="2" fill="#16a34a" fill-opacity="0.85"/>
+<text x="186.0" y="751" font-size="9.5" fill="#64748b">校准确认（连击）</text>
+<rect x="270.0" y="742" width="11" height="11" rx="2" fill="#7c3aed" fill-opacity="0.85"/>
+<text x="286.0" y="751" font-size="9.5" fill="#64748b">起飞</text>
+<rect x="313.0" y="742" width="11" height="11" rx="2" fill="#d97706" fill-opacity="0.85"/>
+<text x="329.0" y="751" font-size="9.5" fill="#64748b">等待催促</text>
+<rect x="375.0" y="742" width="11" height="11" rx="2" fill="#dc2626" fill-opacity="0.85"/>
+<text x="391.0" y="751" font-size="9.5" fill="#64748b">报警（故障 / 电压 / KILL）</text>
+<text x="24" y="772" font-size="9" fill="#64748b">注：起飞音效按子状态机执行，第 1 轮为完整双短鸣（0 / 200 ms），第 2、3 轮各在 600 / 1000 ms 响一声</text>
+</svg>

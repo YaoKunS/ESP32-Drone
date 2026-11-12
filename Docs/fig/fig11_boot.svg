@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600" width="1000" height="600" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+  <defs>
+    <marker id="j" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#334155"/>
+    </marker>
+    <marker id="jg" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#16a34a"/>
+    </marker>
+    <marker id="jr" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#dc2626"/>
+    </marker>
+  </defs>
+  <rect width="1000" height="600" fill="#ffffff"/>
+
+  <text x="20" y="26" font-size="15" font-weight="bold" fill="#0f172a">上电启动时序（setup()）—— 每一处 delay 都有明确的安全理由</text>
+
+  <!-- 时间轴 -->
+  <rect x="20" y="44" width="132" height="40" rx="8" fill="#334155"/>
+  <text x="86" y="62" font-size="11.5" font-weight="bold" fill="#ffffff" text-anchor="middle">ESP32 上电</text>
+  <text x="86" y="77" font-size="10" fill="#cbd5e1" text-anchor="middle">bootloader 引导</text>
+
+  <path d="M152,64 L180,64" stroke="#334155" stroke-width="2" fill="none" marker-end="url(#j)"/>
+
+  <rect x="182" y="44" width="150" height="40" rx="8" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="257" y="62" font-size="11.5" font-weight="bold" fill="#1e40af" text-anchor="middle">① 串口 + LED + 蜂鸣器</text>
+  <text x="257" y="77" font-size="10" fill="#475569" text-anchor="middle">Serial 115200　delay 200</text>
+
+  <path d="M332,64 L360,64" stroke="#334155" stroke-width="2" fill="none" marker-end="url(#j)"/>
+
+  <rect x="362" y="44" width="150" height="40" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="1.5"/>
+  <text x="437" y="62" font-size="11.5" font-weight="bold" fill="#b91c1c" text-anchor="middle">② 电机 LEDC 初始化</text>
+  <text x="437" y="77" font-size="10" fill="#7f1d1d" text-anchor="middle">四通道 20 kHz / 10-bit</text>
+
+  <path d="M512,64 L540,64" stroke="#dc2626" stroke-width="2" fill="none" marker-end="url(#jr)"/>
+
+  <rect x="542" y="30" width="212" height="40" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="1.8"/>
+  <text x="648" y="46" font-size="11" font-weight="bold" fill="#7f1d1d" text-anchor="middle">绑定失败 → 置 MOTOR_FAIL</text>
+  <text x="648" y="62" font-size="10" fill="#991b1b" text-anchor="middle">永久禁止解锁，但系统继续运行</text>
+
+  <path d="M754,50 L782,50" stroke="#334155" stroke-width="2" fill="none" marker-end="url(#j)"/>
+
+  <rect x="784" y="30" width="196" height="40" rx="8" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="882" y="46" font-size="11" font-weight="bold" fill="#1e40af" text-anchor="middle">③ IMU 自动探测</text>
+  <text x="882" y="62" font-size="10" fill="#7f1d1d" text-anchor="middle">失败 → 死循环停机（不飞）</text>
+
+  <!-- IMU 探测细节 -->
+  <rect x="40" y="108" width="440" height="150" rx="9" fill="#f8fafc" stroke="#334155" stroke-width="1.5"/>
+  <text x="58" y="130" font-size="12" font-weight="bold" fill="#0f172a">③ ImuDriver::begin() 自动识别流程</text>
+  <text x="58" y="152" font-size="11" fill="#475569">① Wire.begin(kI2cSda=9, kI2cScl=8)</text>
+  <text x="58" y="170" font-size="11" fill="#475569">② 读 WHO_AM_I (0x75)，值须为 0x68 或 0x70 → 判定 I2C 器件</text>
+  <text x="58" y="188" font-size="11" fill="#475569">③ 配置寄存器：唤醒 0x6B、量程 0x1C/0x1B、滤波 0x1A</text>
+  <text x="58" y="210" font-size="11" fill="#475569">④ 若失败：Wire.end() → 初始化 SPI → 读 WHO_AM_I == 0x70</text>
+  <text x="58" y="228" font-size="11" fill="#475569">　　→ 判定为 MPU6500（SPI 接口）</text>
+  <text x="58" y="246" font-size="11" font-weight="bold" fill="#b91c1c">⑤ 两者皆失败 → return false → setup 中 while(true) delay(1000)</text>
+  <text x="58" y="264" font-size="10.5" fill="#7f1d1d">　　故意停在这里而不是继续跑：无姿态数据时飞控不可能安全，绝不放行</text>
+
+  <!-- 标定 -->
+  <rect x="520" y="108" width="460" height="150" rx="9" fill="#fffbeb" stroke="#ca8a04" stroke-width="1.5"/>
+  <text x="538" y="130" font-size="12" font-weight="bold" fill="#854d0e">④ 陀螺零偏标定与滤波器初始化</text>
+  <text x="538" y="152" font-size="11" fill="#475569">calibrateGyro(500, 2)：取 500 次采样均值，每 2 ms 一次，约 1~2 秒</text>
+  <text x="538" y="172" font-size="11" fill="#475569">量程 ±2000 °/s，换算系数 2000 / 32768</text>
+  <text x="538" y="194" font-size="11" font-weight="bold" fill="#b91c1c">标定期间飞机必须绝对静止</text>
+  <text x="538" y="212" font-size="10.5" fill="#7f1d1d">此时若在转动，零偏被记成角速度 → 上电即认为飞机在自旋 → 一推油门就炸</text>
+  <text x="538" y="234" font-size="11" fill="#475569">Madgwick：beta = 0.08　　Mahony：Kp 2.2 / Ki 0 / 积分限 0.35 rad/s</text>
+  <text x="538" y="252" font-size="11" fill="#475569">自旋限速 180 °/s（超速时冻结积分项）</text>
+
+  <!-- 参数 -->
+  <rect x="40" y="276" width="300" height="88" rx="9" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="58" y="298" font-size="12" font-weight="bold" fill="#6d28d9">⑤ 加载参数</text>
+  <text x="58" y="318" font-size="11" fill="#475569">loadTunings() 从 NVS 读 9 PID +</text>
+  <text x="58" y="336" font-size="11" fill="#475569">7 限值 + 3 水平偏置 + 滤波模式</text>
+  <text x="58" y="354" font-size="10.5" fill="#7c3aed">读出后再钳位一次（防止旧固件残留值）</text>
+
+  <!-- ADC -->
+  <rect x="360" y="276" width="290" height="88" rx="9" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="378" y="298" font-size="12" font-weight="bold" fill="#6d28d9">⑥ 电池 ADC 配置</text>
+  <text x="378" y="318" font-size="11" fill="#475569">analogReadResolution(12)</text>
+  <text x="378" y="336" font-size="11" fill="#475569">analogSetPinAttenuation(GPIO2, 11dB)</text>
+  <text x="378" y="354" font-size="10.5" fill="#7c3aed">11 dB 可测至约 3.9 V，配 2:1 分压刚好覆盖 1S 满电</text>
+
+  <!-- 上锁+WiFi -->
+  <rect x="670" y="276" width="310" height="88" rx="9" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="688" y="298" font-size="12" font-weight="bold" fill="#15803d">⑦ 初始上锁 + 网络启动</text>
+  <text x="688" y="318" font-size="11" fill="#475569">disarmNow(FS_NONE)：清零所有状态</text>
+  <text x="688" y="336" font-size="11" fill="#475569">WiFi.mode(WIFI_AP) + softAP()</text>
+  <text x="688" y="354" font-size="11" fill="#475569">注册 /ws、根页面、/health</text>
+
+  <!-- 就绪 -->
+  <path d="M500,368 L500,398" stroke="#16a34a" stroke-width="2" fill="none" marker-end="url(#jg)"/>
+
+  <rect x="330" y="400" width="340" height="52" rx="10" fill="#16a34a"/>
+  <text x="500" y="422" font-size="13.5" font-weight="bold" fill="#ffffff" text-anchor="middle">系统就绪　BUZ_READY 短鸣</text>
+  <text x="500" y="442" font-size="11" fill="#dcfce7" text-anchor="middle">串口打印 http://192.168.4.1/　LED 转待机呼吸</text>
+
+  <path d="M500,452 L500,478" stroke="#16a34a" stroke-width="2" fill="none" marker-end="url(#jg)"/>
+
+  <!-- 用户操作 -->
+  <rect x="330" y="480" width="340" height="46" rx="10" fill="#eff6ff" stroke="#2563eb" stroke-width="1.8"/>
+  <text x="500" y="500" font-size="12.5" font-weight="bold" fill="#1e40af" text-anchor="middle">用户连接热点 → 浏览器打开 http://192.168.4.1</text>
+  <text x="500" y="518" font-size="10.5" fill="#475569" text-anchor="middle">进入「设置」页做水平校准 → 「测试」页验证电机顺序 → 回「遥控」页解锁飞行</text>
+
+  <!-- 注意 -->
+  <rect x="40" y="490" width="270" height="90" rx="9" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.3"/>
+  <text x="56" y="512" font-size="11.5" font-weight="bold" fill="#0f172a">首次上电必做顺序</text>
+  <text x="56" y="532" font-size="10.5" fill="#475569">1. 静止放平，等待蜂鸣就绪</text>
+  <text x="56" y="548" font-size="10.5" fill="#475569">2. 连热点 → 打开网页</text>
+  <text x="56" y="564" font-size="10.5" fill="#475569">3. 「测试」页逐个确认电机转向</text>
+
+  <rect x="690" y="490" width="290" height="90" rx="9" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.3"/>
+  <text x="706" y="512" font-size="11.5" font-weight="bold" fill="#0f172a">关于 SoftAP 的说明</text>
+  <text x="706" y="532" font-size="10.5" fill="#475569">飞机自己开热点，不依赖任何路由器。</text>
+  <text x="706" y="548" font-size="10.5" fill="#475569">SSID 与密码在 config.h 中定义，改动需重新编译。</text>
+  <text x="706" y="564" font-size="10.5" fill="#475569">多机同时飞需分别改 SSID，否则互相抢占信道。</text>
+</svg>

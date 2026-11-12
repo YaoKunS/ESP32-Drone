@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 620" width="1000" height="620" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+  <defs>
+    <marker id="d" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#334155"/>
+    </marker>
+    <marker id="dd" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#dc2626"/>
+    </marker>
+    <marker id="dg" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#16a34a"/>
+    </marker>
+  </defs>
+  <rect width="1000" height="620" fill="#ffffff"/>
+
+  <text x="20" y="28" font-size="15" font-weight="bold" fill="#0f172a">解锁状态机与安全互锁（failsafe.ino）</text>
+
+  <!-- DISARMED -->
+  <circle cx="180" cy="150" r="58" fill="#f8fafc" stroke="#334155" stroke-width="2"/>
+  <text x="180" y="145" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="middle">DISARMED</text>
+  <text x="180" y="163" font-size="11" fill="#475569" text-anchor="middle">上锁 / 待机</text>
+  <text x="180" y="180" font-size="10" fill="#64748b" text-anchor="middle">电机恒为 0</text>
+
+  <!-- ARMING -->
+  <circle cx="180" cy="390" r="58" fill="#fffbeb" stroke="#ca8a04" stroke-width="2"/>
+  <text x="180" y="385" font-size="13" font-weight="bold" fill="#854d0e" text-anchor="middle">ARMING</text>
+  <text x="180" y="403" font-size="11" fill="#475569" text-anchor="middle">解锁等待中</text>
+  <text x="180" y="420" font-size="10" fill="#64748b" text-anchor="middle">需保持 800 ms</text>
+
+  <!-- ARMED -->
+  <circle cx="640" cy="390" r="58" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+  <text x="640" y="385" font-size="13" font-weight="bold" fill="#15803d" text-anchor="middle">ARMED</text>
+  <text x="640" y="403" font-size="11" fill="#475569" text-anchor="middle">已解锁飞行</text>
+  <text x="640" y="420" font-size="10" fill="#64748b" text-anchor="middle">PID + 混控生效</text>
+
+  <!-- ARMING 转移 -->
+  <path d="M180,210 L180,330" stroke="#ca8a04" stroke-width="2.2" fill="none" marker-end="url(#d)"/>
+  <text x="192" y="248" font-size="11" font-weight="bold" fill="#854d0e">arm_request = true</text>
+  <text x="192" y="266" font-size="10.5" fill="#475569">且四项安全条件全满足</text>
+  <text x="192" y="282" font-size="10.5" fill="#475569">且已连续保持 800 ms</text>
+
+  <!-- 解锁四条件 -->
+  <rect x="290" y="238" width="290" height="128" rx="9" fill="#fffbeb" stroke="#ca8a04" stroke-width="1.5"/>
+  <text x="435" y="260" font-size="12" font-weight="bold" fill="#854d0e" text-anchor="middle">canArm() 解锁四条件（缺一不可）</text>
+  <text x="306" y="282" font-size="10.5" fill="#334155">① 油门 ≤ 0.05（kArmThrottleMax）</text>
+  <text x="306" y="302" font-size="10.5" fill="#334155">② 横滚 / 俯仰 / 偏航摇杆 |值| ≤ 0.15</text>
+  <text x="306" y="322" font-size="10.5" fill="#334155">③ 机身 |roll| 与 |pitch| ≤ 45°（站姿端正）</text>
+  <text x="306" y="342" font-size="10.5" fill="#334155">④ 无电机硬件故障、非故障后抑制状态</text>
+  <text x="306" y="360" font-size="10" fill="#7c3aed">任一条件被破坏 → 计时清零，需重新保持 800 ms</text>
+
+  <path d="M290,300 L236,300 L236,382" stroke="#ca8a04" stroke-width="1.5" fill="none" stroke-dasharray="5 4" marker-end="url(#d)"/>
+
+  <!-- ARMED 转移 -->
+  <path d="M240,390 L578,390" stroke="#16a34a" stroke-width="2.2" fill="none" marker-end="url(#dg)"/>
+  <text x="330" y="382" font-size="11.5" font-weight="bold" fill="#15803d">计时满 800 ms → 蜂鸣长鸣 + PID 复位 + 状态置 ARMED</text>
+
+  <!-- 手动上锁 -->
+  <path d="M640,334 L640,230 L232,230 L232,182" stroke="#dc2626" stroke-width="2.2" fill="none" marker-end="url(#dd)"/>
+  <text x="360" y="222" font-size="11.5" font-weight="bold" fill="#b91c1c">arm_request = false → disarmNow(FS_MANUAL)　上锁</text>
+
+  <!-- 故障上锁 -->
+  <rect x="770" y="300" width="210" height="180" rx="9" fill="#fef2f2" stroke="#dc2626" stroke-width="1.8"/>
+  <text x="875" y="324" font-size="12.5" font-weight="bold" fill="#b91c1c" text-anchor="middle">任一故障 → disarmNow()</text>
+  <text x="786" y="346" font-size="10.5" fill="#7f1d1d">同时置解锁禁止标志</text>
+  <text x="786" y="362" font-size="10.5" fill="#7f1d1d">须先 arm_request=false</text>
+  <text x="786" y="378" font-size="10.5" fill="#7f1d1d">且油门回零才能解除</text>
+  <text x="786" y="400" font-size="10.5" fill="#991b1b">故障原因会通过遥测</text>
+  <text x="786" y="416" font-size="10.5" fill="#991b1b">fs 字段上送 Web 端显示</text>
+  <text x="786" y="440" font-size="10.5" fill="#7f1d1d">设计意图：防止抖动引起</text>
+  <text x="786" y="456" font-size="10.5" fill="#7f1d1d">反复解锁再炸机</text>
+
+  <path d="M698,400 L768,400" stroke="#dc2626" stroke-width="2" fill="none" marker-end="url(#dd)"/>
+
+  <!-- 安全屏障 -->
+  <rect x="30" y="506" width="930" height="96" rx="9" fill="#fff1f2" stroke="#dc2626" stroke-width="1.4"/>
+  <text x="48" y="528" font-size="12.5" font-weight="bold" fill="#b91c1c">安全设计的三个关键取舍</text>
+  <text x="48" y="550" font-size="11" fill="#7f1d1d">① 800 ms 保持时间 + 四项条件互锁：杜绝「手一碰摇杆就解锁」的误操作，这是消费级飞控最常见的事故来源。</text>
+  <text x="48" y="570" font-size="11" fill="#7f1d1d">② 故障后需要显式「解除」动作：单纯松开开关不清除禁止标志，必须油门归零才能回到可解锁状态，形成一条明确的复位路径。</text>
+  <text x="48" y="590" font-size="11" fill="#7f1d1d">③ 上锁是唯一收敛出口：无论从哪条故障路径进来，都汇聚到 disarmNow()，避免各分支各写一套关电机逻辑而漏项。</text>
+</svg>
