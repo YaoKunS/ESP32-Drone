@@ -18,9 +18,11 @@
 // 因此每台机器固件里的 Built 字段都精确对应它真实的那一次编译。
 // ============================================================================
 #define FK_ID_NAME     "YaoKunS   耀坤S3自研飞控 / YaoKunDrone"  // 产品名（IDENTITY 首行）
-#define FK_ID_VERSION  "v1.2"                                     // 固件版本（发版时同步改！）
+#define FK_ID_VERSION  "v1.3"                                     // 固件版本（发版时同步改！）
                                                                    // v1.2（2026-11-07）：SPI IMU 片选更正为 GPIO42（PCB v2 实测）、
                                                                    //   IMU 方向按「总线+芯片指纹」自动适配（支持进口/国产 MPU6050、MPU6500）
+                                                                   // v1.3（2026-11-17）：新增微辣火龙果 2.0 板型（PCB_HLG_V2，经典 ESP32）；
+                                                                   //   单灯合成层；火龙果版专属品牌横幅。S3 版行为不变（仅版本号与板型行）。
 #define FK_ID_SOURCE   "Source  : 20260613"                       // 源码基线日期（对应 .ino 头部 @version）
 #define FK_ID_AUTHOR   "Author  : 耀坤 <espnow@163.com>"
 #define FK_ID_BILI     "BiliBili : 耀坤智联  https://space.bilibili.com/3707011699050767/"
@@ -28,19 +30,73 @@
 #define FK_ID_TAOBAO   "Taobao   : 耀坤智联  https://shop35432590.taobao.com/"
 #define FK_ID_GITHUB   "GitHub   : https://github.com/YaoKunS/"
 
+// ----------------------------------------------------------------------------
+// 微辣火龙果 2.0 版（PCB_HLG_V2）的【品牌身份覆盖】
+// ----------------------------------------------------------------------------
+// 【归属关系（🔴 铁律，改文案前必读）】
+//   耀坤智联是「替微辣火龙果作者（MildlySpicyDragon / malagis）做固件适配与维护」，
+//   不是火龙果本人，两板品牌相互独立：
+//     · 火龙果版横幅：宣传火龙果的品牌与开源页，末尾保留耀坤的淘宝/固件仓库署名；
+//     · S3 版横幅：【严禁】出现火龙果的立创开源页 / B站链接（本块只在 HLG 板型生效，
+//       就是为了在编译期把这条规则钉死，不靠人记）。
+//   与 flix v1.2 发布件（Forks/flix/Firmware/flix/i18n.h 的 BOARD_HLG_V2 段）同一套措辞规则；
+//   火龙果的英文名固定写 MildlySpicyDragon —— 那是作者的用户名，不是真实水果，禁止意译。
+// 【为什么用 #undef 覆盖而不是在各板型分支里各写一份】
+//   身份文案与引脚是两件正交的事：引脚按板型分，文案默认用 S3 那套，
+//   只有火龙果需要整体换品牌。放在这里一块，改文案只需改一处，也不会漏改 S3。
+#if defined(PCB_HLG_V2)
+    #undef  FK_ID_NAME
+    #undef  FK_ID_AUTHOR
+    #undef  FK_ID_BILI
+    #undef  FK_ID_OSH
+    #undef  FK_ID_GITHUB
+
+    #define FK_ID_NAME   "微辣火龙果 2.0 飞控（耀坤自研飞控适配版） MildlySpicyDragon"
+    #define FK_ID_AUTHOR "Author  : 硬件设计 微辣火龙果（malagis）· 固件适配 耀坤智联"
+    #define FK_ID_BILI   "BiliBili : 微辣火龙果  https://space.bilibili.com/544479100"
+    #define FK_ID_OSH    "OSHWHub  : 微辣火龙果  https://oshwhub.com/malagis/esp32-mini-plane"
+    // 固件仓库行指向自研飞控仓库（flix 是另一个产品，不能混）
+    #define FK_ID_GITHUB "GitHub   : https://github.com/YaoKunS/ESP32-Drone"
+#endif
+
 // ============================================================================
 // 第一部分：多 PCB 板型选择（引脚定义）
 // 默认使用 PCB_YaoKun_LCKFB_ESP32S3配置，即立创ESP32S3-R8N8开发板 
 // 全功能完整版,预留6针VL53L1x激光模块插座、9针PMW3901光流模块插座
 // 立创·ESP32S3R8N8开发板 https://lckfb.com/project/detail/lckfb-esp32s3r8n8
 // ============================================================================
+// ============================================================================
+// 板型选择器（🔴 整份工程切换板型，只有这一处需要改）
+// ============================================================================
+// 切换板型两种方式，任选一种：
+//   ① 改这里：取消下面某一行的注释（Arduino IDE 里最直观）
+//   ② 编译选项：-DPCB_HLG_V2（arduino-cli 批量构建用；编译选项与这里的
+//      默认值等价，不需要两边都写）
+// 两个都不指定 ⇒ 默认 PCB_YaoKun_LCKFB_ESP32S3（立创 S3 版，行为保持现状）
+//
+// 为什么要做"二选一 + 冲突报错"：
+//   电机引脚没有身份标识，程序无法自己认出插的是哪块板；一旦"以为编的 A、
+//   实际编成 B"，上电就会四轴乱序起转。所以板型必须由人明确指定，
+//   且同时定义两种板型时直接 #error 中止编译，绝不允许程序去猜。
+// ----------------------------------------------------------------------------
+// #define PCB_HLG_V2          // ← 火龙果 2.0 版（经典 ESP32 DevKit V1，单灯）
+
 // 自动默认板型（需包含所有已知板型宏名）
 // ============================================================================
 #if !defined(PCB_YaoKun_LCKFB_ESP32S3) && \
     !defined(PCB_YaoKun_S3mini) && \
     !defined(PCB_YaoKun_S3mini_B) && \
-    !defined(PCB_YaoKun_S3mini_A)
-    #define PCB_YaoKun_LCKFB_ESP32S3   // 默认板型，切换板型只需修改这一行！
+    !defined(PCB_YaoKun_S3mini_A) && \
+    !defined(PCB_HLG_V2)
+    #define PCB_YaoKun_LCKFB_ESP32S3   // 默认板型
+#endif
+
+// 板型互斥检查：两个以上板型宏同时生效 = 编译期直接报错（见上面"为什么"）
+#if defined(PCB_HLG_V2) && (defined(PCB_YaoKun_LCKFB_ESP32S3) || \
+                            defined(PCB_YaoKun_S3mini) || \
+                            defined(PCB_YaoKun_S3mini_B) || \
+                            defined(PCB_YaoKun_S3mini_A))
+    #error "板型宏冲突：PCB_HLG_V2 不能与其他 PCB_YaoKun_* 板型同时定义"
 #endif
 // ============================================================================
 // 编译前可修改#define PCB_YaoKun_LCKFB_ESP32S3，用于切换板型，可选值：
@@ -52,6 +108,8 @@
 //   PCB_YaoKun_C3mini   - 即将发布YaoKun_C3mini_1.0版PCB，适配16P的ESP32C3 Supermini开发板,马达引脚10、2、3、1，传感器I2C引脚9、8,无独立的激光、光流插座
 //   PCB_YaoKun_ESP32S3-CAM  - 计划带摄像头的版本，YaoKun_ESP32S3_CAM_1.0版PCB，适配ESP32S3-CAM开发板，40针引脚
 //   PCB_YaoKun_ESP32C3  - 计划YaoKun_ESP32C3_1.0版PCB，适配ESP32C3经典款/简约款开发板，32针引脚
+//   PCB_HLG_V2          - 微辣火龙果 2.0 版PCB（ESP32 DevKit V1 经典片，30 针，板载仅 1 颗灯）
+//                         由耀坤智联代为适配维护；原作者 malagis（oshwhub.com/malagis/esp32-mini-plane）
 // 后续可继续添加更多板型
 
 // ---------- PCB_YaoKun_LCKFB_ESP32S3 硬件引脚配置（适配立创ESP32-S3 R8N8开发板） ----------
@@ -303,8 +361,120 @@
     #define kElrsRx 15
     #define kSbusPin 16
 
+// ---------- PCB_HLG_V2 配置 ----------
+// 微辣火龙果 2.0 版 PCB（ESP32 DevKit V1 经典片，30 针，4MB Flash）
+// 引脚基线：flix 仓库 Firmware/flix/board.h 的 BOARD_HLG_V2 分板
+//           （2026-11 已在 flix 上实测适配，本段与之逐脚一致）
+//
+// 🔴 经典 ESP32 只有 GPIO0~39：凡是 S3 版用到的 42 / 41 / 39 之类编号，
+//    在经典片上一律不能出现（对 42 号脚 digitalWrite 属于越界写寄存器，
+//    未定义行为，可能直接死机）。所以本段所有引脚都必须 <= 39，不用的直接 -1。
+// 🔴 本板与耀坤 S3 版的关系（2026-11-16 用户实测确认）：
+//    · IMU 贴装方向、芯片朝向完全一致（MPU6050 / MPU6500 都一样）
+//    · 马达/桨叶安装方式、PCB 尺寸完全一致
+//    ⇒ IMU 轴映射、混控分配、偏航扭矩符号 kYawTorqueSign 全部沿用 S3 的结论，
+//      不按板型区分（这正是本段只换引脚、不动算法的原因）。
+#elif defined(PCB_HLG_V2)
+
+    // WiFi AP 热点信息（与 S3 版完全一致，一套说明书通用）
+    #define kApSsid "YaoKun_Drone"
+    #define kApPass "12345678"
+
+    // 第1组 I2C（MPU6050 / 磁罗盘 / 气压计 排母）—— 经典片 I2C0 默认脚
+    #define kI2cSda 21   // I2C 数据线（SDA）
+    #define kI2cScl 22   // I2C 时钟线（SCL）
+    #define kMpuAddr 0x68   // MPU6050/MPU6500 设备地址
+
+    // IMU 轴映射（编译期兜底值）
+    // 🔴 正常情况下这几行用不上：上电时 applyAxisMapByWhoAmI() 会按
+    //    「总线 + 芯片指纹」自动覆盖（I2C 排母 = 6050 系、SPI 座 = 6500 系）。
+    //    这里保持与 S3 段同一组值，含义是"探测失败时两板行为一致"。
+    //    不要再按板型写不同的值——两板 IMU 贴装方向实测完全相同。
+    #define kImuSwapXY true   // 交换 X 和 Y 轴
+    #define kImuFlipX  true   // 横滚方向取反（MPU6500 模块为 true）
+    #define kImuFlipY  true   // 俯仰方向取反（MPU6500 模块为 true）
+    #define kImuFlipZ  false  // Z 轴方向正常
+
+    // 电机引脚 (X 型配置：机头方向位于 M4 和 M1 之间)
+    // 板丝印编号是顺时针 M1~M4，对应关系：
+    //   M4 左前 → 32   M1 右前 → 33   M2 右后 → 27   M3 左后 → 26
+    // 混控公式只认机体位置（M0=左前…M3=左后），不认 GPIO ⇒ 不用改混控。
+    #define kMotor0Pin 32    // 左前 (M4 / FL)
+    #define kMotor1Pin 33    // 右前 (M1 / FR)
+    #define kMotor2Pin 27    // 右后 (M2 / RR)
+    #define kMotor3Pin 26    // 左后 (M3 / RL)
+
+    // LED 指示灯：本板只有 1 颗板载单色灯，接法 = GPIO2 → 限流电阻 → LED → GND
+    //（拉电流，高电平点亮；已确认，非灌电流接法）
+    // 🔴 led1/led2/led3 一律置 -1：三个逻辑灯在这块板上都不存在。
+    //    三路状态由 drone_led.h 的单灯合成层合并到 kLedSinglePin 输出：
+    //    红色/绿色（亮度）、蓝色（数字状态）取"最亮者"，呼吸/交替退化为亮灭，
+    //    闪频语义保留（待机呼吸、解锁常亮、故障快闪仍可区分）。
+    // 🔴 特别注意别把 led3 写成 14 —— 那是光流模块的 CLK 脚，拉低会打死光流时钟。
+    #define led1 (-1)          // 无红色独立灯
+    #define led2 (-1)          // 无绿色独立灯
+    #define led3 (-1)          // 无蓝色独立灯
+    #define kLedSingle 1       // 1 = 单灯板型（三色语义合成到一颗灯）
+    #define kLedSinglePin 2    // 唯一板载灯引脚
+
+    // 电池电压检测（ADC 输入）
+    // 🔴 必须落在 ADC1（32/33/34/35/36/39）：ADC2 与 Wi-Fi 互斥，而本固件
+    //    热点常开 ⇒ 若用 ADC2 会读到恒 0 ⇒ 误判低电 ⇒ 蜂鸣器无限急鸣。
+    //    GPIO35 = ADC1_CH7，且是 input-only，不会被误配成输出，最合适。
+    #define kVbattAdcPin 35             // ADC1_CH7，GPIO35
+    #define kVbattDividerRatio 2.0f     // 分压 100K+100K，Vbat = ADC * ratio
+
+    // 蜂鸣器引脚（有源蜂鸣器，高电平响；两板都是有源 ⇒ digitalWrite 即可，不需要方波）
+    #define BUZZER_PIN 25
+
+    // SPI 总线：IMU 走 VSPI 默认脚（SCK18/MISO19/MOSI23/CS5）
+    // 注意 ESP-Drone 的命名是 MOS/MIS：SDI=MOSI=23，SDO=MISO=19，别搞反。
+    #define kSpiMosi 23   // MOSI (SDI)
+    #define kSpiClk  18   // SCLK
+    #define kSpiMiso 19   // MISO (SDO)
+    #define kSpiCs   5    // MPU6500 片选（NCS）；本板只有一个 SPI 从设备，无候选片选
+
+    // ========== 以下为预留外设引脚（暂未使用，仅定义以备后续扩展）==========
+    // 第二组 I2C（预留 VL53L1X 激光测距）
+    // 🔴 16/17 仅在 WROOM 模组可用；WROVER 模组被 PSRAM 占用。本固件未接，仅登记。
+    #define kI2c2Scl 17
+    #define kI2c2Sda 16
+    // ELRS 接收机串口（预留；本板没有空闲串口，置 -1 = 未分配）
+    #define kElrsTx (-1)
+    #define kElrsRx (-1)
+    // SBUS 接收机输入引脚（自研固件暂未实现 SBUS 驱动，仅登记引脚）
+    #define kSbusPin 4
+
 #else
     #error "Unknown PCB_TYPE! 请在 config.h 或编译选项中定义正确的板型宏"
+#endif
+
+// ============================================================================
+// 板型派生常量（板型分支之后统一生成，避免每个分支重复写）
+// ============================================================================
+// 单灯板型标记：只有火龙果分支会主动定义 kLedSingle=1，其余板型默认 0。
+// DRONE_LED 层用 #if kLedSingle 决定是"三灯各写各的"还是"三路合成一颗灯"。
+#ifndef kLedSingle
+    #define kLedSingle 0
+#endif
+
+// 板型名（开机 IDENTITY 横幅显示）
+// 用途：两套固件版本号相同时（例如都在 v1.2 开发中），现场接串口一眼就能
+//       区分烧的是 S3 版还是火龙果版——这是发布件指纹校验的一部分。
+// 为什么不在各分支里各写一遍：横幅文案与引脚是两件事，集中在这里以后
+// 加板型只需改两处（分支 + 这一行），不会漏。
+#if defined(PCB_HLG_V2)
+    #define FK_ID_BOARD "Board   : HLG 2.0 (ESP32 classic, single LED)"
+#elif defined(PCB_YaoKun_LCKFB_ESP32S3)
+    #define FK_ID_BOARD "Board   : YaoKun S3 (LCKFB R8N8)"
+#elif defined(PCB_YaoKun_S3mini)
+    #define FK_ID_BOARD "Board   : YaoKun S1.0C (S3 Supermini)"
+#elif defined(PCB_YaoKun_S3mini_B)
+    #define FK_ID_BOARD "Board   : YaoKun S1.0B (S3 Supermini)"
+#elif defined(PCB_YaoKun_S3mini_A)
+    #define FK_ID_BOARD "Board   : YaoKun S1.0A (S3 Supermini)"
+#else
+    #define FK_ID_BOARD "Board   : (unknown)"
 #endif
 
 // ============================================================================

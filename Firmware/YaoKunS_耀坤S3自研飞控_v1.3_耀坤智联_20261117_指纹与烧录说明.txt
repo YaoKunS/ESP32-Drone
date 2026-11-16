@@ -24,14 +24,16 @@
   ★ 默认热点：SSID = YaoKun_Drone   密码 = 12345678
     （刷完后手机连该热点，浏览器访问 http://192.168.4.1/ 即可）
 
-  ★ 本固件只适配「立创 ESP32-S3 R8N8 全功能板」这一种板型。
-    若你的机器是 Supermini 版（S1.0A / S1.0B / S1.0C），马达与传感器引脚不同，
-    直接刷本固件会出现电机不转或姿态错乱，必须改 config.h 的板型宏后重新编译。
+  ★ 版型说明（v1.3 起两套固件并存）：本包是「耀坤 S3 版」（立创 ESP32-S3 R8N8 全功能板）。
+    同版本另有「微辣火龙果 2.0 版」（经典 ESP32 / 4MB，文件名含 HLG2），两套引脚完全不同，
+    不能互刷（刷错会电机不转或四轴乱序起转）。认板看开机横幅的 Board 行：
+      Board   : YaoKun S3 (LCKFB R8N8)   或   HLG 2.0 (ESP32 classic, single LED)
+    Supermini 版（S1.0A/B/C）需改 config.h 板型宏后自行编译。
 
 【二、版本与来源】
-  固件版本   : v1.2        （源码 YaoKun_Drone.ino 头部 @version 1.2 / 20260613）
+  固件版本   : v1.3        （源码 YaoKun_Drone.ino 头部 @version 1.3 / 20260613）
   品牌       : YaoKunS / 耀坤智联 / 耀坤无人机
-  编译时间   : Nov  8 2026 18:06:41 (GMT+8)
+  编译时间   : Nov 17 2026 00:12:45 (GMT+8)
   源码仓库   : https://github.com/YaoKunS/ESP32-Drone
   工具链     : arduino-cli 1.5.1 + esp32 core 3.3.8（内含 ESP-IDF v5.5.4）
   编译参数   : esp32:esp32:esp32s3
@@ -39,7 +41,7 @@
                FlashMode=qio, CPUFreq=240, USBMode=hwcdc, CDCOnBoot=cdc
   第三方库   : ESP Async WebServer 3.12.1 (ESP32Async)
                Async TCP 3.5.0          (ESP32Async)
-  资源占用   : 应用 1128608 B / 2MB (54%)；静态变量 47808 B / 320KB (14%)
+  资源占用   : 应用 1128064 B / 2MB (54%)；静态变量 47808 B / 320KB (14%)
 
   ⚠️ 关于「读版本号」的说明（与 ESPDrone 固件不同，别照那套读）：
      Arduino 构建的镜像里，0x10020 处的 esp_app_desc_t 是由 ESP32 核心预编译库
@@ -51,7 +53,7 @@
 【三、怎么烧（Flash Download Tool）】
   1) 打开 Flash Download Tool，芯片选 ESP32-S3，工作模式 Develop。
   2) 只添加这一个文件，地址填 0x0 ：
-       YaoKunS_耀坤S3自研飞控_v1.2_耀坤智联_20261108_merged.bin
+       YaoKunS_耀坤S3自研飞控_v1.3_耀坤智联_20261117_merged.bin
   3) 设置：SPI SPEED = 80MHz ，SPI MODE = DIO ，
            FLASH SIZE = 8MB（16MB 的板子也选 8MB） ，
            COM 口选你的板子，BAUD 选 921600（不稳就降到 115200）。
@@ -62,7 +64,7 @@
 
   · 用 esptool 一条命令也行（等价）：
       esptool --chip esp32s3 --port COMx --baud 921600 write_flash 0x0 ^
-        YaoKunS_耀坤S3自研飞控_v1.2_耀坤智联_20261108_merged.bin
+        YaoKunS_耀坤S3自研飞控_v1.3_耀坤智联_20261117_merged.bin
 
   · 烧完若「不跑、停在下载模式」（日志出现 waiting for download）：
     说明 GPIO0 被拉低没放开。先 --after no-reset 连一下确认镜像可读，
@@ -70,15 +72,15 @@
 
 【四、怎么验证烧进去的是这一版（指纹探测）】
   ① 直接比文件哈希（最可靠，不用上电）：
-       certutil -hashfile "YaoKunS_耀坤S3自研飞控_v1.2_耀坤智联_20261108_merged.bin" SHA256
-     → 应为 30c63a4595365286b72e9935a9e999777b36118730a5e973e51cce3636c20472
+       certutil -hashfile "YaoKunS_耀坤S3自研飞控_v1.3_耀坤智联_20261117_merged.bin" SHA256
+     → 应为 bdbfcc1e8520d9bf354952370b38be5cb41630eae99a09f3374bf6d4f614204e
 
   ② 串口开机 IDENTITY 横幅（115200，走原生 USB-CDC 口），开机第一屏就是：
        IDENTITY: ============================================
        IDENTITY:   YaoKunS   耀坤S3自研飞控 / YaoKunDrone
-       IDENTITY:   Version : v1.2
+       IDENTITY:   Version : v1.3
        IDENTITY:   Source  : 20260613
-       IDENTITY:   Built   : Nov  8 2026 18:06:41   ← 本次编译时刻，写在固件里
+       IDENTITY:   Built   : Nov 17 2026 00:12:45   ← 本次编译时刻，写在固件里
        IDENTITY:   Author  : 耀坤 <espnow@163.com>
        IDENTITY:   BiliBili : 耀坤智联  https://space.bilibili.com/3707011699050767/
        IDENTITY:   OSHWHub  : 耀坤无人机  https://oshwhub.com/lindahe/
@@ -104,16 +106,16 @@
        （magic 32 54 CD AB），但 version 字段无参考价值（见第二节说明）。
 
 【五、产物与校验（SHA-256）】
-  merged 单文件固件     30c63a4595365286b72e9935a9e999777b36118730a5e973e51cce3636c20472
-                        大小 1194144 B (0x1238A0)
+  merged 单文件固件     bdbfcc1e8520d9bf354952370b38be5cb41630eae99a09f3374bf6d4f614204e
+                        大小 1193600 B (0x123680)
   ── 合并所用的四个分段（供分片烧写用，本次未随包提供）──
   bootloader  0x0       6f232c4aafe7d21239a1c59404723ca2cfdca063ef73501a21126a8cef39f432
                         大小 19984 B (0x4E10)
-  分区表      0x8000    6a88d59601a83a16a19a08114b59d338324b8dec267d8b43e5d61ad56ec92102
+  分区表      0x8000    1d9cca96de0fe07ad7fc0648b9878ddecd9ce565e38b589ad20fea698ed4c80c
                         大小 3072 B (0xC00)
   boot_app0   0xE000    （esp32 core 3.3.8 自带，把 otadata 选到 app0，缺它不启动）
-  应用程序    0x10000    5d5083e72b084f4de7fecfb65062b5fecdfb93a1cfc97c80fb801d8843f24da7
-                        大小 1128608 B (0x1138A0)
+  应用程序    0x10000    f00457372f24d0609100bbecc54639cbcf4aff85a8ffb0438c141d22486f10db
+                        大小 1128064 B (0x113680)
 
   合并段布局：0x0 bootloader + 0x8000 分区表 + 0xE000 boot_app0 + 0x10000 应用程序
               （段间空隙由 esptool 填 0xFF，文件在应用程序末尾即止）
@@ -121,7 +123,26 @@
               / spiffs 0x210000(1.875M) / coredump 0x3F0000(64K)
   镜像头    ：E9 xx 02 3F → SPI 模式 DIO、80MHz、8MB
 
-【六、v1.2 相对 v1.1 的变更（PCB v2 适配，均为实机实测）】
+【六、v1.3 相对 v1.2 的变更（新增火龙果 2.0 板型；S3 版无功能变化）】
+
+  1) 新增板型：微辣火龙果 2.0（PCB_HLG_V2，经典 ESP32 / 4MB）。同一份源码用编译期宏
+     切换两套引脚，两套固件同版本号并行发布：
+       电机 左前/右前/右后/左后 = 32/33/27/26
+       IMU SPI = 18/19/23 + CS5；I2C = 21/22
+       电压 ADC = 35（ADC1_CH7，分压 2.0）；蜂鸣器 25；板载灯 GPIO2（单灯）
+     两板的电机布局、桨装法、IMU 贴装方向实测完全一致 ⇒ 混控、轴映射、偏航扭矩符号
+     全部沿用，不按板型分叉。
+     编译：-DPCB_HLG_V2 + esp32:esp32:esp32:FlashSize=4M,PartitionScheme=default；
+     bootloader 地址是经典片的 0x1000（S3 才是 0x0）。
+  2) 单灯合成层：火龙果板只有一颗灯，红/绿/蓝三路语义按「谁要亮就亮」合成到 GPIO2，
+     呼吸/交替退化为亮灭，闪频语义保留（启动/待机/解锁/故障仍可区分）。
+  3) 火龙果版专属品牌横幅：该板固件开机横幅显示火龙果品牌与立创开源/B站链接，
+     末尾保留耀坤淘宝行；S3 版横幅严禁出现火龙果链接（品牌独立，编译期隔离）。
+  4) S3 版功能零变化：混控、控制环、PID 默认值、灯语、遥控链路与 v1.2 一致；
+     仅版本号变为 v1.3，并新增 IDENTITY: Board 行以便现场区分两套固件。
+  5) 固件体积：S3 版 app 1,127,916 B（33%）；火龙果版 app 1,144,258 B（87%）。
+
+【七、v1.2 相对 v1.1 的变更（PCB v2 适配，均为实机实测）】
   1) SPI IMU 片选更正：GPIO17 → GPIO42。
      PCB v2 实测：CS 接 GPIO17 时 WHO_AM_I 读到 0x00（线上无器件），接 GPIO42
      读到 0x70（MPU6500），且配置寄存器写入回读一致、静止 |a|≈1.05g。
@@ -140,9 +161,14 @@
      现场排障（"方向不对"）时先看这一行。
   4) 说明：6050 系与 6500 系的陀螺 Z 轴极性物理相反，换用 6050 后网页 yaw
      显示方向可能与 6500 相反——这是芯片差异，不影响飞行控制，无需处理。
-  5) 本版未改动混控、PID 与控制增益：飞行手感与 v1.1 一致。
+  5) 角速率环默认 PID 调整（横滚/俯仰共用）：
+     Kp 0.025 → 0.010、Kd 0.0002 → 0.00008（Ki 仍为 0）。v1.1 的 0.025 在
+     部分机架/桨组合上偏"硬"，起飞瞬间易触发小幅振荡；0.010 为 2026-11 实飞
+     验证的折中值（6050 / 6500 双 IMU 均试飞通过），响应更柔顺。已保存过参数
+     的板子不受影响（NVS 优先）；整片刷写后新默认自动生效，也可在网页手动改。
+     混控与角度环、偏航环参数未改动。
 
-【七、v1.1 相对 v1.0 的变更（均为真机实测问题驱动）】
+【八、v1.1 相对 v1.0 的变更（均为真机实测问题驱动）】
   1) 关闭芯片欠压复位（brownout）：
      v1.0 实测"放地上推油即将离地必重启"——根因是电机满载浪涌把 3.3V 拉到
      欠压阈值以下，芯片硬复位。本版按 Flix 同款机制关闭 brownout 检测。
@@ -165,10 +191,13 @@
      水平缓漂属正常现象，飞行中需飞手打杆修正；固定方向的明显偏飘
      多为重心偏移，左右挪动电池位置即可改善。
 
-【八、六点须知】
+【九、六点须知】
   1) 单文件从 0x0 整片刷写，会把 0x9000~0x10000（nvs：WiFi 校准数据 + 已保存参数）
      一并写成 0xFF，等于清空。刷新板/空板无影响；刷自己已经调好 PID 的机器要留意，
      这种场合请改用分片写（只写 0x0 / 0x8000 / 0xE000 / 0x10000 四段，跳过 0x9000）。
+     ⚠️ 整片刷写后必须重做「水平校准」和「遥控校准」再试飞：水平零偏被清后姿态环
+     会带着 2~6° 的虚假倾斜角起飞猛纠，表现就是起飞瞬间固定方向侧翻
+     （2026-11 实测教训，校准后即恢复正常）。
   2) 本版分区方案为 no_ota（单 app 2MB），没有 OTA 分区 —— 升级只能重新插线刷写。
   3) 编译时 CDCOnBoot=cdc：Serial 输出走原生 USB 口。如果你只插了板上的 UART 口，
      看不到开机日志是正常的，改用原生 USB 口即可。
@@ -179,7 +208,7 @@
   6) 网页里改了 PID / 校准参数会自动存 NVS，下次上电仍在；要恢复出厂用网页的
      「恢复默认」按钮（不要用整片刷写来"恢复"，那会连带清掉 WiFi 校准）。
 
-【九、找到我们】
+【十、找到我们】
   B站（哔哩哔哩）  : 耀坤智联     https://space.bilibili.com/3707011699050767
   立创开源硬件平台 : 耀坤无人机   https://oshwhub.com/lindahe
   GitHub           : https://github.com/YaoKunS

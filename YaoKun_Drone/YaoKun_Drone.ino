@@ -216,6 +216,18 @@ static void applyVoltageLed() {
   if (g_voltage_alert_level == 0) return;
   uint32_t now_ms = millis();
   bool red_on = false, green_on = false, blue_on = false;
+#if kLedSingle
+  // ---------- 单灯板型（火龙果 2.0）----------
+  // 只有一颗灯，颜色语义已经丢失（红/绿/蓝都合成同一种亮度），所以三级告警
+  // 改用"闪频"区分：1 级最慢、2 级中等、3 级最快。现场配合蜂鸣器音调
+  // （慢/中/急三档，见 drone_buzzer.h）双通道判断电量等级。
+  switch (g_voltage_alert_level) {
+    case 1: red_on = (now_ms % 1600) < 800; break;   // 1 级：慢闪 0.8s 亮 / 0.8s 灭
+    case 2: red_on = (now_ms % 800)  < 400; break;   // 2 级：中闪 0.4s 亮 / 0.4s 灭
+    case 3: red_on = (now_ms % 300)  < 150; break;   // 3 级：快闪 0.15s 亮 / 0.15s 灭
+  }
+#else
+  // ---------- 三灯板型（S3 / mini 系列）：保留原有颜色语义 ----------
   switch (g_voltage_alert_level) {
     case 1:  // 蓝色慢闪
       blue_on = (now_ms % 1000) < 500;
@@ -227,11 +239,10 @@ static void applyVoltageLed() {
       red_on = green_on = blue_on = (now_ms % 500) < 250;
       break;
   }
-  if (red_on) ledcWrite(led1, kLedPwmMaxDuty);
-  else ledcWrite(led1, 0);
-  if (green_on) ledcWrite(led2, kLedPwmMaxDuty);
-  else ledcWrite(led2, 0);
-  digitalWrite(led3, blue_on ? HIGH : LOW);
+#endif
+  // 统一走 ledOutput()：三灯 / 单灯的全部差异收敛在 drone_led.h 里，
+  // 这里只表达"哪一路要亮"，不再直接 ledcWrite 引脚（-1 负引脚保护由下层负责）。
+  ledOutput(red_on ? 1.0f : 0.0f, green_on ? 1.0f : 0.0f, blue_on);
 }
 
 // ============================================================================
@@ -521,6 +532,9 @@ static void printIdentity() {
   Serial.println(F("IDENTITY: ============================================"));
   Serial.println(F("IDENTITY:   " FK_ID_NAME));
   Serial.println(F("IDENTITY:   Version : " FK_ID_VERSION));
+  // 板型行（v1.3 新增）：同一版本号可能同时存在 S3 版与火龙果版两套固件，
+  // 现场接串口时靠这一行区分，避免"以为烧的是 A 板固件"。
+  Serial.println(F("IDENTITY:   " FK_ID_BOARD));
   Serial.println(F("IDENTITY:   " FK_ID_SOURCE));
   Serial.println(F("IDENTITY:   Built   : " __DATE__ " " __TIME__));
   Serial.println(F("IDENTITY:   " FK_ID_AUTHOR));
@@ -541,11 +555,10 @@ void setup() {
   Serial.println("Boot...");
   printIdentity();   // 开机第一屏：版本与品牌横幅（指纹校验用）
 
-  // LED 初始化（红绿蓝）
+  // LED 初始化（三灯板型：红绿蓝；单灯板型：合成到唯一板载灯）
+  // ledInit() 内部已按板型完成引脚模式配置，这里不再重复 pinMode。
   g_led_mode = LED_BOOT;
   ledInit();
-  pinMode(led3, OUTPUT);
-  digitalWrite(led3, LOW);
 
   // 蜂鸣器初始化并播放上电提示音
   buzzerInit();
@@ -644,7 +657,11 @@ void loop() {
       } else {
         led_on = (now_ms % 1000) < 500;         // 慢闪（待机）
       }
-      digitalWrite(led3, led_on ? HIGH : LOW);
+      // 统一走 setBlueLed()：三灯板型直接写 led3；单灯板型则把"蓝灯状态"
+      // 叠加到唯一那颗灯上（蓝灯亮 = 最亮，灭后自动回落红绿亮度）。
+      // 🔴 不要在这里直接 digitalWrite(led3, ...) —— 火龙果板 led3 = -1，
+      //    直接写会拿 -1 去操作 GPIO（未定义行为）。
+      setBlueLed(led_on);
     }
 
     // 电压告警 LED 覆盖（优先级高于飞控状态）

@@ -31,7 +31,7 @@ A fully in-house developed ESP32-S3 brushed-quadcopter flight controller (projec
 | Firmware version | **v1.2** (source header `@version 1.2 / 20260613` in `YaoKun_Drone.ino`) |
 | Brand | YaoKunS / YaoKunSmart / 耀坤无人机 |
 | Built | Nov  8 2026 18:06:41 (GMT+8) |
-| Source directory | `D:\YaoKunS\YaoKunDrone` |
+| Source repo | https://github.com/YaoKunS/ESP32-Drone |
 | Toolchain | arduino-cli 1.5.1 + esp32 core 3.3.8 (bundles ESP-IDF v5.5.4) |
 | Build options | `esp32:esp32:esp32s3` + `FlashSize=8M, PSRAM=opi, PartitionScheme=no_ota, FlashMode=qio, CPUFreq=240, USBMode=hwcdc, CDCOnBoot=cdc` |
 | Third-party libs | ESP Async WebServer 3.12.1 (ESP32Async) / Async TCP 3.5.0 (ESP32Async) |

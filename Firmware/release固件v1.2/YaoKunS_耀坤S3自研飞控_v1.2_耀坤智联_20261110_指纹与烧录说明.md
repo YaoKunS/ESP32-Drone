@@ -26,7 +26,7 @@
 | 固件版本 | **1.2**（源码 `YaoKun_Drone.ino` 头部 @version 1.0 / 20260613） |
 | 品牌 | YaoKunS / 耀坤智联 / 耀坤无人机 |
 | 编译时间 | Nov 10 2026 00:42:40 (GMT+8) |
-| 源码目录 | `D:\YaoKunS\YaoKunDrone` |
+| 源码仓库 | https://github.com/YaoKunS/ESP32-Drone |
 | 工具链 | arduino-cli 1.5.1 + esp32 core 3.3.8（内含 ESP-IDF v5.5.4） |
 | 编译参数 | `esp32:esp32:esp32s3` + `FlashSize=8M, PSRAM=opi, PartitionScheme=no_ota, FlashMode=qio, CPUFreq=240, USBMode=hwcdc, CDCOnBoot=cdc` |
 | 第三方库 | ESP Async WebServer 3.12.1 (ESP32Async) ／ Async TCP 3.5.0 (ESP32Async) |

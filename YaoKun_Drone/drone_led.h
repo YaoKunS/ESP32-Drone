@@ -53,31 +53,83 @@ static inline float led_clampf(float v, float vmin, float vmax) {
 
 /**
  * @brief 通过 LEDC 直接写入指定引脚的 PWM 占空比（使用引脚号）
- * @param pin   GPIO 引脚号（例如 led1, led2）
+ * @param pin   GPIO 引脚号（例如 led1, led2, kLedSinglePin）
  * @param level 亮度值，0.0（灭）~ 1.0（最亮）
- * 
+ *
  * 说明：ESP32 的 ledcWrite 函数支持直接传入引脚号，内部会自动查找该引脚绑定的 LEDC 通道。
  * 由于在 hardware.ino 的 ledInit() 中已经将 led1、led2 分别绑定到通道 4 和 5，
  * 因此这里直接写引脚号是安全的，且不会影响电机（电机使用通道 0~3）。
+ *
+ * 🔴 负引脚保护（2026-11-16 加）：config.h 里"不存在的灯"用 -1 表示
+ *   （火龙果 2.0 只有一颗灯，led1/led2/led3 全是 -1）。若不判空，
+ *   ledcWrite(-1, ...) 会去操作一个不存在的通道号，轻则无效重则越界写寄存器。
+ *   所有写灯入口都必须经过这里或 ledOutput()，不允许在别处直接 ledcWrite。
  */
 static inline void ledWriteLevel(int pin, float level) {
+    if (pin < 0) return;    // -1 = 该灯在本板型上不存在
     const float l = led_clampf(level, 0.0f, 1.0f);
     const uint32_t duty = (uint32_t)lrintf(l * (float)kLedPwmMaxDuty);
     ledcWrite(pin, duty);   // 直接通过引脚号输出 PWM
 }
 
-/** 同时设置红、绿 LED 的亮度（PWM） */
+// ------------------------------------------------------------
+// 三路逻辑灯状态的"影子副本"
+// 为什么需要：单灯板型要把红/绿/蓝三路合成到一颗灯上，而三路是由两个
+// 不同入口分别设置的（setLeds 每周期刷红绿、setBlueLed 每 50ms 刷蓝）。
+// 任何一方变化时都必须知道另外两路当前是什么值，否则会互相覆盖
+// （典型现象：蓝灯逻辑一跑，红绿呼吸就被刷灭）。
+// ------------------------------------------------------------
+static float g_led_red_level   = 0.0f;   // 最近一次设定的红色亮度 0~1
+static float g_led_green_level = 0.0f;   // 最近一次设定的绿色亮度 0~1
+static bool  g_led_blue_state  = false;  // 最近一次设定的蓝色数字状态
+
+/**
+ * @brief 三路逻辑状态 → 实际物理灯的唯一输出口
+ * @param red   红色亮度 0~1（S3：红色 LED 的 PWM）
+ * @param green 绿色亮度 0~1（S3：绿色 LED 的 PWM）
+ * @param blue  蓝色数字状态（S3：蓝色 LED 的高/低电平）
+ *
+ * 单灯板型（kLedSingle=1，火龙果 2.0）的合成规则：
+ *   亮度 = max(红, 绿, 蓝亮?1:0) —— "任一路要亮就亮"。
+ *   为什么不取平均：三路语义是"任一告警/状态就要看见"，平均会让
+ *   故障快闪在呼吸灯上被拉暗，现场根本看不清。
+ *   各状态在单灯上的表现：BOOT = 亮/暗交替（见 ledUpdate 的 kLedSingle 分支，
+ *   因为两颗灯交替在单灯上没有意义，改成亮度两态）；上锁 = 呼吸；解锁等待 =
+ *   慢闪；已解锁 = 常亮；故障 = 快闪。闪频/亮度语义全部保留。
+ *
+ * 调用时机：setLeds() / setBlueLed() / 电压告警覆盖（applyVoltageLed）内部。
+ */
+static inline void ledOutput(float red, float green, bool blue) {
+#if kLedSingle
+    // ---------- 单灯板型：三路合成一颗灯 ----------
+    float level = (red > green) ? red : green;
+    if (blue && level < 1.0f) level = 1.0f;   // 蓝灯是数字语义，按最亮处理
+    ledWriteLevel(kLedSinglePin, level);
+#else
+    // ---------- 三灯板型（S3 及 mini 系列）：各写各的 ----------
+    ledWriteLevel(led1, red);
+    ledWriteLevel(led2, green);
+    if (led3 >= 0) digitalWrite(led3, blue ? HIGH : LOW);
+#endif
+}
+
+/** 同时设置红、绿 LED 的亮度（PWM）；蓝灯保持上次状态 */
 static inline void setLeds(float l1, float l2) {
-    ledWriteLevel(led1, l1);   // 红色 LED（引脚由 config.h 定义）
-    ledWriteLevel(led2, l2);   // 绿色 LED
+    g_led_red_level = l1;
+    g_led_green_level = l2;
+    ledOutput(l1, l2, g_led_blue_state);
 }
 
 /**
- * @brief 蓝色 LED 独立控制（普通 GPIO，非 PWM）
+ * @brief 蓝色 LED（状态灯）独立控制
  * @param on true=亮, false=灭
+ *
+ * 在单灯板型上这是一次"叠加"而不是"独占"：蓝灯亮时单灯取最亮，
+ * 红绿亮度仍被记住，蓝灯灭后自动恢复（见 g_led_* 影子副本）。
  */
 static inline void setBlueLed(bool on) {
-    digitalWrite(led3, on ? HIGH : LOW);
+    g_led_blue_state = on;
+    ledOutput(g_led_red_level, g_led_green_level, on);
 }
 
 /**

@@ -57,7 +57,7 @@
 
 The goal was never "a toy that flies", but **an open-source flight controller that a single person can fully read, and safely modify** — a teaching and prototyping platform. Every constant in the code is annotated with where it came from, and every non-obvious design explains *why it is written that way* and *what breaks otherwise*. It doubles as a runnable flight-control textbook.
 
-> 📌 **Current firmware version: v1.2 (2026-11-08)** — two changes since v1.1 (PCB v2 support, all measured on real hardware): ① **SPI IMU chip-select corrected to GPIO42** (17 is reserved for optical flow; with CS=17 the WHO_AM_I reads 0x00) — see 10.1/10.2; ② **IMU orientation is now auto-adapted from bus + chip fingerprint**, so genuine 6050 / domestic 6050 / MPU6500 all work out of the box with no macro edit or recompile — see 10.2. v1.2 leaves the mixer, PID and control gains untouched: flight feel is identical to v1.1.
+> 📌 **Current firmware version: v1.3 (2026-11-17)** — adds the **MildlySpicyDragon 2.0 board** (classic ESP32 / 4 MB, macro `PCB_HLG_V2`). The same source tree switches pin maps at compile time and both variants ship under one version number. Motor layout, propeller mounting and IMU mounting orientation are physically identical on both boards, so the mixer and control algorithms are shared — only pins and LED behaviour differ (the HLG board has a single LED). **The S3 variant is functionally unchanged vs v1.2**; only the version string and a new `IDENTITY: Board :` line changed. v1.2 items (PCB v2 SPI CS = GPIO42, bus+fingerprint IMU auto-adaptation) remain valid — see 10.3.
 
 > 📌 **v1.1 (2026-10-23)** brought three changes over v1.0, all driven by real flight-test findings: ① chip brownout reset disabled — fixes the guaranteed reboot at ground-level critical throttle, see Chapter 7; ② yaw loop gained an integral term Ki=0.005 — eliminates the constant spin caused by motor/prop torque asymmetry, see 5.5; ③ yaw torque sign adaptation (`kYawTorqueSign`) — matches the as-built motor layout, fixes the accelerating spin after takeoff, see 5.3.
 
@@ -577,13 +577,14 @@ The red/green LEDs are driven by `g_led_mode` (LEDC channels 4/5, fully isolated
 
 *Fig. 10-1　Board selection, the complete pin table for the default board, reserved expansion headers and voltage thresholds*
 
-### 10.1 Boards and Switching (4 implemented)
+### 10.1 Boards and Switching (5 implemented)
 
-All board differences live in the conditional compilation in `config.h`; switching means editing one `#define` at the top. That file also has a fallback: if none of the `PCB_YaoKun_*` macros is defined, the default board `PCB_YaoKun_LCKFB_ESP32S3` is selected automatically. One caveat: **defining a not-yet-implemented board macro (e.g. `PCB_YaoKun_ESP32Dev`) does not raise an error** — the fallback quietly pulls it back to the default board, so it compiles with default pins and the trailing `#error` branch is effectively unreachable. Only use one of the four implemented macros below.
+All board differences live in the conditional compilation in `config.h`; switching means editing one `#define` at the top. That file also has a fallback: if none of the `PCB_YaoKun_*` macros is defined, the default board `PCB_YaoKun_LCKFB_ESP32S3` is selected automatically. One caveat: **defining a not-yet-implemented board macro (e.g. `PCB_YaoKun_ESP32Dev`) does not raise an error** — the fallback quietly pulls it back to the default board, so it compiles with default pins and the trailing `#error` branch is effectively unreachable. Only use one of the implemented macros below. 🔴 **Defining two board macros at once is a hard `#error`** — motor pins carry no identity, so a wrong board always means scrambled motors on power-up; the build refuses to guess.
 
 | Board macro | Hardware | Motor pins |
 |---|---|---|
 | `PCB_YaoKun_LCKFB_ESP32S3`<br>★ default | YaoKun K1.0, LCKFB ESP32-S3 R8N8 full-function board | 16 / 6 / 5 / 15 |
+| `PCB_HLG_V2` (new in v1.3) | MildlySpicyDragon 2.0 (classic ESP32 DevKit V1, 4 MB) | 32 / 33 / 27 / 26 |
 | `PCB_YaoKun_S3mini` | YaoKun S1.0C, ESP32-S3 Supermini (open-sourced) | 8 / 4 / 3 / 9 |
 | `PCB_YaoKun_S3mini_B` | YaoKun S1.0B, internal test build | 10 / 4 / 3 / 11 |
 | `PCB_YaoKun_S3mini_A` | YaoKun S1.0A, first internal test build | 8 / 4 / 1 / 9 |
@@ -591,7 +592,31 @@ All board differences live in the conditional compilation in `config.h`; switchi
 
 > ⚠️ **The S3mini series is pin-starved**, so the red/green LEDs may not be populated on the actual PCB (the pins are still defined, there is just no LED there). S1.0A/B are internal test revisions whose pins match those specific units — do not copy them blindly onto your own board.
 
-### 10.2 IMU Axis Mapping (automatic since v1.2)
+### 10.2 MildlySpicyDragon 2.0 Board (new in v1.3)
+
+The Dragon Fruit 2.0 is an open-hardware project by **MildlySpicyDragon (malagis)** — the "ESP32 mini drone" that won an Encouragement Award in the 2025 Spark Program. **YaoKunSmart only adapts and maintains the firmware for it**; it is not a YaoKun product, and the two brands stay independent.
+
+| Function | GPIO | Difference vs S3 |
+| --- | --- | --- |
+| Motors FL / FR / RR / RL | **32 / 33 / 27 / 26** | board silkscreen M4 / M1 / M2 / M3; the mixer only cares about position |
+| IMU SPI SCK / MISO / MOSI / **CS** | **18 / 19 / 23 / 5** | S3 uses 38/21/18/**42** (pin 42 does not exist on classic ESP32) |
+| IMU I2C SDA / SCL | **21 / 22** | S3 uses 9 / 8 |
+| Battery ADC | **35** (ADC1_CH7, input-only) | S3 uses GPIO2; must stay on ADC1 because ADC2 conflicts with Wi-Fi |
+| Buzzer | **25** (active) | S3 uses 39 |
+| Board LED | **GPIO2, single LED** (current-sourcing, active high) | S3 has RGB on 41/7/14 |
+| Reserved: laser ranger I2C | 17 / 16 | driver not implemented |
+| Reserved: SBUS input | 4 | driver not implemented |
+
+**Key design decisions**
+
+- **Zero algorithm divergence.** Both boards share motor layout, propeller mounting and IMU mounting orientation (verified on hardware) ⇒ mixer, IMU axis map (`swap + flipX + flipY`) and `kYawTorqueSign = -1` are shared; the HLG branch in `config.h` only swaps pins.
+- **Single-LED compositing layer.** The board has one LED; `drone_led.h` OR-s the red/green/blue semantics onto GPIO2 (max brightness wins). Alternating boot pattern degrades to half/full brightness; breathing, armed-solid and failsafe-fast-blink keep their timing, so every state is still distinguishable. Three-LED boards keep the original per-channel PWM path untouched.
+- **Classic-ESP32 hard limits.** Only GPIO0–39 exist; every pin is ≤39; `led1/led2/led3` are set to `-1` (never map `led3` to 14 — that is the optical-flow CLK); GPIO12 is untouched, so **no eFuse burn is needed**.
+- **Brand isolation is enforced at compile time.** The HLG banner shows the Dragon Fruit OSHWHub / Bilibili links with the YaoKun store line appended; the S3 banner must never contain HLG links — implemented by overriding `FK_ID_*` macros inside `#if defined(PCB_HLG_V2)`.
+
+> 🧰 Bench acceptance procedure: `Docs/火龙果2.0_自研飞控_台架检查清单_v1.3.md`.
+
+### 10.3 IMU Axis Mapping (automatic since v1.2)
 
 **Since v1.2 you no longer configure orientation by hand.** Previously, changing the IMU meant editing four macros in `config.h`, recompiling and flight-testing the result. Now `ImuDriver::begin()` reads WHO_AM_I during detection and selects a runtime axis map (`g_imuAxis`) from **bus + chip fingerprint**; the compile-time macros remain only as the fallback when a fingerprint is not recognised.
 
@@ -615,7 +640,7 @@ Every boot prints the decision, e.g. `IMU axis map: SPI 6500-family (WHO=0x70) -
 
 > 💡 **Verification:** rebuild and flash, open the page → Settings → watch the attitude ball. Tilt the aircraft **about 30° to the left**: Roll should read **negative** with the horizon low-left/high-right. **Nose up**: the ball should show sky (pitch positive). **Nose down**: the ball should show ground (pitch negative). Note that the yaw indication naturally points opposite between 6050 and 6500 (the two generations have opposite gyro Z polarity) — this is normal and does not affect control.
 
-### 10.3 Battery Voltage Sensing
+### 10.4 Battery Voltage Sensing
 
 GPIO2 is ADC1_CH2, 12-bit with 11 dB attenuation (measurable to about 3.9 V), combined with a 100K + 100K divider on the PCB (ratio 2.0) to cover a 1S LiPo's 4.2 V full-charge range. Alarms have three levels (the normal state raises none):
 
@@ -628,7 +653,7 @@ GPIO2 is ADC1_CH2, 12-bit with 11 dB attenuation (measurable to about 3.9 V), co
 
 The voltage alarm has **higher LED priority than flight state** — low battery is more urgent than "am I armed", and the pilot must see it first.
 
-### 10.4 Reserved Expansion Pins
+### 10.5 Reserved Expansion Pins
 
 | Bus | Pins (default board) | Planned use |
 |---|---|---|
@@ -688,6 +713,43 @@ Core count / frequency: defaults are fine; which core the control loop runs on d
 ```
 
 For high-rate attitude debugging, set `kEnableSerialAttDebug` in `config.h` to `true` and it prints `ATT,roll,pitch,yaw` at 100 Hz. **Keep it `false` for real flight** — serial printing blocks and eats into the control period.
+
+### 11.5 Building and Packaging Both Variants (v1.3)
+
+One source tree, two images. **Keep two separate build directories** — mixing them ships the wrong image.
+
+```bash
+# YaoKun S3 (default board, no macro needed)
+arduino-cli compile "YaoKun_Drone" \
+  --fqbn "esp32:esp32:esp32s3:FlashSize=8M,PartitionScheme=default_8MB" \
+  --build-path build/s3 --config-file ~/.arduinoIDE/arduino-cli.yaml --jobs 8
+
+# MildlySpicyDragon 2.0 (classic ESP32 / 4 MB, -DPCB_HLG_V2 is mandatory)
+arduino-cli compile "YaoKun_Drone" \
+  --fqbn "esp32:esp32:esp32:FlashSize=4M,PartitionScheme=default" \
+  --build-property "compiler.cpp.extra_flags=-DPCB_HLG_V2" \
+  --build-path build/hlg --config-file ~/.arduinoIDE/arduino-cli.yaml --jobs 8
+```
+
+> 🔴 **`--jobs 8` is not optional.** By default arduino-cli spawns one `cc1plus` per logical core (170 MB+ each); on a many-core/limited-RAM machine that thrashes swap — a clean build once produced **not a single `.o` in 40 minutes**. Capping it at 8 finished the same build in ~14 minutes.
+
+| Segment | HLG 2.0 (classic ESP32) | YaoKun S3 |
+| --- | --- | --- |
+| bootloader | **`0x1000`** | `0x0` |
+| partition table | `0x8000` | `0x8000` |
+| boot_app0 | `0xE000` | `0xE000` |
+| application | `0x10000` | `0x10000` |
+| esptool chip args | `--chip esp32`, DIO / 40 MHz / 4 MB | `--chip esp32s3`, DIO / 80 MHz / 8 MB |
+
+> ⚠️ Using the S3 bootloader offset (0x0) on a classic ESP32 verifies fine and then **does not boot at all** (0 bytes on serial).
+
+```bash
+python build_ykdrone/pack_release.py      --ver 1.3 --date 20261117   # S3, 8 MB, bootloader 0x0
+python build_ykdrone/pack_release_hlg.py  --ver 1.3 --date 20261117   # HLG, 4 MB, bootloader 0x1000
+```
+
+Both scripts sanitize local build paths inside the app image, **recompute the trailing XOR checksum byte and the appended SHA-256** (touching only the SHA leaves the bootloader reporting `Checksum failed`), verify every merged segment, and render the flashing guide from a template.
+
 
 ## 12. Usage
 

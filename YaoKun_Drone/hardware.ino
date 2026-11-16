@@ -36,14 +36,25 @@ LedMode g_led_mode = LED_BOOT; // 当前 LED 模式
  *       从而与电机通道完全分离，避免资源冲突。
  */
 void ledInit() {
+#if kLedSingle
+    // ---------- 单灯板型（火龙果 2.0）----------
+    // 只有一颗灯，占用 LEDC 通道 4（通道 5 空着，与电机 0~3 依然不冲突）。
+    // 为什么仍用 PWM 而不是 digitalWrite：呼吸灯、亮度语义在单灯上照样有效，
+    // 而且 ledUpdate() 里那套亮度计算可以原样复用，不必为单灯另写一套状态机。
+    ledcAttachChannel(kLedSinglePin, kLedPwmFreqHz, kLedPwmResolutionBits, 4);
+#else
+    // ---------- 三灯板型（S3 / mini 系列）----------
     // 红色 LED 绑定到通道 4，绿色 LED 绑定到通道 5
     // 使用 ledcAttachChannel 手动指定通道，确保与电机通道（0~3）不重叠
     ledcAttachChannel(led1, kLedPwmFreqHz, kLedPwmResolutionBits, 4);
     ledcAttachChannel(led2, kLedPwmFreqHz, kLedPwmResolutionBits, 5);
 
-    // 初始化蓝色 LED 为普通 GPIO 输出，初始熄灭
-    pinMode(led3, OUTPUT);
-    digitalWrite(led3, LOW);
+    // 初始化蓝色 LED 为普通 GPIO 输出，初始熄灭（-1 = 无此灯，跳过）
+    if (led3 >= 0) {
+        pinMode(led3, OUTPUT);
+        digitalWrite(led3, LOW);
+    }
+#endif
 
     // 初始全部熄灭
     setLeds(0.0f, 0.0f);
@@ -64,9 +75,17 @@ void ledUpdate() {
         case LED_BOOT:
             {
                 const uint32_t period_ms = 220;   // 交替周期 220ms
+#if kLedSingle
+                // 单灯板型：没有两颗灯可交替，改用"暗/亮"两态交替（暗态 15%，
+                // 不是全灭）——这样与"已上锁呼吸（平滑渐变）""故障快闪（120ms
+                // 全灭）"在观感上都能区分，上电时一眼能认出处在 BOOT 阶段。
+                const bool bright = ((now_ms / period_ms) & 1U) == 0U;
+                setLeds(bright ? 1.0f : 0.15f, bright ? 1.0f : 0.15f);
+#else
                 // 每 220ms 切换一次，right_on 为 true 时红色亮绿色灭，false 时红色灭绿色亮
                 const bool right_on = ((now_ms / period_ms) & 1U) == 0U;
                 setLeds(right_on ? 1.0f : 0.0f, right_on ? 0.0f : 1.0f);
+#endif
             }
             break;
 
