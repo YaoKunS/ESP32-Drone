@@ -614,7 +614,7 @@ The Dragon Fruit 2.0 is an open-hardware project by **MildlySpicyDragon (malagis
 - **Classic-ESP32 hard limits.** Only GPIO0–39 exist; every pin is ≤39; `led1/led2/led3` are set to `-1` (never map `led3` to 14 — that is the optical-flow CLK); GPIO12 is untouched, so **no eFuse burn is needed**.
 - **Brand isolation is enforced at compile time.** The HLG banner shows the Dragon Fruit OSHWHub / Bilibili links with the YaoKun store line appended; the S3 banner must never contain HLG links — implemented by overriding `FK_ID_*` macros inside `#if defined(PCB_HLG_V2)`.
 
-> 🧰 Bench acceptance procedure: `Docs/火龙果2.0_自研飞控_台架检查清单_v1.3.md`.
+> 🧰 Bench acceptance procedure: `Docs/火龙果2.0PCB_耀坤飞控_台架检查清单_v1.3.md`.
 
 ### 10.3 IMU Axis Mapping (automatic since v1.2)
 

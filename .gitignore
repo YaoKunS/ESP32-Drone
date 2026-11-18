@@ -12,6 +12,9 @@ YaoKun_Drone/build/
 **/build/esp32.*/
 sketch.yaml.bak
 
+# —— 本地随手记录（只留本地，不入库不发远端）——
+原代码属于*.txt
+
 # —— 系统杂项 ——
 Thumbs.db
 Desktop.ini
