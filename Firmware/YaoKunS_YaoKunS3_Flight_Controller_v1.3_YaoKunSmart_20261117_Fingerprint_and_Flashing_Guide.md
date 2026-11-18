@@ -20,7 +20,7 @@ A fully in-house developed ESP32-S3 brushed-quadcopter flight controller (projec
 > After flashing, connect your phone to this hotspot and open <http://192.168.4.1/>.
 >
 > ★ **Two board variants since v1.3.** This package is the **YaoKun S3** variant (LCKFB ESP32-S3 R8N8).
-> A second variant for the **MildlySpicyDragon 2.0** board (classic ESP32 / 4 MB, filename contains `HLG2`)
+> A second variant for the **MildlySpicyDragon 2.0** board (classic ESP32 / 4 MB, firmware filename contains `HLG2`)
 > is released with the same version number. Pins differ completely — **never cross-flash**
 > (wrong image ⇒ dead motors or scrambled motor order). Check the `Board` line in the boot banner:
 > `YaoKun S3 (LCKFB R8N8)` or `HLG 2.0 (ESP32 classic, single LED)`.
