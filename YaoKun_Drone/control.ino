@@ -6,6 +6,7 @@
  * @brief 提供本项目所需电子元器件套件，基础元件仅需9.9元 ；  
  * @brief 哔哩哔哩B站：耀坤智联 ； 
  * @brief 嘉立创开源硬件平台：耀坤无人机（星火计划2026开源项目）
+ *        开源工程页：https://oshwhub.com/lindahe/project_sulkgarf
 
  * 本文件包含 PID 对象定义、参数应用函数和复位函数。
  * 控制主循环 controlStep() 仍在主文件中，后续可进一步拆分。

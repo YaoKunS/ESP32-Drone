@@ -8,6 +8,8 @@
 //             它们的实现在 hardware.ino 中。
 //             多数控制、故障保护、遥测函数已拆分为独立模块，并在本文件中提供了 extern 声明。
 //             仅有 controlStep 等少数函数仍保留 static，因其完全封装在主文件内部。
+// 嘉立创开源硬件平台：耀坤无人机（星火计划2026开源项目）
+// 开源工程页：https://oshwhub.com/lindahe/project_sulkgarf
 // ============================================================================
 #ifndef DRONE_TYPES_H_
 #define DRONE_TYPES_H_

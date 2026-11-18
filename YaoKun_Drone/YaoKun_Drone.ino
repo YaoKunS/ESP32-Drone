@@ -6,6 +6,7 @@
  * @brief 提供本项目所需电子元器件套件，基础元件仅需9.9元 ； 
  * @brief 哔哩哔哩B站：耀坤智联 ； 
  * @brief 嘉立创开源硬件平台：耀坤无人机（星火计划2026开源项目）
+ *        开源工程页：https://oshwhub.com/lindahe/project_sulkgarf
  *
  * 本文件包含：系统初始化、主循环、WiFi/Web服务器启动、姿态控制循环(controlStep)、
  * 电压监测与告警、校准辅助函数（状态管理）、电池电压读取等。
